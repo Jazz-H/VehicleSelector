@@ -515,6 +515,30 @@
   .queue-tag.moto{background:var(--redline);color:#fff;}
   .queue-tag.car{background:var(--ink);color:var(--paper);}
 
+  /* ---------- HUB: CURRENT GARAGE ---------- */
+  .ledger-row.cut .item{color:var(--ink-faint);}
+  .ledger-row.cut .item small{color:var(--ink-faint);}
+  .ledger-row.cut .item s{color:var(--ink-faint);}
+  .ledger-row.cut .amt{color:var(--ink-faint);text-decoration:line-through;}
+
+  /* ---------- COLLAPSIBLE SECTIONS ---------- */
+  details.sec-block{padding:34px 0;border-bottom:1px solid var(--line-steel);}
+  details.sec-block > summary{display:block;position:relative;list-style:none;cursor:pointer;
+    padding-right:38px;-webkit-tap-highlight-color:transparent;}
+  details.sec-block > summary::-webkit-details-marker{display:none;}
+  details.sec-block > summary .sec-head{margin-bottom:0;}
+  details.sec-block > summary::after{content:"";position:absolute;right:7px;top:9px;width:11px;height:11px;
+    border-right:2px solid var(--redline);border-bottom:2px solid var(--redline);
+    transform:rotate(45deg);transition:transform .2s;}
+  details.sec-block[open] > summary::after{transform:rotate(-135deg);}
+  details.sec-block[open] > summary{margin-bottom:22px;}
+  details.sec-block > summary:focus-visible{outline:2px solid var(--amber);outline-offset:4px;border-radius:3px;}
+  .insight{display:block;margin-top:12px;font-size:.94rem;color:#c8c4ba;
+    border-left:3px solid var(--amber);background:var(--steel-850);padding:10px 14px;border-radius:0 4px 4px 0;}
+  .insight em{font-style:normal;font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--redline);display:block;margin-bottom:5px;}
+  .insight b{color:var(--paper);font-weight:600;}
+
   /* ---------- SCAFFOLD STUBS ---------- */
   .stub{background:var(--steel-850);border:1px dashed var(--line-steel-strong);border-radius:5px;padding:18px 20px;
     color:#969ba1;font-family:"IBM Plex Mono",monospace;font-size:.82rem;letter-spacing:.01em;line-height:1.75;}
@@ -567,8 +591,41 @@
       </div>
       <div class="gauge-cap">Two Builds &middot; One Bench</div>
       <h1>The <span class="rev">Garage</span></h1>
-      <p class="hero-sub">Command center for both projects &mdash; budgets, candidates, and the next moves, side by side.</p>
+      <p class="hero-sub">Command center for the whole garage &mdash; your daily, both builds, and the next moves.</p>
     </header>
+
+    <section>
+      <div class="sec-head"><span class="sec-num">&#9670;</span><h2>In The Garage</h2></div>
+      <p class="sec-note">The one you actually daily &mdash; and every mod on the list.</p>
+
+      <div class="proj-tile" style="margin-bottom:18px;">
+        <div class="pt-top">
+          <div><span class="pt-ey">Daily Driver &middot; Owned</span><h3 class="pt-title">2026 Mustang<br>EcoBoost Premium</h3></div>
+          <span class="pt-phase">Daily</span>
+        </div>
+        <div class="spec-grid">
+          <div class="spec-cell"><span class="k">Engine</span><span class="v">2.3<small>L turbo</small></span></div>
+          <div class="spec-cell"><span class="k">Output</span><span class="v">315<small>hp</small></span></div>
+          <div class="spec-cell"><span class="k">Drive</span><span class="v">RWD<small> 10-spd</small></span></div>
+          <div class="spec-cell"><span class="k">Miles</span><span class="v">3,500</span></div>
+          <div class="spec-cell"><span class="k">Mods In</span><span class="v">5<small> &middot; $1.3k</small></span></div>
+        </div>
+      </div>
+
+      <h4 class="dash-h">Mod List</h4>
+      <div class="panel" style="margin-bottom:16px;">
+        <div class="ledger">
+          <div class="ledger-row"><span class="item">SpeedForm Tail Light Covers <small>Smoked overlay &middot; clean surface, apply at room temp</small></span><span class="amt">$79.99</span></div>
+          <div class="ledger-row"><span class="item">Performance Track Rear Diffuser <small>Glossy black &middot; bolt-on rear fascia, provided hardware</small></span><span class="amt">$134.99</span></div>
+          <div class="ledger-row"><span class="item">MP Concepts Rear Window Louvers <small>Gloss black &middot; oversized item, mind the adhesive cure time</small></span><span class="amt">$189.99</span></div>
+          <div class="ledger-row"><span class="item">MP Concepts Chin Spoiler <small>Bolt-on front lip &middot; 3M tape + hardware</small></span><span class="amt">$199.99</span></div>
+          <div class="ledger-row"><span class="item">Roush Axle-Back Exhaust <small>Black tips &middot; jack stands, torque bolts to spec</small></span><span class="amt">$674.99</span></div>
+          <div class="ledger-row cut"><span class="item"><s>SpeedForm Sport Quarter Window Louvers</s> <small>Dropped &mdash; went with the MP Concepts rear louvers instead</small></span><span class="amt">$71.41</span></div>
+          <div class="ledger-row total"><span class="item">Total In</span><span class="amt">$1,279.95</span></div>
+        </div>
+      </div>
+      <div class="callout">Appearance &amp; sound so far &mdash; louvers, rear diffuser, chin spoiler, smoked tails, and the Roush axle-back. <b>The total excludes the crossed-out quarter-window louvers</b> you dropped in favor of the MP Concepts rear set.</div>
+    </section>
 
     <section>
       <div class="sec-head"><span class="sec-num">&#9670;</span><h2>Projects</h2></div>
@@ -733,8 +790,11 @@
   </section>
 
   <!-- MARKET VALUES -->
-  <section>
+  <details class="sec-block">
+    <summary>
     <div class="sec-head"><span class="sec-num">03</span><h2>Market Values</h2></div>
+    <span class="insight"><em>Insight</em> Use the KBB trade-in as your floor &mdash; a clean CB500F sits around <b>$3&ndash;4.6k</b>; private sellers ask well above it.</span>
+    </summary>
     <div class="mkt-intro">
       <p class="sec-note" style="margin-bottom:0">Popular years, what they actually go for, and the mileage you'll typically see. Use the KBB trade-in figure as your negotiating floor — private sellers ask well above it.</p>
       <div class="mkt-legend">
@@ -784,7 +844,7 @@
 
     <div class="sweet">At <b>$5k cash</b>, your sweet spot is a <b>2–4 year-old</b> example of any of these in the 3,000–8,000-mile range — new enough to skip valve-check worries, cheap enough to leave room for gear. The CB300R is the only one where $5k could land you a near-new or leftover bike outright.</div>
     <p class="cross-note">// Values reflect mid-2026 U.S. listings (Autotrader / CycleTrader) and KBB motorcycle trade-in data. Many of these bikes are lightly ridden — low-mile examples are common and worth holding out for.</p>
-  </section>
+  </details>
 
   <!-- CANDIDATES -->
   <section>
@@ -963,8 +1023,11 @@
   </section>
 
   <!-- CROSS SHOP -->
-  <section>
+  <details class="sec-block">
+    <summary>
     <div class="sec-head"><span class="sec-num">05</span><h2>Cross-Shop</h2></div>
+    <span class="insight"><em>Insight</em> The <b>Ninja 400 / Z400</b> is the value benchmark &mdash; a real step up from your 300F and cheaper to run than the KTM.</span>
+    </summary>
     <p class="sec-note">Mostly A2-legal, under 600cc, and in reach at $5k cash used — with one over-budget exception, flagged below. Worth a test ride against your shortlist.</p>
     <div class="cross">
       <div class="cross-item">
@@ -997,11 +1060,14 @@
       </div>
     </div>
     <p class="cross-note">// The Ninja 400 / Z400 is the strongest all-round alternative to the Hondas — cheaper to run than the KTM, and a real step up from your 300F.</p>
-  </section>
+  </details>
 
   <!-- THINGS TO WEIGH -->
-  <section>
+  <details class="sec-block">
+    <summary>
     <div class="sec-head"><span class="sec-num">06</span><h2>Before You Commit</h2></div>
+    <span class="insight"><em>Insight</em> Rust-bust first, ride a <b>twin vs. a single</b> back-to-back, and quote comprehensive insurance before you buy.</span>
+    </summary>
     <div class="weigh">
       <div class="weigh-row"><span class="wk">Rust-busting first</span><span class="wv">If it's been a while, do a parking-lot refresh (or an MSF Returning Rider course) before highway miles. Your hands remember more than your reflexes — give them a session to catch up.</span></div>
       <div class="weigh-row"><span class="wk">Singles vs. twins</span><span class="wv">Your 300F was a single. The CB500 / Ninja 400 / MT-03 are <b>twins</b> — smoother, more top-end, happier on the highway. The Triumph 400 / 390 Duke are <b>punchier singles</b> with more character and vibration. Ride both types back to back — it's the biggest difference in feel.</span></div>
@@ -1012,11 +1078,14 @@
       <div class="weigh-row"><span class="wk">Season timing</span><span class="wv">It's peak riding season, so prices are at their highest. If you're not rushing, <b>late fall / winter</b> is when sellers get motivated.</span></div>
       <div class="weigh-row"><span class="wk">Seat-height fit</span><span class="wv">You know your comfort range from the 300F. Most of these sit around 31", and the Triumph 400 is the lowest at 31.1" — but always flat-foot a bike before you commit.</span></div>
     </div>
-  </section>
+  </details>
 
   <!-- CHECKLIST -->
-  <section>
+  <details class="sec-block">
+    <summary>
     <div class="sec-head"><span class="sec-num">07</span><h2>Inspection Checklist</h2></div>
+    <span class="insight"><em>Insight</em> Insist on a <b>cold start</b>, check valve/tire/fluid age, and walk from any no-title &ldquo;ran when parked&rdquo; deal.</span>
+    </summary>
     <p class="sec-note">Buying used is the right call — run this yourself, or get a pre-purchase inspection, before money moves. Tap to check off as you go.</p>
 
     <div class="check-group">
@@ -1065,11 +1134,14 @@
     </div>
 
     <div class="redflags"><b>Walk away if</b>Seller won't let it sit cold · no title · "mechanic friend" stories · price too good to be true.</div>
-  </section>
+  </details>
 
   <!-- SHOPPING -->
-  <section>
+  <details class="sec-block">
+    <summary>
     <div class="sec-head"><span class="sec-num">08</span><h2>First-Day List</h2></div>
+    <span class="insight"><em>Insight</em> Keep <b>~$600&ndash;1,400</b> aside on top of the bike for gear, security, and the first service.</span>
+    </summary>
     <div class="shop-grid">
       <div class="shop-col">
         <h4>Gear</h4>
@@ -1097,7 +1169,7 @@
         </ul>
       </div>
     </div>
-  </section>
+  </details>
 
   <!-- NEXT STEPS -->
   <section style="border-bottom:none;">
@@ -1293,8 +1365,11 @@
   </section>
 
   <!-- MARKET VALUES -->
-  <section>
+  <details class="sec-block">
+    <summary>
     <div class="sec-head"><span class="sec-num">03</span><h2>Market Values</h2></div>
+    <span class="insight"><em>Insight</em> Spend <b>~$6&ndash;8k</b> on the cleanest, best-documented example and bank the rest &mdash; condition beats mileage.</span>
+    </summary>
     <div class="mkt-intro">
       <p class="sec-note" style="margin-bottom:0">Typical mid-2026 asking ranges and the one thing to check hardest on each. On 15&ndash;20-year-old cars, <b style="color:#e6e2d8">condition beats mileage</b> &mdash; a documented high-mile car often beats a cheap unknown.</p>
     </div>
@@ -1314,7 +1389,7 @@
     </div>
     <div class="sweet">Best value play: spend <b>~$6&ndash;8k on the cleanest, best-documented example</b> you can find and keep the rest for fixes and round-one mods. The cheapest car in the listings is almost never the cheapest to own.</div>
     <p class="cross-note">// Prices reflect mid-2026 U.S. listings (Marketplace, CarGurus, Bring a Trailer, Cars &amp; Bids). Region and condition swing them hard.</p>
-  </section>
+  </details>
 
   <!-- CANDIDATE LOG -->
   <section>
@@ -1365,8 +1440,11 @@
   </section>
 
   <!-- CROSS SHOP -->
-  <section>
+  <details class="sec-block">
+    <summary>
     <div class="sec-head"><span class="sec-num">05</span><h2>Cross-Shop</h2></div>
+    <span class="insight"><em>Insight</em> By taste: <b>RX-8</b> for cheap thrills, <b>G35</b> for value, <b>MR2</b> for mid-engine fun &mdash; each has one known killer to check.</span>
+    </summary>
     <p class="sec-note">Honorable mentions worth a look depending on your taste and goal.</p>
     <div class="cross">
       <div class="cross-item">
@@ -1399,11 +1477,14 @@
       </div>
     </div>
     <p class="cross-note">// Priced out of the sub-$10k world now: Nissan 240SX, Honda S2000, R32/R34 Skyline, WRX STI. Great cars &mdash; just no longer bargains.</p>
-  </section>
+  </details>
 
   <!-- BEFORE YOU COMMIT -->
-  <section>
+  <details class="sec-block">
+    <summary>
     <div class="sec-head"><span class="sec-num">06</span><h2>Before You Commit</h2></div>
+    <span class="insight"><em>Insight</em> Buy the best example, run the VIN, and <b>know your goal first</b> &mdash; rust and abandoned builds are the money pits.</span>
+    </summary>
     <div class="weigh">
       <div class="weigh-row"><span class="wk">Buy the best example</span><span class="wv">A clean $8k car beats a $4k &ldquo;project&rdquo; that needs everything. Fixes always run ~2&times; the estimate &mdash; condition and records are the real value.</span></div>
       <div class="weigh-row"><span class="wk">Rust is the killer</span><span class="wv">Check frame rails, subframe mounts, floors, rockers, and arches. A <b>rust-free needs-mechanical</b> car beats a clean-running rust bucket. Salt-belt cars are risky.</span></div>
@@ -1416,11 +1497,14 @@
       <div class="weigh-row"><span class="wk">Space, tools, time</span><span class="wv">Be honest about your garage, your toolset, and your bandwidth. A project you can&rsquo;t work on becomes a driveway ornament.</span></div>
       <div class="weigh-row"><span class="wk">Emissions + insurance</span><span class="wv">Modified cars can fail state inspection/emissions &mdash; check your rules. And quote insurance first; some of these cost more to cover.</span></div>
     </div>
-  </section>
+  </details>
 
   <!-- INSPECTION -->
-  <section>
+  <details class="sec-block">
+    <summary>
     <div class="sec-head"><span class="sec-num">07</span><h2>Inspection / PPI</h2></div>
+    <span class="insight"><em>Insight</em> Cold start, hunt for rust, scan for <b>cleared codes</b> &mdash; a $150&ndash;250 shop PPI is the cheapest insurance you&rsquo;ll buy.</span>
+    </summary>
     <p class="sec-note">Run this yourself before money moves &mdash; or pay a shop for a platform-specific PPI. Tap to check off as you go.</p>
 
     <div class="check-group">
@@ -1476,11 +1560,14 @@
     </div>
 
     <div class="redflags"><b>Walk away if</b>Seller won&rsquo;t let it sit cold &middot; no title or a salvage surprise &middot; &ldquo;ran when parked&rdquo; &middot; abandoned half-build &middot; price too good to be true. A <b>$150&ndash;250 shop PPI</b> is the best money you&rsquo;ll spend.</div>
-  </section>
+  </details>
 
   <!-- STARTER KIT -->
-  <section>
+  <details class="sec-block">
+    <summary>
     <div class="sec-head"><span class="sec-num">08</span><h2>Starter Kit</h2></div>
+    <span class="insight"><em>Insight</em> Jack + stands, a socket set, an <b>OBD2 scanner</b>, and the platform&rsquo;s forum get you wrenching day one.</span>
+    </summary>
     <div class="shop-grid">
       <div class="shop-col">
         <h4>Tools</h4>
@@ -1510,7 +1597,7 @@
         </ul>
       </div>
     </div>
-  </section>
+  </details>
 
   <!-- NEXT STEPS -->
   <section style="border-bottom:none;">
