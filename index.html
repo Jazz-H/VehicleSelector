@@ -535,6 +535,30 @@
   .ledger-row.sub .item small{font-weight:400;}
   .ledger-row.sub .amt{font-weight:600;color:#2a2d31;}
   .ledger-row.sub.div{border-top:2px solid var(--line-strong);}
+  .amt .modrm{margin-left:9px;border:none;background:transparent;color:var(--ink-faint);cursor:pointer;
+    font-size:1.05rem;line-height:1;padding:0 2px;vertical-align:middle;-webkit-tap-highlight-color:transparent;}
+  .amt .modrm:hover{color:var(--redline-deep);}
+  .amt .modrm:focus-visible{outline:2px solid var(--amber);outline-offset:1px;border-radius:3px;}
+
+  /* ---------- ADD-MOD FORM ---------- */
+  .modadd{background:var(--steel-850);border:1px solid var(--line-steel-strong);border-radius:8px;
+    padding:14px;margin-bottom:16px;display:flex;flex-direction:column;gap:10px;}
+  .modadd-row{display:flex;gap:10px;}
+  .modadd input[type="text"]{flex:1;min-width:0;background:var(--steel-900);border:1px solid var(--line-steel-strong);
+    border-radius:6px;color:var(--paper);padding:10px 12px;font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.92rem;}
+  .modadd .modadd-price{flex:0 0 108px;}
+  .modadd input::placeholder{color:#7e838a;}
+  .modadd input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 2px rgba(224,160,18,.35);}
+  .modadd-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .modadd-bought{display:flex;align-items:center;gap:8px;font-family:"IBM Plex Mono",monospace;font-size:.74rem;
+    letter-spacing:.04em;text-transform:uppercase;color:#c8c4ba;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .modadd-bought input{width:18px;height:18px;accent-color:var(--redline);cursor:pointer;}
+  .modadd-btn{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+    font-size:.92rem;color:#fff;background:var(--redline);border:none;border-radius:6px;padding:10px 18px;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;transition:filter .15s, transform .1s;}
+  .modadd-btn:hover{filter:brightness(1.07);}
+  .modadd-btn:active{transform:scale(.96);}
+  .modadd-btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
 
   /* ---------- COLLAPSIBLE SECTIONS ---------- */
   details.sec-block{padding:34px 0;border-bottom:1px solid var(--line-steel);}
@@ -786,7 +810,7 @@
 
     <h4 class="dash-h">Mod List</h4>
     <div class="panel" style="margin-bottom:16px;">
-      <div class="ledger">
+      <div class="ledger" id="modLedger">
         <div class="ledger-row done"><span class="item">SpeedForm Sport Quarter Window Louvers <span class="owned">Bought &check;</span><small>Gloss black &middot; adhesive-mount, cure before first wash</small></span><span class="amt">$71.41</span></div>
         <div class="ledger-row"><span class="item">SpeedForm Tail Light Covers <small>Smoked overlay &middot; clean surface, apply at room temp</small></span><span class="amt">$79.99</span></div>
         <div class="ledger-row"><span class="item">Performance Track Rear Diffuser <small>Glossy black &middot; bolt-on rear fascia, provided hardware</small></span><span class="amt">$134.99</span></div>
@@ -798,7 +822,18 @@
         <div class="ledger-row total"><span class="item">Total &middot; All Mods</span><span class="amt">$1,351.36</span></div>
       </div>
     </div>
-    <div class="callout">All appearance &amp; sound &mdash; louvers, rear diffuser, chin spoiler, smoked tails, and the Roush axle-back. <b>$71.41 spent</b> (the quarter-window louvers) with <b>$1,279.95 still to buy</b> &mdash; <b>$1,351.36</b> all-in once the list is done.</div>
+    <form id="modAddForm" class="modadd" autocomplete="off">
+      <div class="modadd-row">
+        <input class="modadd-name" type="text" placeholder="Mod name" aria-label="Mod name" maxlength="80" required>
+        <input class="modadd-price" type="text" inputmode="decimal" placeholder="$ price" aria-label="Price" maxlength="12" required>
+      </div>
+      <input class="modadd-note" type="text" placeholder="Note (optional)" aria-label="Note" maxlength="120">
+      <div class="modadd-actions">
+        <label class="modadd-bought"><input type="checkbox" class="modadd-boughtcb"> Already bought</label>
+        <button type="submit" class="modadd-btn">+ Add mod</button>
+      </div>
+    </form>
+    <div class="callout">All appearance &amp; sound so far &mdash; louvers, rear diffuser, chin spoiler, smoked tails, and the Roush axle-back. The quarter-window louvers are already bought; the rest are the running list. <b>Add a mod above</b> &mdash; the Spent / Still-to-buy / All-in totals update automatically.</div>
   </section>
 </div>
 </section>
@@ -1916,6 +1951,91 @@ if ('serviceWorker' in navigator) {
     f.addEventListener('input', save);
     f.addEventListener('blur', save);
   });
+})();
+</script>
+
+<script>
+// Add-a-mod: log new mods on the Garage tab; totals recompute; persisted.
+(function () {
+  var LKEY = 'mp.mods.user';
+  var ledger = document.getElementById('modLedger');
+  var form = document.getElementById('modAddForm');
+  if (!ledger || !form) return;
+
+  function esc(s) { return (s || '').replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function money(n) { return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function parseAmt(s) { return parseFloat(String(s).replace(/[^0-9.]/g, '')) || 0; }
+  function load() { try { return JSON.parse(localStorage.getItem(LKEY) || '[]'); } catch (e) { return []; } }
+  function save(a) { try { localStorage.setItem(LKEY, JSON.stringify(a)); } catch (e) {} }
+
+  function seedRows() {
+    return Array.prototype.filter.call(ledger.querySelectorAll('.ledger-row'), function (r) {
+      return !r.classList.contains('sub') && !r.classList.contains('total') && !r.dataset.user;
+    });
+  }
+
+  function renderUser() {
+    Array.prototype.forEach.call(ledger.querySelectorAll('.ledger-row[data-user]'), function (r) { r.remove(); });
+    var arr = load();
+    var firstSub = ledger.querySelector('.ledger-row.sub');
+    arr.forEach(function (m, i) {
+      var row = document.createElement('div');
+      row.className = 'ledger-row' + (m.bought ? ' done' : '');
+      row.dataset.user = '1';
+      var badge = m.bought ? '<span class="owned">Bought &check;</span>' : '';
+      var note = m.note ? '<small>' + esc(m.note) + '</small>' : '';
+      row.innerHTML = '<span class="item">' + esc(m.name) + ' ' + badge + note + '</span>' +
+        '<span class="amt">' + money(m.price) + '<button class="modrm" type="button" aria-label="Remove mod" data-idx="' + i + '">&times;</button></span>';
+      ledger.insertBefore(row, firstSub);
+    });
+  }
+
+  function recompute() {
+    var spent = 0, toBuy = 0, spentN = 0, buyN = 0;
+    seedRows().forEach(function (r) {
+      var p = parseAmt(r.querySelector('.amt').textContent);
+      if (r.classList.contains('done')) { spent += p; spentN++; } else { toBuy += p; buyN++; }
+    });
+    load().forEach(function (m) {
+      if (m.bought) { spent += m.price; spentN++; } else { toBuy += m.price; buyN++; }
+    });
+    var subs = ledger.querySelectorAll('.ledger-row.sub');
+    if (subs[0]) { subs[0].querySelector('.amt').textContent = money(spent); var s0 = subs[0].querySelector('.item small'); if (s0) s0.textContent = spentN + ' mod' + (spentN !== 1 ? 's' : '') + ', in hand'; }
+    if (subs[1]) { subs[1].querySelector('.amt').textContent = money(toBuy); var s1 = subs[1].querySelector('.item small'); if (s1) s1.textContent = buyN + ' mod' + (buyN !== 1 ? 's' : ''); }
+    var tot = ledger.querySelector('.ledger-row.total .amt'); if (tot) tot.textContent = money(spent + toBuy);
+    var cells = document.querySelectorAll('#view-daily .spec-grid .spec-cell');
+    Array.prototype.forEach.call(cells, function (c) {
+      var k = c.querySelector('.k');
+      if (k && /mods/i.test(k.textContent)) {
+        var v = c.querySelector('.v');
+        if (v) v.innerHTML = (spentN + buyN) + '<small> &middot; $' + ((spent + toBuy) / 1000).toFixed(2) + 'k</small>';
+      }
+    });
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = form.querySelector('.modadd-name').value.trim();
+    var price = parseAmt(form.querySelector('.modadd-price').value);
+    var note = form.querySelector('.modadd-note').value.trim();
+    var bought = form.querySelector('.modadd-boughtcb').checked;
+    if (!name || !(price > 0)) return;
+    var arr = load(); arr.push({ name: name, price: price, note: note, bought: bought }); save(arr);
+    form.reset();
+    renderUser(); recompute();
+    form.querySelector('.modadd-name').focus();
+  });
+
+  ledger.addEventListener('click', function (e) {
+    var btn = e.target.closest('.modrm');
+    if (!btn) return;
+    var idx = parseInt(btn.getAttribute('data-idx'), 10);
+    var arr = load();
+    if (idx >= 0 && idx < arr.length) { arr.splice(idx, 1); save(arr); renderUser(); recompute(); }
+  });
+
+  renderUser();
+  recompute();
 })();
 </script>
 
