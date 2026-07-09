@@ -592,6 +592,19 @@
   .addcand:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
   .addcand .plus{color:var(--redline);margin-right:8px;font-size:1.1rem;}
 
+  /* ---------- WHAT'S-NEW BANNER ---------- */
+  .whatsnew{background:linear-gradient(90deg,rgba(216,58,41,.16),var(--steel-850));border-bottom:1px solid var(--line-steel);}
+  .whatsnew[hidden]{display:none;}
+  .whatsnew-inner{max-width:880px;margin:0 auto;padding:9px 16px;display:flex;align-items:center;gap:11px;}
+  .wn-tag{font-family:"IBM Plex Mono",monospace;font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;
+    font-weight:700;color:#fff;background:var(--redline);padding:3px 7px;border-radius:2px;flex:0 0 auto;}
+  .wn-text{flex:1;min-width:0;font-size:.82rem;color:#d2cec4;line-height:1.4;}
+  .wn-text b{color:var(--paper);font-weight:600;}
+  .wn-x{flex:0 0 auto;border:none;background:transparent;color:#9a9fa5;font-size:1.25rem;line-height:1;
+    cursor:pointer;padding:0 2px;-webkit-tap-highlight-color:transparent;}
+  .wn-x:hover{color:var(--paper);}
+  .wn-x:focus-visible{outline:2px solid var(--amber);outline-offset:2px;border-radius:3px;}
+
   /* ---------- COLLAPSIBLE SECTIONS ---------- */
   details.sec-block{padding:34px 0;border-bottom:1px solid var(--line-steel);}
   details.sec-block > summary{display:block;position:relative;list-style:none;cursor:pointer;
@@ -713,6 +726,14 @@
     </div>
   </div>
 </nav>
+
+<div id="whatsnew" class="whatsnew" role="status" hidden>
+  <div class="whatsnew-inner">
+    <span class="wn-tag">New</span>
+    <span class="wn-text">A <b>Garage</b> tab for your daily &amp; mods, collapsible <b>insights</b>, and one-tap <b>install as an app</b>.</span>
+    <button class="wn-x" type="button" aria-label="Dismiss">&times;</button>
+  </div>
+</div>
 
 <!-- =================== HUB =================== -->
 <section id="view-garage" class="view active">
@@ -2142,6 +2163,23 @@ if ('serviceWorker' in navigator) {
       var arr = load(scope);
       if (idx >= 0 && idx < arr.length) { arr.splice(idx, 1); save(scope, arr); render(container, scope); }
     });
+  });
+})();
+</script>
+
+<script>
+// What's-new banner — shows once, remembers dismissal. Bump the version to re-announce.
+(function () {
+  var KEY = 'mp.whatsnew.v1';
+  var el = document.getElementById('whatsnew');
+  if (!el) return;
+  var dismissed = false;
+  try { dismissed = localStorage.getItem(KEY) === '1'; } catch (e) {}
+  if (!dismissed) el.hidden = false;
+  var x = el.querySelector('.wn-x');
+  if (x) x.addEventListener('click', function () {
+    el.hidden = true;
+    try { localStorage.setItem(KEY, '1'); } catch (e) {}
   });
 })();
 </script>
