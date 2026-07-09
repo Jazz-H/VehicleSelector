@@ -1,7 +1,7 @@
 {
-  "name": "The Garage",
-  "short_name": "Garage",
-  "description": "Command center for the whole garage — the daily driver, both builds, and the next moves.",
+  "name": "Motorpool",
+  "short_name": "Motorpool",
+  "description": "Your motor pool — command center for the daily, the moto build, and the car build.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
