@@ -515,11 +515,12 @@
   .queue-tag.moto{background:var(--redline);color:#fff;}
   .queue-tag.car{background:var(--ink);color:var(--paper);}
 
-  /* ---------- HUB: CURRENT GARAGE ---------- */
-  .ledger-row.cut .item{color:var(--ink-faint);}
-  .ledger-row.cut .item small{color:var(--ink-faint);}
-  .ledger-row.cut .item s{color:var(--ink-faint);}
-  .ledger-row.cut .amt{color:var(--ink-faint);text-decoration:line-through;}
+  /* ---------- GARAGE: CURRENT / MODS ---------- */
+  .ledger-row.done{background:var(--paper-dim);}
+  .ledger-row.done .item{color:var(--ink);}
+  .owned{font-family:"IBM Plex Mono",monospace;font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;
+    font-weight:600;color:#1a1d20;background:var(--amber);padding:2px 7px;border-radius:2px;margin-left:8px;
+    vertical-align:middle;white-space:nowrap;}
 
   /* ---------- COLLAPSIBLE SECTIONS ---------- */
   details.sec-block{padding:34px 0;border-bottom:1px solid var(--line-steel);}
@@ -559,6 +560,7 @@
     <span class="wordmark">Garage</span>
     <div class="tabs">
       <a id="tab-garage" class="tab active" href="#garage">Hub</a>
+      <a id="tab-daily" class="tab" href="#daily">Garage</a>
       <a id="tab-moto" class="tab" href="#moto">Moto</a>
       <a id="tab-car" class="tab" href="#car">Car</a>
     </div>
@@ -593,39 +595,6 @@
       <h1>The <span class="rev">Garage</span></h1>
       <p class="hero-sub">Command center for the whole garage &mdash; your daily, both builds, and the next moves.</p>
     </header>
-
-    <section>
-      <div class="sec-head"><span class="sec-num">&#9670;</span><h2>In The Garage</h2></div>
-      <p class="sec-note">The one you actually daily &mdash; and every mod on the list.</p>
-
-      <div class="proj-tile" style="margin-bottom:18px;">
-        <div class="pt-top">
-          <div><span class="pt-ey">Daily Driver &middot; Owned</span><h3 class="pt-title">2026 Mustang<br>EcoBoost Premium</h3></div>
-          <span class="pt-phase">Daily</span>
-        </div>
-        <div class="spec-grid">
-          <div class="spec-cell"><span class="k">Engine</span><span class="v">2.3<small>L turbo</small></span></div>
-          <div class="spec-cell"><span class="k">Output</span><span class="v">315<small>hp</small></span></div>
-          <div class="spec-cell"><span class="k">Drive</span><span class="v">RWD<small> 10-spd</small></span></div>
-          <div class="spec-cell"><span class="k">Miles</span><span class="v">3,500</span></div>
-          <div class="spec-cell"><span class="k">Mods In</span><span class="v">5<small> &middot; $1.3k</small></span></div>
-        </div>
-      </div>
-
-      <h4 class="dash-h">Mod List</h4>
-      <div class="panel" style="margin-bottom:16px;">
-        <div class="ledger">
-          <div class="ledger-row"><span class="item">SpeedForm Tail Light Covers <small>Smoked overlay &middot; clean surface, apply at room temp</small></span><span class="amt">$79.99</span></div>
-          <div class="ledger-row"><span class="item">Performance Track Rear Diffuser <small>Glossy black &middot; bolt-on rear fascia, provided hardware</small></span><span class="amt">$134.99</span></div>
-          <div class="ledger-row"><span class="item">MP Concepts Rear Window Louvers <small>Gloss black &middot; oversized item, mind the adhesive cure time</small></span><span class="amt">$189.99</span></div>
-          <div class="ledger-row"><span class="item">MP Concepts Chin Spoiler <small>Bolt-on front lip &middot; 3M tape + hardware</small></span><span class="amt">$199.99</span></div>
-          <div class="ledger-row"><span class="item">Roush Axle-Back Exhaust <small>Black tips &middot; jack stands, torque bolts to spec</small></span><span class="amt">$674.99</span></div>
-          <div class="ledger-row cut"><span class="item"><s>SpeedForm Sport Quarter Window Louvers</s> <small>Dropped &mdash; went with the MP Concepts rear louvers instead</small></span><span class="amt">$71.41</span></div>
-          <div class="ledger-row total"><span class="item">Total In</span><span class="amt">$1,279.95</span></div>
-        </div>
-      </div>
-      <div class="callout">Appearance &amp; sound so far &mdash; louvers, rear diffuser, chin spoiler, smoked tails, and the Roush axle-back. <b>The total excludes the crossed-out quarter-window louvers</b> you dropped in favor of the MP Concepts rear set.</div>
-    </section>
 
     <section>
       <div class="sec-head"><span class="sec-num">&#9670;</span><h2>Projects</h2></div>
@@ -681,6 +650,64 @@
       </ul>
     </section>
   </div>
+</section>
+
+<!-- =================== GARAGE (DAILY) =================== -->
+<section id="view-daily" class="view">
+<header class="hero">
+  <svg class="gauge" viewBox="0 0 320 170" role="img" aria-label="Tachometer">
+    <path d="M30 150 A130 130 0 0 1 290 150" fill="none" stroke="#3a4149" stroke-width="14" stroke-linecap="round"/>
+    <path d="M30 150 A130 130 0 0 1 251.9 58.1" fill="none" stroke="#8b9097" stroke-width="14" stroke-linecap="round"/>
+    <path d="M251.9 58.1 A130 130 0 0 1 290 150" fill="none" stroke="#d83a29" stroke-width="14" stroke-linecap="round"/>
+    <line x1="160" y1="150" x2="201" y2="49" stroke="#ece9e0" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="160" cy="150" r="8" fill="#d83a29"/>
+    <circle cx="160" cy="150" r="3" fill="#1b1f24"/>
+  </svg>
+  <div class="gauge-cap">Currently Daily &middot; Build Sheet</div>
+  <h1>The <span class="rev">Garage</span></h1>
+  <p class="hero-sub">What I run right now &mdash; the 2026 Mustang, and every mod on it.</p>
+  <div class="chips">
+    <span class="chip hot"><b>2026</b> Mustang</span>
+    <span class="chip"><b>EcoBoost</b> Premium</span>
+    <span class="chip">2.3L <b>turbo</b></span>
+    <span class="chip"><b>3,500</b> mi</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <section style="border-bottom:none;">
+    <div class="sec-head"><span class="sec-num">&#9670;</span><h2>Daily Driver</h2></div>
+    <p class="sec-note">The one you actually daily &mdash; and every mod on the list.</p>
+
+    <div class="proj-tile" style="margin-bottom:18px;">
+      <div class="pt-top">
+        <div><span class="pt-ey">Daily Driver &middot; Owned</span><h3 class="pt-title">2026 Mustang<br>EcoBoost Premium</h3></div>
+        <span class="pt-phase">Daily</span>
+      </div>
+      <div class="spec-grid">
+        <div class="spec-cell"><span class="k">Engine</span><span class="v">2.3<small>L turbo</small></span></div>
+        <div class="spec-cell"><span class="k">Output</span><span class="v">315<small>hp</small></span></div>
+        <div class="spec-cell"><span class="k">Drive</span><span class="v">RWD<small> 10-spd</small></span></div>
+        <div class="spec-cell"><span class="k">Miles</span><span class="v">3,500</span></div>
+        <div class="spec-cell"><span class="k">Mods</span><span class="v">6<small> &middot; $1.35k</small></span></div>
+      </div>
+    </div>
+
+    <h4 class="dash-h">Mod List</h4>
+    <div class="panel" style="margin-bottom:16px;">
+      <div class="ledger">
+        <div class="ledger-row done"><span class="item">SpeedForm Sport Quarter Window Louvers <span class="owned">Bought &check;</span><small>Gloss black &middot; adhesive-mount, cure before first wash</small></span><span class="amt">$71.41</span></div>
+        <div class="ledger-row"><span class="item">SpeedForm Tail Light Covers <small>Smoked overlay &middot; clean surface, apply at room temp</small></span><span class="amt">$79.99</span></div>
+        <div class="ledger-row"><span class="item">Performance Track Rear Diffuser <small>Glossy black &middot; bolt-on rear fascia, provided hardware</small></span><span class="amt">$134.99</span></div>
+        <div class="ledger-row"><span class="item">MP Concepts Rear Window Louvers <small>Gloss black &middot; oversized item, mind the adhesive cure time</small></span><span class="amt">$189.99</span></div>
+        <div class="ledger-row"><span class="item">MP Concepts Chin Spoiler <small>Bolt-on front lip &middot; 3M tape + hardware</small></span><span class="amt">$199.99</span></div>
+        <div class="ledger-row"><span class="item">Roush Axle-Back Exhaust <small>Black tips &middot; jack stands, torque bolts to spec</small></span><span class="amt">$674.99</span></div>
+        <div class="ledger-row total"><span class="item">Total &middot; All Mods</span><span class="amt">$1,351.36</span></div>
+      </div>
+    </div>
+    <div class="callout">Appearance &amp; sound so far &mdash; louvers, rear diffuser, chin spoiler, smoked tails, and the Roush axle-back. The <b>quarter-window louvers are already bought</b>; the rest round out the running list. All-in so far: <b>$1,351.36</b>.</div>
+  </section>
+</div>
 </section>
 
 <!-- =================== MOTO =================== -->
@@ -1616,13 +1643,13 @@
 </section>
 
 <footer>
-  <p class="fnote">The Garage &mdash; one shell, two builds. Prices reflect mid-2026; condition and region swing them hard.</p>
+  <p class="fnote">The Garage &mdash; one daily, two builds, one bench. Prices reflect mid-2026; condition and region swing them hard.</p>
   <div class="sig">Build both</div>
 </footer>
 
 <script>
 (function(){
-  var views = ['garage','moto','car'];
+  var views = ['garage','daily','moto','car'];
   function route(){
     var h = (location.hash || '#garage').replace('#','');
     if(views.indexOf(h) === -1) h = 'garage';
