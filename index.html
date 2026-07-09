@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Garage &middot; Dual Build Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --steel-900:#1b1f24;
+    --steel-850:#22272d;
+    --steel-800:#282e35;
+    --steel-700:#343b43;
+    --paper:#ece9e0;
+    --paper-dim:#e1ddd1;
+    --paper-edge:#d4cfc1;
+    --ink:#1a1d21;
+    --ink-soft:#565b62;
+    --ink-faint:#8a8e93;
+    --redline:#d83a29;
+    --redline-deep:#b02c1d;
+    --amber:#e0a012;
+    --line:rgba(26,29,33,.14);
+    --line-strong:rgba(26,29,33,.28);
+    --line-steel:rgba(255,255,255,.09);
+    --line-steel-strong:rgba(255,255,255,.16);
+    --shadow:0 1px 0 rgba(255,255,255,.5) inset, 0 18px 40px -24px rgba(0,0,0,.55);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--steel-900);
+    color:var(--paper);
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      radial-gradient(120% 80% at 50% -10%, rgba(216,58,41,.10), transparent 60%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,.012) 0 1px, transparent 1px 3px);
+  }
+
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px;}
+
+  .mono{font-family:"IBM Plex Mono",monospace;}
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:.72rem;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--redline);
+    font-weight:600;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:54px 20px 40px;
+    text-align:center;
+    border-bottom:1px solid var(--line-steel);
+  }
+  .gauge{width:230px;height:124px;margin:0 auto 6px;display:block;}
+  .gauge-cap{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-faint);margin:-4px 0 22px;
+  }
+  .hero h1{
+    font-family:"Saira Condensed",sans-serif;
+    font-weight:800;
+    font-size:clamp(2.7rem,11vw,5.4rem);
+    line-height:.92;
+    letter-spacing:.01em;
+    text-transform:uppercase;
+    margin:0;
+    color:var(--paper);
+  }
+  .hero h1 .rev{color:var(--redline);}
+  .hero-sub{
+    max-width:520px;margin:18px auto 26px;
+    color:#c8c4ba;font-size:1.02rem;
+  }
+  .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+  .chip{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:.74rem;letter-spacing:.04em;
+    padding:7px 12px;
+    border:1px solid var(--line-steel-strong);
+    border-radius:2px;
+    background:var(--steel-850);
+    color:#d6d2c8;
+  }
+  .chip b{color:var(--paper);font-weight:600;}
+  .chip.hot{border-color:rgba(216,58,41,.55);color:#f0d9d4;}
+  .chip.hot b{color:#ffb3a6;}
+
+  /* ---------- SECTION FRAME ---------- */
+  section{padding:46px 0;border-bottom:1px solid var(--line-steel);}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:24px;flex-wrap:wrap;}
+  .sec-num{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:.8rem;font-weight:600;color:var(--redline);
+    letter-spacing:.1em;padding-top:6px;
+  }
+  .sec-head h2{
+    font-family:"Saira Condensed",sans-serif;
+    font-weight:700;text-transform:uppercase;letter-spacing:.02em;
+    font-size:clamp(1.7rem,5vw,2.5rem);line-height:1;margin:0;color:var(--paper);
+  }
+  .sec-note{color:#b7b3a9;font-size:.96rem;margin:0 0 22px;max-width:640px;}
+
+  /* ---------- PAPER PANEL ---------- */
+  .panel{
+    background:var(--paper);
+    color:var(--ink);
+    border-radius:5px;
+    box-shadow:var(--shadow);
+    border:1px solid var(--paper-edge);
+    overflow:hidden;
+  }
+  .panel + .panel{margin-top:16px;}
+
+  /* ---------- MONEY ---------- */
+  .money-lead{
+    background:var(--paper);color:var(--ink);
+    border-radius:5px;border:1px solid var(--paper-edge);
+    box-shadow:var(--shadow);
+    padding:22px 22px;margin-bottom:16px;
+    display:flex;gap:20px;align-items:center;flex-wrap:wrap;
+  }
+  .money-fig{
+    font-family:"Saira Condensed",sans-serif;font-weight:800;
+    font-size:clamp(2.6rem,9vw,3.6rem);line-height:.9;color:var(--ink);
+    border-right:3px solid var(--redline);padding-right:20px;
+  }
+  .money-fig small{display:block;font-size:.8rem;font-family:"IBM Plex Mono",monospace;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--redline-deep);font-weight:600;margin-top:6px;}
+  .money-lead p{margin:0;flex:1;min-width:200px;color:#33373c;font-size:.97rem;}
+
+  .ledger{padding:6px 0;}
+  .ledger-row{
+    display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+    padding:11px 22px;border-bottom:1px solid var(--line);
+  }
+  .ledger-row:last-child{border-bottom:none;}
+  .ledger-row .item{font-weight:500;}
+  .ledger-row .item small{display:block;color:var(--ink-soft);font-weight:400;font-size:.82rem;}
+  .ledger-row .amt{font-family:"IBM Plex Mono",monospace;font-weight:500;white-space:nowrap;color:#2a2d31;}
+  .ledger-row.total{background:var(--paper-dim);border-top:2px solid var(--ink);}
+  .ledger-row.total .item{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;font-size:1.15rem;letter-spacing:.02em;}
+  .ledger-row.total .amt{font-weight:600;color:var(--redline-deep);}
+  .callout{
+    margin-top:16px;padding:16px 18px;border-left:3px solid var(--amber);
+    background:var(--steel-850);border-radius:0 4px 4px 0;font-size:.92rem;color:#cfcbc1;
+  }
+  .callout b{color:var(--paper);}
+
+  /* ---------- CONTENDER CARDS ---------- */
+  .spec-card{
+    background:var(--paper);color:var(--ink);
+    border-radius:5px;border:1px solid var(--paper-edge);
+    box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden;
+  }
+  .spec-top{
+    display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+    padding:18px 20px 14px;border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,#f1eee6,var(--paper));
+  }
+  .spec-name{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;
+    font-size:1.5rem;line-height:1;letter-spacing:.01em;margin:0;}
+  .spec-name span{display:block;font-family:"IBM Plex Mono",monospace;font-weight:400;
+    text-transform:none;font-size:.74rem;letter-spacing:.02em;color:var(--ink-soft);margin-top:5px;}
+  .tag{
+    font-family:"IBM Plex Mono",monospace;font-size:.66rem;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;padding:5px 9px;border-radius:2px;white-space:nowrap;
+    border:1px solid var(--line-strong);color:var(--ink-soft);
+  }
+  .tag.step{background:var(--redline);color:#fff;border-color:var(--redline);}
+  .tag.char{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .tag.fam{background:transparent;color:var(--ink-soft);}
+
+  .spec-grid{
+    display:grid;grid-template-columns:repeat(5,1fr);
+    border-bottom:1px solid var(--line);
+  }
+  .spec-cell{padding:12px 14px;border-right:1px solid var(--line);}
+  .spec-cell:last-child{border-right:none;}
+  .spec-cell .k{font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-faint);display:block;margin-bottom:3px;}
+  .spec-cell .v{font-family:"Saira Condensed",sans-serif;font-weight:600;font-size:1.18rem;line-height:1.05;}
+  .spec-cell .v small{font-size:.66rem;font-family:"IBM Plex Mono",monospace;color:var(--ink-soft);font-weight:400;}
+
+  .rev{padding:14px 20px 6px;}
+  .rev-label{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;
+    font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px;}
+  .rev-track{position:relative;height:13px;background:var(--paper-dim);border-radius:7px;
+    border:1px solid var(--line);overflow:hidden;}
+  .rev-redzone{position:absolute;right:0;top:0;bottom:0;width:10%;
+    background:repeating-linear-gradient(135deg,rgba(216,58,41,.22) 0 4px,transparent 4px 8px);}
+  .rev-fill{position:absolute;left:0;top:0;bottom:0;border-radius:7px 0 0 7px;
+    background:linear-gradient(90deg,#9aa0a6,var(--amber) 70%,var(--redline));}
+  .rev-mark{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);}
+  .rev-mark::after{content:"";position:absolute;top:-15px;left:50%;transform:translateX(-50%);
+    font-family:"IBM Plex Mono",monospace;font-size:.56rem;letter-spacing:.06em;color:var(--ink);white-space:nowrap;}
+  .rev-foot{font-family:"IBM Plex Mono",monospace;font-size:.62rem;color:var(--ink-faint);
+    text-align:right;padding:18px 0 4px;}
+
+  .verdict{padding:6px 20px 20px;font-size:.95rem;color:#33373c;}
+  .verdict b{color:var(--ink);}
+
+  .read{
+    margin-top:6px;padding:20px 22px;border-radius:5px;
+    background:var(--steel-850);border:1px solid var(--line-steel-strong);
+    border-top:3px solid var(--redline);
+  }
+  .read .eyebrow{margin-bottom:8px;display:block;}
+  .read p{margin:0;color:#d2cec4;font-size:.97rem;}
+  .read b{color:var(--paper);}
+  .naming{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--ink-faint);
+    margin-top:14px;padding:0 2px;line-height:1.7;}
+
+  /* ---------- MARKET VALUES ---------- */
+  .mkt-intro{display:grid;gap:10px;margin-bottom:18px;}
+  .mkt-legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-family:"IBM Plex Mono",monospace;
+    font-size:.7rem;color:#b7b3a9;letter-spacing:.02em;}
+  .mkt-legend b{color:var(--paper);font-weight:600;}
+  .mkt-card{background:var(--paper);color:var(--ink);border-radius:5px;border:1px solid var(--paper-edge);
+    box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px;}
+  .mkt-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+    padding:13px 16px;background:linear-gradient(180deg,#f1eee6,var(--paper));border-bottom:1px solid var(--line);}
+  .mkt-head h4{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;
+    font-size:1.18rem;letter-spacing:.01em;margin:0;}
+  .mkt-head .newp{font-family:"IBM Plex Mono",monospace;font-size:.66rem;letter-spacing:.04em;
+    color:var(--ink-soft);white-space:nowrap;}
+  .mkt-head .newp b{color:var(--redline-deep);}
+  table.mkt{width:100%;border-collapse:collapse;}
+  table.mkt th{font-family:"IBM Plex Mono",monospace;font-size:.58rem;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-faint);text-align:left;font-weight:600;
+    padding:9px 16px;background:var(--paper-dim);border-bottom:1px solid var(--line);}
+  table.mkt th.n,table.mkt td.n{text-align:right;}
+  table.mkt td{padding:10px 16px;border-bottom:1px solid var(--line);font-size:.92rem;color:var(--ink-soft);}
+  table.mkt tr:last-child td{border-bottom:none;}
+  table.mkt td.yr{font-family:"Saira Condensed",sans-serif;font-weight:700;color:var(--ink);font-size:1.08rem;letter-spacing:.02em;}
+  table.mkt td.ask{font-family:"IBM Plex Mono",monospace;color:var(--ink);font-weight:500;}
+  table.mkt td.kbb{font-family:"IBM Plex Mono",monospace;}
+  table.mkt td.mi{font-family:"IBM Plex Mono",monospace;}
+  .mkt-quick{background:var(--paper);color:var(--ink);border-radius:5px;border:1px solid var(--paper-edge);
+    box-shadow:var(--shadow);overflow:hidden;}
+  .mkt-quick .qh{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;
+    font-size:1.02rem;letter-spacing:.03em;padding:12px 16px;border-bottom:2px solid var(--redline);}
+  .sweet{margin-top:14px;padding:16px 18px;border-left:3px solid var(--amber);background:var(--steel-850);
+    border-radius:0 4px 4px 0;font-size:.92rem;color:#cfcbc1;}
+  .sweet b{color:var(--paper);}
+
+  /* ---------- CROSS SHOP ---------- */
+  .cross{display:grid;gap:12px;}
+  .cross-item{
+    background:var(--paper);color:var(--ink);border-radius:5px;border:1px solid var(--paper-edge);
+    box-shadow:var(--shadow);padding:16px 18px;
+    display:grid;grid-template-columns:auto 1fr;gap:4px 16px;align-items:baseline;
+  }
+  .cross-item h4{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;
+    font-size:1.15rem;margin:0;letter-spacing:.01em;grid-column:1;}
+  .cross-item .beat{grid-column:2;justify-self:start;font-family:"IBM Plex Mono",monospace;
+    font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+    color:#fff;background:var(--redline);padding:3px 7px;border-radius:2px;}
+  .cross-item p{grid-column:1/-1;margin:6px 0 0;font-size:.92rem;color:#3a3e43;}
+  .cross-item p b{color:var(--ink);}
+  .cross-note{font-family:"IBM Plex Mono",monospace;font-size:.76rem;color:var(--ink-faint);
+    margin-top:12px;line-height:1.7;}
+
+  /* ---------- CANDIDATES ---------- */
+  .cand-card{background:var(--paper);color:var(--ink);border-radius:5px;border:1px solid var(--paper-edge);
+    box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px;}
+  .cand-card.blank{background:var(--steel-850);color:var(--paper);border:1px dashed var(--line-steel-strong);box-shadow:none;}
+  .cand-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+    padding:16px 18px 14px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#f1eee6,var(--paper));}
+  .cand-card.blank .cand-top{background:none;border-bottom:1px solid var(--line-steel);}
+  .cand-ey{font-family:"IBM Plex Mono",monospace;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--redline);font-weight:600;display:block;margin-bottom:5px;}
+  .cand-name{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;
+    font-size:1.4rem;line-height:1;letter-spacing:.01em;margin:0;}
+  .cand-card.blank .cand-name{color:var(--paper);}
+  .vbadge{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+    font-size:.82rem;background:var(--amber);color:#1a1d20;padding:6px 11px;border-radius:2px;white-space:nowrap;
+    box-shadow:0 2px 0 rgba(0,0,0,.18);}
+  .vbadge.todo{background:transparent;color:var(--ink-faint);border:1px dashed var(--line-steel-strong);box-shadow:none;}
+  .vbadge.pass{background:#6b7076;color:#fff;box-shadow:0 2px 0 rgba(0,0,0,.18);}
+  .cand-card.passed .cand-name{color:var(--ink-soft);}
+  .cand-card.passed .cand-col li::before{background:var(--ink-faint);}
+  .cand-offer.pass{background:#3b4046;}
+  .cand-offer.pass .ol{color:#a8adb2;}
+  .cand-facts{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line);}
+  .cand-card.blank .cand-facts{border-bottom-color:var(--line-steel);}
+  .cand-fact{padding:11px 14px;border-right:1px solid var(--line);}
+  .cand-card.blank .cand-fact{border-right-color:var(--line-steel);}
+  .cand-fact:last-child{border-right:none;}
+  .cand-fact .k{font-family:"IBM Plex Mono",monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-faint);display:block;margin-bottom:3px;}
+  .cand-card.blank .cand-fact .k{color:#8a8f96;}
+  .cand-fact .v{font-family:"Saira Condensed",sans-serif;font-weight:600;font-size:1.12rem;line-height:1.1;}
+  .cand-fact .v small{font-family:"IBM Plex Mono",monospace;font-size:.6rem;font-weight:400;color:var(--ink-soft);
+    text-decoration:line-through;margin-left:3px;}
+  .pos{padding:14px 16px;border-bottom:1px solid var(--line);background:var(--paper-dim);}
+  .pos-row{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:.64rem;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:7px;}
+  .pos-track{position:relative;height:9px;border-radius:5px;
+    background:linear-gradient(90deg,#d9a514 0%,#e8e3d6 55%,#d6cfc0 100%);border:1px solid var(--line);}
+  .pos-mark{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--ink);}
+  .pos-mark::after{content:attr(data-v);position:absolute;top:-15px;left:50%;transform:translateX(-50%);
+    font-family:"IBM Plex Mono",monospace;font-size:.58rem;color:var(--ink);white-space:nowrap;font-weight:600;}
+  .pos-foot{font-size:.86rem;color:#33373c;margin-top:14px;}
+  .pos-foot b{color:var(--ink);}
+  .cand-cols{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line);}
+  .cand-col{padding:14px 16px;}
+  .cand-col:first-child{border-right:1px solid var(--line);}
+  .cand-col h5{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;font-size:.92rem;
+    letter-spacing:.04em;margin:0 0 8px;color:var(--ink);}
+  .cand-col ul{list-style:none;margin:0;padding:0;}
+  .cand-col li{padding:4px 0 4px 15px;position:relative;font-size:.88rem;color:#3a3e43;}
+  .cand-col li::before{content:"";position:absolute;left:0;top:10px;width:5px;height:5px;border-radius:50%;background:var(--amber);}
+  .cand-col li.extra::before{background:var(--ink-faint);}
+  .cand-verify{padding:6px 16px 14px;border-bottom:1px solid var(--line);}
+  .cand-verify > .vh{font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--redline-deep);font-weight:600;margin:12px 0 8px;}
+  .cand-offer{padding:15px 18px;background:var(--ink);color:var(--paper);
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .cand-offer .ol{font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--amber);display:block;margin-bottom:3px;}
+  .cand-offer .oa{font-family:"Saira Condensed",sans-serif;font-weight:800;font-size:1.6rem;line-height:.9;
+    border-right:1px solid rgba(255,255,255,.2);padding-right:16px;}
+  .cand-offer p{margin:0;flex:1;min-width:180px;font-size:.86rem;color:#cfcbc1;}
+  .cand-offer p b{color:var(--paper);}
+  .fill{display:inline-block;min-width:54px;border-bottom:1px dashed var(--line-steel-strong);
+    color:var(--paper);outline:none;font-family:"Saira Condensed",sans-serif;font-weight:600;}
+  .fill:empty::before{content:attr(data-ph);color:#7e838a;font-weight:400;font-size:.82rem;font-family:"IBM Plex Sans",sans-serif;}
+  .fill:focus{border-bottom-color:var(--amber);}
+  .blank-hint{padding:14px 16px;font-size:.85rem;color:#a8adb2;font-family:"IBM Plex Mono",monospace;letter-spacing:.02em;}
+
+  /* ---------- WEIGH LIST ---------- */
+  .weigh{display:grid;gap:2px;}
+  .weigh-row{
+    background:var(--paper);color:var(--ink);
+    padding:15px 20px;border-left:3px solid var(--redline);
+    display:grid;grid-template-columns:1fr;gap:3px;
+  }
+  .weigh-row:first-child{border-radius:5px 5px 0 0;}
+  .weigh-row:last-child{border-radius:0 0 5px 5px;}
+  .weigh-row .wk{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;
+    font-size:1.02rem;letter-spacing:.02em;}
+  .weigh-row .wv{font-size:.92rem;color:#3a3e43;}
+  .weigh-row .wv b{color:var(--ink);}
+
+  /* ---------- CHECKLIST ---------- */
+  .check-group{margin-bottom:18px;}
+  .check-group > h4{
+    font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;
+    font-size:1.05rem;letter-spacing:.04em;color:var(--paper);
+    margin:0 0 8px;display:flex;align-items:center;gap:10px;
+  }
+  .check-group > h4::before{content:"";width:22px;height:2px;background:var(--redline);}
+  .check-list{list-style:none;margin:0;padding:0;
+    background:var(--paper);border-radius:5px;border:1px solid var(--paper-edge);box-shadow:var(--shadow);overflow:hidden;}
+  .check-list li{margin:0;border-bottom:1px solid var(--line);}
+  .check-list li:last-child{border-bottom:none;}
+  .check-list label{
+    display:flex;align-items:flex-start;gap:12px;padding:12px 18px;cursor:pointer;
+    color:var(--ink);font-size:.94rem;-webkit-tap-highlight-color:transparent;transition:background .12s;
+  }
+  .check-list label:hover{background:#f1eee6;}
+  .check-list input{
+    appearance:none;-webkit-appearance:none;margin:1px 0 0;flex:0 0 auto;
+    width:20px;height:20px;border:2px solid var(--line-strong);border-radius:3px;
+    background:#fff;cursor:pointer;position:relative;transition:.15s;
+  }
+  .check-list input:checked{background:var(--redline);border-color:var(--redline);}
+  .check-list input:checked::after{content:"";position:absolute;left:5px;top:1px;
+    width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);}
+  .check-list input:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+  .check-list input:checked + span{color:var(--ink-faint);text-decoration:line-through;}
+  .redflags{margin-top:14px;padding:14px 18px;border-radius:4px;
+    background:rgba(216,58,41,.10);border:1px solid rgba(216,58,41,.4);
+    font-size:.9rem;color:#f0d9d4;}
+  .redflags b{color:#ffb3a6;font-family:"IBM Plex Mono",monospace;font-size:.72rem;
+    letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:4px;}
+
+  /* ---------- SHOPPING ---------- */
+  .shop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .shop-col{background:var(--paper);color:var(--ink);border-radius:5px;border:1px solid var(--paper-edge);
+    box-shadow:var(--shadow);padding:16px 18px;}
+  .shop-col h4{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;
+    font-size:1.02rem;letter-spacing:.03em;margin:0 0 10px;padding-bottom:8px;border-bottom:2px solid var(--redline);}
+  .shop-col ul{margin:0;padding:0;list-style:none;}
+  .shop-col li{padding:5px 0 5px 16px;position:relative;font-size:.9rem;color:#3a3e43;}
+  .shop-col li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;
+    background:var(--amber);border-radius:50%;}
+  .shop-col li small{color:var(--ink-faint);}
+
+  /* ---------- NEXT STEPS ---------- */
+  .steps{counter-reset:step;display:grid;gap:10px;}
+  .step{
+    display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;
+    background:var(--steel-850);border:1px solid var(--line-steel-strong);border-radius:5px;
+    padding:14px 18px;
+  }
+  .step::before{
+    counter-increment:step;content:counter(step,decimal-leading-zero);
+    font-family:"Saira Condensed",sans-serif;font-weight:800;font-size:1.8rem;
+    color:var(--redline);line-height:1;min-width:40px;text-align:center;
+    border-right:1px solid var(--line-steel-strong);padding-right:14px;
+  }
+  .step p{margin:0;font-size:.95rem;color:#d2cec4;}
+  .step b{color:var(--paper);}
+
+  footer{padding:34px 20px 56px;text-align:center;}
+  footer .fnote{font-family:"IBM Plex Mono",monospace;font-size:.74rem;color:var(--ink-faint);
+    letter-spacing:.04em;max-width:520px;margin:0 auto;line-height:1.7;}
+  footer .sig{margin-top:18px;font-family:"Saira Condensed",sans-serif;font-weight:700;
+    text-transform:uppercase;letter-spacing:.3em;color:var(--steel-700);font-size:.9rem;}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:680px){
+    .spec-grid{grid-template-columns:repeat(2,1fr);}
+    .spec-cell:nth-child(2){border-right:none;}
+    .spec-cell:nth-child(n+3){border-top:1px solid var(--line);}
+    .shop-grid{grid-template-columns:1fr;}
+    .money-fig{border-right:none;border-bottom:3px solid var(--redline);padding-right:0;padding-bottom:12px;}
+    table.mkt th,table.mkt td{padding-left:11px;padding-right:11px;font-size:.82rem;}
+    table.mkt td.yr{font-size:.98rem;}
+    .mkt-head{flex-direction:column;gap:3px;}
+    .cand-facts{grid-template-columns:repeat(2,1fr);}
+    .cand-fact:nth-child(2){border-right:none;}
+    .cand-fact:nth-child(n+3){border-top:1px solid var(--line);}
+    .cand-card.blank .cand-fact:nth-child(n+3){border-top-color:var(--line-steel);}
+    .cand-cols{grid-template-columns:1fr;}
+    .cand-col:first-child{border-right:none;border-bottom:1px solid var(--line);}
+  }
+  @media (max-width:420px){
+    .spec-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important;scroll-behavior:auto!important;}
+  }
+
+  /* ---------- HUB: NAV + ROUTING ---------- */
+  .topnav{position:sticky;top:0;z-index:50;background:rgba(27,31,36,.94);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line-steel);}
+  .topnav-inner{max-width:880px;margin:0 auto;padding:11px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .wordmark{font-family:"Saira Condensed",sans-serif;font-weight:800;text-transform:uppercase;
+    letter-spacing:.14em;font-size:1.02rem;color:var(--paper);display:flex;align-items:center;gap:9px;}
+  .wordmark::before{content:"";width:11px;height:11px;background:var(--redline);border-radius:2px;transform:rotate(45deg);flex:0 0 auto;}
+  .tabs{display:flex;gap:2px;background:var(--steel-850);border:1px solid var(--line-steel-strong);border-radius:4px;padding:3px;}
+  .tab{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;
+    color:#b7b3a9;padding:7px 13px;border-radius:2px;text-decoration:none;font-weight:600;transition:.12s;white-space:nowrap;}
+  .tab:hover{color:var(--paper);}
+  .tab.active{background:var(--redline);color:#fff;}
+
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* ---------- HUB: DUAL GAUGE ---------- */
+  .gauge-row{display:flex;gap:26px;justify-content:center;align-items:flex-end;margin-bottom:4px;}
+  .gauge-unit{display:flex;flex-direction:column;align-items:center;gap:2px;}
+  .gauge-mini{width:120px;height:66px;display:block;}
+  .gauge-unit span{font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);}
+
+  /* ---------- HUB: PROJECT TILES ---------- */
+  .proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px;}
+  .proj-tile{background:var(--paper);color:var(--ink);border-radius:6px;border:1px solid var(--paper-edge);
+    box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;}
+  .pt-top{padding:16px 18px 14px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#f1eee6,var(--paper));
+    display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .pt-ey{font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--redline);font-weight:600;display:block;margin-bottom:6px;}
+  .pt-title{font-family:"Saira Condensed",sans-serif;font-weight:800;text-transform:uppercase;font-size:1.7rem;line-height:.92;margin:0;letter-spacing:.01em;}
+  .pt-phase{font-family:"IBM Plex Mono",monospace;font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;
+    font-weight:600;color:#fff;background:var(--amber);color:#1a1d20;padding:4px 8px;border-radius:2px;white-space:nowrap;}
+  .pt-stats{display:grid;grid-template-columns:1fr 1fr;}
+  .pt-stat{padding:12px 16px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .pt-stat:nth-child(2n){border-right:none;}
+  .pt-stat .k{font-family:"IBM Plex Mono",monospace;font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);display:block;margin-bottom:3px;}
+  .pt-stat .v{font-family:"Saira Condensed",sans-serif;font-weight:600;font-size:1.12rem;line-height:1.05;color:var(--ink);}
+  .pt-stat .v small{font-family:"IBM Plex Mono",monospace;font-size:.62rem;color:var(--ink-soft);font-weight:400;}
+  .pt-open{margin-top:auto;display:flex;align-items:center;justify-content:space-between;
+    padding:13px 18px;background:var(--ink);color:var(--paper);text-decoration:none;
+    font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:.95rem;transition:.12s;}
+  .pt-open:hover{background:#000;}
+  .pt-open .arr{color:var(--redline);font-size:1.2rem;line-height:1;}
+
+  /* ---------- HUB: COMBINED + QUEUE ---------- */
+  .dash-h{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;
+    font-size:1.1rem;color:var(--paper);margin:0 0 12px;display:flex;align-items:center;gap:10px;}
+  .dash-h::before{content:"";width:22px;height:2px;background:var(--redline);}
+  .queue-tag{font-family:"IBM Plex Mono",monospace;font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;
+    font-weight:600;padding:2px 6px;border-radius:2px;margin-right:9px;vertical-align:middle;}
+  .queue-tag.moto{background:var(--redline);color:#fff;}
+  .queue-tag.car{background:var(--ink);color:var(--paper);}
+
+  /* ---------- SCAFFOLD STUBS ---------- */
+  .stub{background:var(--steel-850);border:1px dashed var(--line-steel-strong);border-radius:5px;padding:18px 20px;
+    color:#969ba1;font-family:"IBM Plex Mono",monospace;font-size:.82rem;letter-spacing:.01em;line-height:1.75;}
+  .stub b{color:var(--paper);font-weight:600;}
+  .stub .tag2{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:.58rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--redline);border:1px solid rgba(216,58,41,.4);padding:2px 7px;border-radius:2px;margin-bottom:10px;}
+  .port-note{margin-top:16px;padding:14px 16px;border-left:3px solid var(--amber);background:var(--steel-850);
+    border-radius:0 4px 4px 0;font-size:.9rem;color:#cfcbc1;}
+  .port-note b{color:var(--paper);}
+
+  @media (max-width:600px){
+    .proj-grid{grid-template-columns:1fr;}
+    .topnav-inner{padding:10px 14px;}
+    .tab{padding:7px 10px;font-size:.66rem;}
+    .wordmark{font-size:.9rem;letter-spacing:.1em;}
+    .gauge-row{gap:16px;}
+  }
+  section.view{padding:0;border-bottom:none;}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <span class="wordmark">Garage</span>
+    <div class="tabs">
+      <a id="tab-garage" class="tab active" href="#garage">Hub</a>
+      <a id="tab-moto" class="tab" href="#moto">Moto</a>
+      <a id="tab-car" class="tab" href="#car">Car</a>
+    </div>
+  </div>
+</nav>
+
+<!-- =================== HUB =================== -->
+<section id="view-garage" class="view active">
+  <div class="wrap">
+    <header class="hero" style="padding-top:38px;">
+      <div class="gauge-row">
+        <div class="gauge-unit">
+          <svg class="gauge-mini" viewBox="0 0 320 170" aria-hidden="true">
+            <path d="M30 150 A130 130 0 0 1 290 150" fill="none" stroke="#3a4149" stroke-width="16" stroke-linecap="round"/>
+            <path d="M251.9 58.1 A130 130 0 0 1 290 150" fill="none" stroke="#d83a29" stroke-width="16" stroke-linecap="round"/>
+            <line x1="160" y1="150" x2="205" y2="55" stroke="#ece9e0" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="160" cy="150" r="9" fill="#d83a29"/>
+          </svg>
+          <span>Moto</span>
+        </div>
+        <div class="gauge-unit">
+          <svg class="gauge-mini" viewBox="0 0 320 170" aria-hidden="true">
+            <path d="M30 150 A130 130 0 0 1 290 150" fill="none" stroke="#3a4149" stroke-width="16" stroke-linecap="round"/>
+            <path d="M251.9 58.1 A130 130 0 0 1 290 150" fill="none" stroke="#d83a29" stroke-width="16" stroke-linecap="round"/>
+            <line x1="160" y1="150" x2="150" y2="52" stroke="#ece9e0" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="160" cy="150" r="9" fill="#d83a29"/>
+          </svg>
+          <span>Car</span>
+        </div>
+      </div>
+      <div class="gauge-cap">Two Builds &middot; One Bench</div>
+      <h1>The <span class="rev">Garage</span></h1>
+      <p class="hero-sub">Command center for both projects &mdash; budgets, candidates, and the next moves, side by side.</p>
+    </header>
+
+    <section>
+      <div class="sec-head"><span class="sec-num">&#9670;</span><h2>Projects</h2></div>
+      <div class="proj-grid">
+
+        <div class="proj-tile">
+          <div class="pt-top">
+            <div><span class="pt-ey">Project 01 &middot; Two Wheels</span><h3 class="pt-title">Moto<br>Build</h3></div>
+            <span class="pt-phase">Comparing</span>
+          </div>
+          <div class="pt-stats">
+            <div class="pt-stat"><span class="k">Budget</span><span class="v">$5,000 <small>cash</small></span></div>
+            <div class="pt-stat"><span class="k">Candidates</span><span class="v">3 <small>(1 passed)</small></span></div>
+            <div class="pt-stat"><span class="k">Front-runner</span><span class="v">CB500F <small>$3.9k</small></span></div>
+            <div class="pt-stat"><span class="k">Also live</span><span class="v">Triumph &middot; Ducati</span></div>
+          </div>
+          <a class="pt-open" href="#moto">Open Moto <span class="arr">&rarr;</span></a>
+        </div>
+
+        <div class="proj-tile">
+          <div class="pt-top">
+            <div><span class="pt-ey">Project 02 &middot; Four Wheels</span><h3 class="pt-title">Car<br>Build</h3></div>
+            <span class="pt-phase">Scouting</span>
+          </div>
+          <div class="pt-stats">
+            <div class="pt-stat"><span class="k">Budget</span><span class="v">$10,000 <small>program</small></span></div>
+            <div class="pt-stat"><span class="k">Candidates</span><span class="v">0 <small>logged</small></span></div>
+            <div class="pt-stat"><span class="k">Front-runner</span><span class="v">&mdash; <small>TBD</small></span></div>
+            <div class="pt-stat"><span class="k">Shortlist</span><span class="v">Miata &middot; E46 &middot; Z</span></div>
+          </div>
+          <a class="pt-open" href="#car">Open Car <span class="arr">&rarr;</span></a>
+        </div>
+
+      </div>
+
+      <h4 class="dash-h">Combined Program</h4>
+      <div class="panel" style="margin-bottom:24px;">
+        <div class="ledger">
+          <div class="ledger-row"><span class="item">Moto build <small>bike only, cash</small></span><span class="amt">$5,000</span></div>
+          <div class="ledger-row"><span class="item">Car build <small>program: car + fixes + mods</small></span><span class="amt">$10,000</span></div>
+          <div class="ledger-row total"><span class="item">Garage Total</span><span class="amt">$15,000</span></div>
+        </div>
+      </div>
+
+      <h4 class="dash-h">Decision Queue</h4>
+      <ul class="check-list">
+        <li><label><input type="checkbox"><span><span class="queue-tag moto">Moto</span>Message Ducati seller &mdash; when were the timing belts last done?</span></label></li>
+        <li><label><input type="checkbox"><span><span class="queue-tag moto">Moto</span>Confirm CB500F service history + book the test ride</span></label></li>
+        <li><label><input type="checkbox"><span><span class="queue-tag moto">Moto</span>Get insurance quotes: CB500F vs Triumph Speed 400</span></label></li>
+        <li><label><input type="checkbox"><span><span class="queue-tag car">Car</span>Pick the project goal (track / drift / stance / daily+)</span></label></li>
+        <li><label><input type="checkbox"><span><span class="queue-tag car">Car</span>Shortlist 1&ndash;2 platforms + learn their weak points</span></label></li>
+        <li><label><input type="checkbox"><span><span class="queue-tag car">Car</span>Set the car-vs-build budget split</span></label></li>
+      </ul>
+    </section>
+  </div>
+</section>
+
+<!-- =================== MOTO =================== -->
+<section id="view-moto" class="view">
+<header class="hero">
+  <svg class="gauge" viewBox="0 0 320 170" role="img" aria-label="Tachometer">
+    <path d="M30 150 A130 130 0 0 1 290 150" fill="none" stroke="#3a4149" stroke-width="14" stroke-linecap="round"/>
+    <path d="M30 150 A130 130 0 0 1 251.9 58.1" fill="none" stroke="#8b9097" stroke-width="14" stroke-linecap="round"/>
+    <path d="M251.9 58.1 A130 130 0 0 1 290 150" fill="none" stroke="#d83a29" stroke-width="14" stroke-linecap="round"/>
+    <line x1="160" y1="150" x2="201" y2="49" stroke="#ece9e0" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="160" cy="150" r="8" fill="#d83a29"/>
+    <circle cx="160" cy="150" r="3" fill="#1b1f24"/>
+  </svg>
+  <div class="gauge-cap">Returning Rider · Build Sheet</div>
+  <h1>Motorcycle<br>Buying <span class="rev">Plan</span></h1>
+  <p class="hero-sub">You've done this before. This is the shortlist, the money, and the checks — built for a rider stepping back on, not starting out.</p>
+  <div class="chips">
+    <span class="chip hot"><b>$5K cash</b> · bike only</span>
+    <span class="chip"><b>M</b> endorsement</span>
+    <span class="chip">ex-<b>CB300F</b> + Kymco Spade</span>
+    <span class="chip">under <b>600cc</b>, light</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- MONEY -->
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><h2>The Money</h2></div>
+    <div class="money-lead">
+      <div class="money-fig">$5,000<small>cash · bike only</small></div>
+      <p>Comfortable for any bike on this list, used — and it puts cleaner, lower-mile examples in reach. Cash is leverage on a private sale, so lead with it.</p>
+    </div>
+    <p class="sec-note">Gear, service, and security are a separate spend you plan on top:</p>
+    <div class="panel">
+      <div class="ledger">
+        <div class="ledger-row"><span class="item">Helmet <small>DOT / ECE, entry–mid</small></span><span class="amt">$150–400</span></div>
+        <div class="ledger-row"><span class="item">Riding pants <small>armored or Kevlar-lined</small></span><span class="amt">$150–300</span></div>
+        <div class="ledger-row"><span class="item">Boots / riding shoes</span><span class="amt">$100–250</span></div>
+        <div class="ledger-row"><span class="item">First service <small>oil + chain (less if DIY)</small></span><span class="amt">$100–250</span></div>
+        <div class="ledger-row"><span class="item">Cover</span><span class="amt">$30–60</span></div>
+        <div class="ledger-row"><span class="item">Disc lock / chain lock</span><span class="amt">$40–150</span></div>
+        <div class="ledger-row total"><span class="item">Gear + Setup</span><span class="amt">~$600–1,400</span></div>
+      </div>
+    </div>
+    <div class="callout">Also budget separately: <b>title / registration / tax</b> and <b>insurance</b> (varies a lot by state and age — quote it before you buy). Plus gloves and a jacket if you don't already have them.</div>
+  </section>
+
+  <!-- CONTENDERS -->
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><h2>The Contenders</h2></div>
+    <p class="sec-note">All under 600cc and A2-legal. Since you've already lived with the CB300F, the real question is <b style="color:#e6e2d8">familiar vs. step up</b>. The bar marks where your old 300F sits (~30 hp) — watch which bikes actually move past it.</p>
+
+    <!-- CB300R -->
+    <article class="spec-card">
+      <div class="spec-top">
+        <h2 class="spec-name">Honda CB300R<span>286cc single · naked · standard ABS</span></h2>
+        <span class="tag fam">Familiar</span>
+      </div>
+      <div class="spec-grid">
+        <div class="spec-cell"><span class="k">Engine</span><span class="v">286<small>cc</small></span></div>
+        <div class="spec-cell"><span class="k">Power</span><span class="v">~31<small>hp</small></span></div>
+        <div class="spec-cell"><span class="k">Weight</span><span class="v">~318<small>lb</small></span></div>
+        <div class="spec-cell"><span class="k">Seat</span><span class="v">31.6<small>in</small></span></div>
+        <div class="spec-cell"><span class="k">Used</span><span class="v">$3–4.5<small>k</small></span></div>
+      </div>
+      <div class="rev">
+        <div class="rev-label"><span>Output</span><span>redline →</span></div>
+        <div class="rev-track">
+          <div class="rev-redzone"></div>
+          <div class="rev-fill" style="width:62%"></div>
+          <div class="rev-mark" style="left:60%"></div>
+        </div>
+      </div>
+      <p class="verdict">Essentially the modern version of the CB300F you already owned — same single, ~30 lb lighter, restyled, with ABS and a slip/assist clutch. You'd know exactly what you're getting. <b>Cheap, light, reliable, familiar — but a sidestep, not an upgrade.</b> You may want more after a season.</p>
+    </article>
+
+    <!-- CB500 -->
+    <article class="spec-card">
+      <div class="spec-top">
+        <h2 class="spec-name">Honda CB500F / CBR500R<span>471cc twin · naked or faired</span></h2>
+        <span class="tag step">Step Up</span>
+      </div>
+      <div class="spec-grid">
+        <div class="spec-cell"><span class="k">Engine</span><span class="v">471<small>cc</small></span></div>
+        <div class="spec-cell"><span class="k">Power</span><span class="v">~47<small>hp</small></span></div>
+        <div class="spec-cell"><span class="k">Weight</span><span class="v">~416<small>lb</small></span></div>
+        <div class="spec-cell"><span class="k">Seat</span><span class="v">~31<small>in</small></span></div>
+        <div class="spec-cell"><span class="k">Used</span><span class="v">$4.5–6<small>k</small></span></div>
+      </div>
+      <div class="rev">
+        <div class="rev-label"><span>Output</span><span>redline →</span></div>
+        <div class="rev-track">
+          <div class="rev-redzone"></div>
+          <div class="rev-fill" style="width:94%"></div>
+          <div class="rev-mark" style="left:60%"></div>
+        </div>
+      </div>
+      <p class="verdict">The natural step up from your 300F: same easygoing Honda manners, but the twin adds real midrange and highway legs you'll feel immediately. ~100 lb heavier — clearly within your range. <b>The faired CBR500R adds wind protection (slight lean); the naked CB500F stays upright. Same engine, your call on ergonomics.</b></p>
+    </article>
+
+    <div class="read">
+      <span class="eyebrow">My Read</span>
+      <p>Since you've owned the CB300F, a CB300R is the safe-but-uninspiring choice — you'd likely want more before long. The <b>CB500 twin</b> is the genuine upgrade: same Honda ease, meaningfully more bike, and it's the sensible move over re-buying what you already had. For something with more style and character, that's where the candidates below come in.</p>
+    </div>
+    <p class="naming">// NAMING — Honda's "F" bikes (CB300R, CB500F) are naked/upright. The "R"/CBR bikes (CBR300R, CBR500R) are faired sportbikes with a slight lean. Same engines, different ergonomics + weather protection.</p>
+  </section>
+
+  <!-- MARKET VALUES -->
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><h2>Market Values</h2></div>
+    <div class="mkt-intro">
+      <p class="sec-note" style="margin-bottom:0">Popular years, what they actually go for, and the mileage you'll typically see. Use the KBB trade-in figure as your negotiating floor — private sellers ask well above it.</p>
+      <div class="mkt-legend">
+        <span><b>Ask</b> = current dealer + private listings</span>
+        <span><b>KBB Trade-In</b> = dealer floor, good condition</span>
+        <span><b>Miles</b> = typical for age</span>
+      </div>
+    </div>
+
+    <div class="mkt-card">
+      <div class="mkt-head"><h4>Honda CB300R</h4><span class="newp">new <b>~$4,499</b> (2026)</span></div>
+      <table class="mkt">
+        <thead><tr><th>Year</th><th class="n">Typical Ask</th><th class="n">KBB Trade-In</th><th class="n">Typical Miles</th></tr></thead>
+        <tbody>
+          <tr><td class="yr">2019</td><td class="ask n">$3.2–4.0k</td><td class="kbb n">~$2.5–2.9k</td><td class="mi n">5–12k</td></tr>
+          <tr><td class="yr">2021</td><td class="ask n">$3.8–4.5k</td><td class="kbb n">~$2.9–3.4k</td><td class="mi n">3–8k</td></tr>
+          <tr><td class="yr">2023</td><td class="ask n">$4.2–4.9k</td><td class="kbb n">~$3.4–3.9k</td><td class="mi n">1–5k</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mkt-card">
+      <div class="mkt-head"><h4>Honda CB500F / CBR500R</h4><span class="newp">new <b>~$6,800</b></span></div>
+      <table class="mkt">
+        <thead><tr><th>Year</th><th class="n">Typical Ask</th><th class="n">KBB Trade-In</th><th class="n">Typical Miles</th></tr></thead>
+        <tbody>
+          <tr><td class="yr">'16–'18</td><td class="ask n">$4.0–5.0k</td><td class="kbb n">~$3.0–3.8k</td><td class="mi n">6–16k</td></tr>
+          <tr><td class="yr">'19–'21</td><td class="ask n">$4.8–5.8k</td><td class="kbb n">~$3.8–4.6k</td><td class="mi n">4–10k</td></tr>
+          <tr><td class="yr">'22–'23</td><td class="ask n">$5.5–6.5k</td><td class="kbb n">~$4.5–5.3k</td><td class="mi n">1.5–6k</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mkt-quick">
+      <div class="qh">Cross-Shop — Typical Used (all years)</div>
+      <table class="mkt">
+        <thead><tr><th>Model</th><th class="n">Typical Ask</th><th class="n">KBB Trade-In</th><th class="n">Typical Miles</th></tr></thead>
+        <tbody>
+          <tr><td class="yr" style="font-size:.98rem">Ninja 400 / Z400</td><td class="ask n">$4.0–5.9k</td><td class="kbb n">~$3.1–5.0k</td><td class="mi n">1–12k</td></tr>
+          <tr><td class="yr" style="font-size:.98rem">Yamaha MT-03 / R3</td><td class="ask n">$3.5–5.0k</td><td class="kbb n">~$2.6–4.1k</td><td class="mi n">2–12k</td></tr>
+          <tr><td class="yr" style="font-size:.98rem">KTM 390 Duke</td><td class="ask n">$3.5–5.0k</td><td class="kbb n">~$2.6–4.0k</td><td class="mi n">2–12k</td></tr>
+          <tr><td class="yr" style="font-size:.98rem">Triumph Scrambler 400 X</td><td class="ask n">$4.5–5.5k</td><td class="kbb n">~$3.9–4.6k</td><td class="mi n">&lt;5k</td></tr>
+          <tr><td class="yr" style="font-size:.98rem">Honda SCL500 <span style="font-family:'IBM Plex Mono',monospace;font-size:.54rem;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--redline);padding:2px 5px;border-radius:2px;vertical-align:middle;">over $5k</span></td><td class="ask n">$5.0–6.0k</td><td class="kbb n">~$4.0–5.0k</td><td class="mi n">1–8k</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sweet">At <b>$5k cash</b>, your sweet spot is a <b>2–4 year-old</b> example of any of these in the 3,000–8,000-mile range — new enough to skip valve-check worries, cheap enough to leave room for gear. The CB300R is the only one where $5k could land you a near-new or leftover bike outright.</div>
+    <p class="cross-note">// Values reflect mid-2026 U.S. listings (Autotrader / CycleTrader) and KBB motorcycle trade-in data. Many of these bikes are lightly ridden — low-mile examples are common and worth holding out for.</p>
+  </section>
+
+  <!-- CANDIDATES -->
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><h2>Candidate Log</h2></div>
+    <p class="sec-note">Bikes you're actually looking at, scored against the benchmarks above. Tap the blank fields to fill in the next ones.</p>
+
+    <!-- CANDIDATE 01 -->
+    <article class="cand-card">
+      <div class="cand-top">
+        <div><span class="cand-ey">Candidate 01 · Facebook Marketplace</span><h3 class="cand-name">2015 Honda CB500F</h3></div>
+        <span class="vbadge">Strong buy</span>
+      </div>
+      <div class="cand-facts">
+        <div class="cand-fact"><span class="k">Price</span><span class="v">$3,900 <small>$4,500</small></span></div>
+        <div class="cand-fact"><span class="k">Miles</span><span class="v">7,500</span></div>
+        <div class="cand-fact"><span class="k">Condition</span><span class="v">Used–Good</span></div>
+        <div class="cand-fact"><span class="k">Title</span><span class="v">Clean ✓</span></div>
+      </div>
+      <div class="pos">
+        <div class="pos-row"><span>CB500F benchmark ask</span><span>$4.0k ←→ $5.0k</span></div>
+        <div class="pos-track"><div class="pos-mark" data-v="$3.9k" style="left:2%"></div></div>
+        <div class="pos-foot">Sits <b>below the benchmark floor</b> — and 7,500 miles on a 2015 is exceptionally low (~750/yr). KBB trade-in floor ~$3.0–3.8k. <b>Great value; the catch is age, not wear.</b></div>
+      </div>
+      <div class="cand-cols">
+        <div class="cand-col">
+          <h5>Stock &amp; History</h5>
+          <ul>
+            <li>Fully stock — no surprises</li>
+            <li>Never dropped or wrecked</li>
+            <li>2 keys included</li>
+            <li>Tires in good shape</li>
+            <li class="extra">No trades (you're cash anyway)</li>
+          </ul>
+        </div>
+        <div class="cand-col">
+          <h5>Why it fits</h5>
+          <ul>
+            <li>The "Step Up" twin — your real upgrade</li>
+            <li>~47 hp, highway-capable</li>
+            <li>Cheapest of any pick to own</li>
+            <li>Bulletproof Honda reliability</li>
+            <li>Clean title in hand</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cand-verify">
+        <div class="vh">// Confirm before buying — age, not miles, is the watch-item</div>
+        <ul class="check-list">
+          <li><label><input type="checkbox"><span>Valve-clearance check — likely due by time on a 2015; ask if ever done</span></label></li>
+          <li><label><input type="checkbox"><span>Tire date codes — 10-yr-old bike may wear original, hardened rubber</span></label></li>
+          <li><label><input type="checkbox"><span>Fluids age out: coolant + brake fluid freshness, fork seals dry</span></label></li>
+          <li><label><input type="checkbox"><span>Battery age / strong cold crank; chain + sprockets</span></label></li>
+          <li><label><input type="checkbox"><span>Cold start clean, no smoke/rattle; VIN matches title; 2 keys present</span></label></li>
+        </ul>
+      </div>
+      <div class="cand-offer">
+        <div><span class="ol">Target offer</span><span class="oa">$3,500–3,700</span></div>
+        <p>Already dropped $600. Low miles justify near-ask, but it's a decade old — use the likely <b>tire + fluid refresh</b> as leverage. A clean cash offer around <b>$3,600</b> is fair, and still leaves room for that refresh under $5k.</p>
+      </div>
+    </article>
+
+    <!-- CANDIDATE 02 -->
+    <article class="cand-card">
+      <div class="cand-top">
+        <div><span class="cand-ey">Candidate 02 · Dealer (Marketplace)</span><h3 class="cand-name">2025 Triumph Speed 400</h3></div>
+        <span class="vbadge">Strong buy*</span>
+      </div>
+      <div class="cand-facts">
+        <div class="cand-fact"><span class="k">Price</span><span class="v">$4,899</span></div>
+        <div class="cand-fact"><span class="k">Miles</span><span class="v">New?</span></div>
+        <div class="cand-fact"><span class="k">Listed</span><span class="v">28 days</span></div>
+        <div class="cand-fact"><span class="k">Location</span><span class="v">Concord, NC</span></div>
+      </div>
+      <div class="pos">
+        <div class="pos-row"><span>new bike · under sticker</span><span>MSRP ~$5,195</span></div>
+        <div class="pos-track"><div class="pos-mark" data-v="$4,899" style="left:6%"></div></div>
+        <div class="pos-foot"><b>*Watch the out-the-door price.</b> This is a dealer — freight, doc fee, and tax can stack on top, possibly pushing it to <b>~$5.5–6k OTD</b>, over your cash budget. Unlike the private listings, the sticker may not be the real number. Confirm OTD first.</div>
+      </div>
+      <div class="cand-cols">
+        <div class="cand-col">
+          <h5>Spec &amp; Status</h5>
+          <ul>
+            <li>398cc single · ~40 hp</li>
+            <li>375 lb · 31.1" seat (lowest pick)</li>
+            <li>ABS + traction control</li>
+            <li>Ride-by-wire, slip clutch</li>
+            <li>Near-new + Triumph warranty*</li>
+          </ul>
+        </div>
+        <div class="cand-col">
+          <h5>Why it fits</h5>
+          <ul>
+            <li>Newest pick — basically zero wear</li>
+            <li>Modern-retro style, premium finish</li>
+            <li>Lowest, friendliest seat height</li>
+            <li>Long service intervals, low upkeep</li>
+            <li>Modern-classic style, but brand new</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cand-verify">
+        <div class="vh">// Confirm before buying — the price is the catch, not the bike</div>
+        <ul class="check-list">
+          <li><label><input type="checkbox"><span>Out-the-door price — is $4,899 all-in, or plus freight + doc + tax?</span></label></li>
+          <li><label><input type="checkbox"><span>New, demo, or used? Get mileage + confirm full warranty applies/starts</span></label></li>
+          <li><label><input type="checkbox"><span>Test the low-rpm fueling — some report a slightly snatchy throttle down low</span></label></li>
+          <li><label><input type="checkbox"><span>Confirm it's the Speed 400 single (listing says "Speed Four")</span></label></li>
+          <li><label><input type="checkbox"><span>Sit on it — 31.1" is the easiest of your picks, but still check</span></label></li>
+        </ul>
+      </div>
+      <div class="cand-offer">
+        <div><span class="ol">Play</span><span class="oa">OTD ≤ $5k</span></div>
+        <p>Less haggle room than private, but it's a leftover 2025 sitting 28 days. Push to get it <b>out-the-door at/under $5k</b> — or have them eat freight and throw in the first service. A new, warrantied bike for used money is the upside, <b>if the OTD number holds.</b></p>
+      </div>
+    </article>
+
+    <!-- CANDIDATE 03 (PASSED) -->
+    <article class="cand-card passed">
+      <div class="cand-top">
+        <div><span class="cand-ey">Candidate 03 · Facebook Marketplace</span><h3 class="cand-name">2023 Royal Enfield Scram 411</h3></div>
+        <span class="vbadge pass">Passed</span>
+      </div>
+      <div class="cand-facts">
+        <div class="cand-fact"><span class="k">Price</span><span class="v">$2,900 <small>$3,200</small></span></div>
+        <div class="cand-fact"><span class="k">Miles</span><span class="v">9,801</span></div>
+        <div class="cand-fact"><span class="k">Power</span><span class="v">~24 hp</span></div>
+        <div class="cand-fact"><span class="k">Weight</span><span class="v">~408 lb</span></div>
+      </div>
+      <div class="pos">
+        <div class="pos-row"><span>used Scram 411 market</span><span>$3.5k ←→ $4.5k</span></div>
+        <div class="pos-track"><div class="pos-mark" data-v="$2.9k" style="left:2%"></div></div>
+        <div class="pos-foot"><b>Great price — ~$600–1,600 under market.</b> Clean, well-kept, motivated seller. The problem isn't value; it's fit.</div>
+      </div>
+      <div class="cand-cols">
+        <div class="cand-col">
+          <h5>The Listing (Strong)</h5>
+          <ul>
+            <li>Clean title in hand</li>
+            <li>9k service done: valve adj, plug, oil</li>
+            <li>Full maintenance records</li>
+            <li>Fresh Shinko 705 tires, GIVI guards</li>
+            <li>Garage kept, cosmetic scuffs only</li>
+          </ul>
+        </div>
+        <div class="cand-col">
+          <h5>Why We Passed</h5>
+          <ul>
+            <li>~24 hp / 408 lb — slower <em>and</em> heavier than your old CB300F</li>
+            <li>Undershoots the "step up" brief</li>
+            <li>CB500F makes ~2× the power for ~$1k more</li>
+            <li>Buzzy/strained above ~65 mph</li>
+            <li>Tell: seller's son moved <em>up</em> to a Bear 650</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cand-offer pass">
+        <div><span class="ol">Verdict</span><span class="oa">Pass</span></div>
+        <p>Good price, wrong brief. Only reconsider if your priority shifts from <b>step-up performance</b> to a <b>light, cheap, dirt-curious knockaround</b> — for that, it's a well-priced, bulletproof little bike.</p>
+      </div>
+    </article>
+
+    <!-- BLANK 04 -->
+    <article class="cand-card blank">
+      <div class="cand-top">
+        <div><span class="cand-ey">Candidate 04</span><h3 class="cand-name"><span class="fill" contenteditable="true" data-ph="year / make / model"></span></h3></div>
+        <span class="vbadge todo">TBD</span>
+      </div>
+      <div class="cand-facts">
+        <div class="cand-fact"><span class="k">Price</span><span class="v"><span class="fill" contenteditable="true" data-ph="$"></span></span></div>
+        <div class="cand-fact"><span class="k">Miles</span><span class="v"><span class="fill" contenteditable="true" data-ph="—"></span></span></div>
+        <div class="cand-fact"><span class="k">Listed</span><span class="v"><span class="fill" contenteditable="true" data-ph="—"></span></span></div>
+        <div class="cand-fact"><span class="k">Location</span><span class="v"><span class="fill" contenteditable="true" data-ph="—"></span></span></div>
+      </div>
+      <div class="blank-hint">// Check it against the Market Values table, then note mods, condition, and your target offer.</div>
+    </article>
+  </section>
+
+  <!-- CROSS SHOP -->
+  <section>
+    <div class="sec-head"><span class="sec-num">05</span><h2>Cross-Shop</h2></div>
+    <p class="sec-note">Mostly A2-legal, under 600cc, and in reach at $5k cash used — with one over-budget exception, flagged below. Worth a test ride against your shortlist.</p>
+    <div class="cross">
+      <div class="cross-item">
+        <h4>Kawasaki Ninja 400 / Z400</h4><span class="beat">One to beat</span>
+        <p>The value benchmark. 399cc twin, ~48 hp, light (~365 lb), bulletproof, cheaper to run than the KTM. Z400 naked, Ninja 400 faired. <b>Strong step up from your 300F.</b></p>
+      </div>
+      <div class="cross-item">
+        <h4>Yamaha MT-03 / R3</h4>
+        <p>321cc twin, ~42 hp, smooth and comfy, the <b>cheapest of the bunch to own</b> thanks to Yamaha's parts network. A touch less punch than the Z400, but easy living.</p>
+      </div>
+      <div class="cross-item">
+        <h4>KTM 390 Duke</h4>
+        <p>Sharp, aggressive naked single (~400cc, ~45 hp), very light, with proper electronics — ride modes, traction control. The catch: <b>pricier KTM upkeep and a touchier throttle</b> than the Hondas. The choice if you want the most aggressive small single.</p>
+      </div>
+      <div class="cross-item">
+        <h4>Aprilia RS457</h4>
+        <p>Newer (2024+) 457cc twin, ~47 hp, premium feel. Sportier and pricier — clean used ones may run near or over $5k. <b>Stretch pick</b> if you want something fresh and fast.</p>
+      </div>
+      <div class="cross-item">
+        <h4>Triumph Scrambler 400 X</h4>
+        <p>The scrambler sibling of your Speed 400 candidate — same 398cc single, ~40 hp, but upright with wider bars, handguards, a 19" front wheel, traction control, and switchable ABS for light gravel. Taller seat (~32.9") and ~20 lb heavier than the Speed 400. ~$5,595 new; used ones are scarce and near-new. <b>Pick it over the Speed 400 if you want versatility over café styling.</b></p>
+      </div>
+      <div class="cross-item">
+        <h4>Honda CB500X</h4>
+        <p>The upright, adventure-styled 500 twin. Same engine, comfier ergonomics, bigger tank — <b>better for commuting and longer rides</b> if comfort beats sport for you.</p>
+      </div>
+      <div class="cross-item">
+        <h4>Honda SCL500</h4><span class="beat" style="background:var(--redline)">Over $5k used</span>
+        <p>Your CB500F's 471cc twin in scrambler clothing — same ~46 hp, same Honda reliability, upright do-it-all ergonomics (19" front wheel). The catch: it only launched in 2023, so used runs <b>~$5–6k, over your cash budget</b>. Mechanically it's the CB500F you can already get for ~$3,900 — you'd be paying a premium for the scrambler look and newness.</p>
+      </div>
+    </div>
+    <p class="cross-note">// The Ninja 400 / Z400 is the strongest all-round alternative to the Hondas — cheaper to run than the KTM, and a real step up from your 300F.</p>
+  </section>
+
+  <!-- THINGS TO WEIGH -->
+  <section>
+    <div class="sec-head"><span class="sec-num">06</span><h2>Before You Commit</h2></div>
+    <div class="weigh">
+      <div class="weigh-row"><span class="wk">Rust-busting first</span><span class="wv">If it's been a while, do a parking-lot refresh (or an MSF Returning Rider course) before highway miles. Your hands remember more than your reflexes — give them a session to catch up.</span></div>
+      <div class="weigh-row"><span class="wk">Singles vs. twins</span><span class="wv">Your 300F was a single. The CB500 / Ninja 400 / MT-03 are <b>twins</b> — smoother, more top-end, happier on the highway. The Triumph 400 / 390 Duke are <b>punchier singles</b> with more character and vibration. Ride both types back to back — it's the biggest difference in feel.</span></div>
+      <div class="weigh-row"><span class="wk">Ownership cost</span><span class="wv">Honda / Yamaha / Kawasaki = cheap parts, long intervals, easy DIY, strong resale. KTM = pricier service and parts, faster depreciation. Factor the <b>real</b> cost, not just the sticker.</span></div>
+      <div class="weigh-row"><span class="wk">Prioritize ABS</span><span class="wv">The CB300R, CB500s, and Triumph 400 have it standard — just confirm it's present on any KTM or Aprilia you look at.</span></div>
+      <div class="weigh-row"><span class="wk">Theft</span><span class="wv">Light naked/sport bikes are common targets — your cover + lock instincts are right. Add a ground anchor if you park outside, a hidden tracker, and <b>comprehensive insurance</b> so theft is actually covered.</span></div>
+      <div class="weigh-row"><span class="wk">Tire age</span><span class="wv">Cheap used bikes often wear old, hard rubber. Check the 4-digit date code on the sidewall — anything 5+ years old should be replaced regardless of tread.</span></div>
+      <div class="weigh-row"><span class="wk">Season timing</span><span class="wv">It's peak riding season, so prices are at their highest. If you're not rushing, <b>late fall / winter</b> is when sellers get motivated.</span></div>
+      <div class="weigh-row"><span class="wk">Seat-height fit</span><span class="wv">You know your comfort range from the 300F. Most of these sit around 31", and the Triumph 400 is the lowest at 31.1" — but always flat-foot a bike before you commit.</span></div>
+    </div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section>
+    <div class="sec-head"><span class="sec-num">07</span><h2>Inspection Checklist</h2></div>
+    <p class="sec-note">Buying used is the right call — run this yourself, or get a pre-purchase inspection, before money moves. Tap to check off as you go.</p>
+
+    <div class="check-group">
+      <h4>Paperwork</h4>
+      <ul class="check-list">
+        <li><label><input type="checkbox"><span>Title in seller's name; VIN matches the frame</span></label></li>
+        <li><label><input type="checkbox"><span>Run the VIN for theft / salvage / liens</span></label></li>
+        <li><label><input type="checkbox"><span>Service records — especially valve checks</span></label></li>
+      </ul>
+    </div>
+
+    <div class="check-group">
+      <h4>Cold start <small style="font-weight:400;color:#b7b3a9;font-family:'IBM Plex Mono';font-size:.7rem;letter-spacing:.04em;">— insist the bike is cold on arrival</small></h4>
+      <ul class="check-list">
+        <li><label><input type="checkbox"><span>Starts easily — no excessive smoke, no rattles or knocks</span></label></li>
+        <li><label><input type="checkbox"><span>Idles steadily once warm</span></label></li>
+      </ul>
+    </div>
+
+    <div class="check-group">
+      <h4>Mechanical</h4>
+      <ul class="check-list">
+        <li><label><input type="checkbox"><span>Chain + sprockets — stretch, rust, hooked teeth</span></label></li>
+        <li><label><input type="checkbox"><span>Tires — tread depth + date code</span></label></li>
+        <li><label><input type="checkbox"><span>Brakes — pad life, rotor wear, lever feel</span></label></li>
+        <li><label><input type="checkbox"><span>Fork seals dry; no leaks under the bike</span></label></li>
+        <li><label><input type="checkbox"><span>Coolant level + clean oil</span></label></li>
+        <li><label><input type="checkbox"><span>No frame damage or drop scars (bar ends, levers, pegs, tank)</span></label></li>
+      </ul>
+    </div>
+
+    <div class="check-group">
+      <h4>Electrical</h4>
+      <ul class="check-list">
+        <li><label><input type="checkbox"><span>All lights, signals, horn, and dash work</span></label></li>
+        <li><label><input type="checkbox"><span>No warning lights stuck on (ABS, check engine)</span></label></li>
+      </ul>
+    </div>
+
+    <div class="check-group">
+      <h4>Ride it <small style="font-weight:400;color:#b7b3a9;font-family:'IBM Plex Mono';font-size:.7rem;letter-spacing:.04em;">— bring your license + gear</small></h4>
+      <ul class="check-list">
+        <li><label><input type="checkbox"><span>Shifts cleanly through all gears; clutch isn't slipping</span></label></li>
+        <li><label><input type="checkbox"><span>Tracks straight, no wobble, brakes pull straight</span></label></li>
+      </ul>
+    </div>
+
+    <div class="redflags"><b>Walk away if</b>Seller won't let it sit cold · no title · "mechanic friend" stories · price too good to be true.</div>
+  </section>
+
+  <!-- SHOPPING -->
+  <section>
+    <div class="sec-head"><span class="sec-num">08</span><h2>First-Day List</h2></div>
+    <div class="shop-grid">
+      <div class="shop-col">
+        <h4>Gear</h4>
+        <ul>
+          <li>Helmet — DOT/ECE, snug fit</li>
+          <li>Riding pants — armored / Kevlar</li>
+          <li>Boots / over-ankle shoes</li>
+          <li>Gloves + jacket <small>(if needed)</small></li>
+        </ul>
+      </div>
+      <div class="shop-col">
+        <h4>Security</h4>
+        <ul>
+          <li>Bike cover</li>
+          <li>Disc lock w/ reminder cable</li>
+          <li>Ground anchor <small>(if parking outside)</small></li>
+        </ul>
+      </div>
+      <div class="shop-col">
+        <h4>First Service</h4>
+        <ul>
+          <li>Oil + filter change</li>
+          <li>Chain clean / lube / adjust</li>
+          <li>Top off coolant, check pads</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEXT STEPS -->
+  <section style="border-bottom:none;">
+    <div class="sec-head"><span class="sec-num">09</span><h2>Next Steps</h2></div>
+    <div class="steps">
+      <div class="step"><p>Cap the bike at <b>$5k cash</b> and bring it as leverage on private sales — sellers move on a clean cash offer.</p></div>
+      <div class="step"><p>Get <b>insurance quotes</b> for your shortlist — comprehensive, not just liability. It may settle the decision.</p></div>
+      <div class="step"><p>Watch listings (Marketplace, Cycle Trader, local dealers) and <b>save comps</b>.</p></div>
+      <div class="step"><p>Line up a <b>pre-purchase inspection</b> before committing.</p></div>
+      <div class="step"><p>Keep <b>~$600–1,400</b> aside for gear + setup — non-negotiable, even on a tight day.</p></div>
+    </div>
+  </section>
+
+</div>
+</section>
+
+<!-- =================== CAR =================== -->
+<section id="view-car" class="view">
+<header class="hero">
+  <svg class="gauge" viewBox="0 0 320 170" role="img" aria-label="Tachometer">
+    <path d="M30 150 A130 130 0 0 1 290 150" fill="none" stroke="#3a4149" stroke-width="14" stroke-linecap="round"/>
+    <path d="M30 150 A130 130 0 0 1 251.9 58.1" fill="none" stroke="#8b9097" stroke-width="14" stroke-linecap="round"/>
+    <path d="M251.9 58.1 A130 130 0 0 1 290 150" fill="none" stroke="#d83a29" stroke-width="14" stroke-linecap="round"/>
+    <line x1="160" y1="150" x2="201" y2="49" stroke="#ece9e0" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="160" cy="150" r="8" fill="#d83a29"/>
+    <circle cx="160" cy="150" r="3" fill="#1b1f24"/>
+  </svg>
+  <div class="gauge-cap">Under $10K &middot; Build Sheet</div>
+  <h1>Project Car<br><span class="rev">Hunt</span></h1>
+  <p class="hero-sub">How to find a project worth building &mdash; the platforms, the money, and the checks that separate a good one from someone else&rsquo;s headache.</p>
+  <div class="chips">
+    <span class="chip hot"><b>&le; $10K</b> program</span>
+    <span class="chip">not just the <b>car</b></span>
+    <span class="chip"><b>manual</b> preferred</span>
+    <span class="chip"><b>aftermarket</b> = everything</span>
+    <span class="chip">condition &gt; miles</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- MONEY -->
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><h2>The Money</h2></div>
+    <div class="money-lead">
+      <div class="money-fig">$10,000<small>program &middot; not car price</small></div>
+      <p>The golden rule: <b>don&rsquo;t spend it all on the car.</b> A clean $8k car beats a $4k &ldquo;project&rdquo; that needs everything &mdash; because fixes always cost about 2&times; the estimate. Your $10k is a <b>program</b>, not a purchase price.</p>
+    </div>
+    <p class="sec-note">Roughly where a smart $10k goes (the car slice shrinks the more you plan to build):</p>
+    <div class="panel">
+      <div class="ledger">
+        <div class="ledger-row"><span class="item">The car itself <small>buy the best example you can find</small></span><span class="amt">$6,000&ndash;8,000</span></div>
+        <div class="ledger-row"><span class="item">Immediate needs <small>tires, brakes, fluids, deferred maintenance, PPI</small></span><span class="amt">$800&ndash;1,500</span></div>
+        <div class="ledger-row"><span class="item">Tools + starter kit <small>jack, stands, sockets, OBD2 scanner</small></span><span class="amt">$300&ndash;800</span></div>
+        <div class="ledger-row"><span class="item">Round-one mods <small>coilovers, intake, exhaust, wheels</small></span><span class="amt">$1,000&ndash;2,000</span></div>
+        <div class="ledger-row"><span class="item">&ldquo;Oh no&rdquo; reserve <small>keep it liquid</small></span><span class="amt">$500+</span></div>
+        <div class="ledger-row total"><span class="item">$10K Program</span><span class="amt">buy quality first</span></div>
+      </div>
+    </div>
+    <div class="callout">Budget separately: <b>title / registration / tax</b> and <b>insurance</b> (quote it first &mdash; a 350Z or Mustang GT costs more to insure). And a <b>$150&ndash;250 pre-purchase inspection</b> is the cheapest insurance you&rsquo;ll ever buy.</div>
+  </section>
+
+  <!-- CONTENDERS -->
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><h2>The Contenders</h2></div>
+    <p class="sec-note">The platforms that keep topping every under-$10k list &mdash; chosen for cheap parts, deep aftermarket, active communities, and a sound base to build from. The power bar is <b style="color:#e6e2d8">stock output</b>; most of these have huge room to grow.</p>
+
+    <!-- MIATA -->
+    <article class="spec-card">
+      <div class="spec-top">
+        <h2 class="spec-name">Mazda MX-5 Miata (NA / NB)<span>1990&ndash;2005 &middot; the default answer</span></h2>
+        <span class="tag step">Top pick &middot; RWD</span>
+      </div>
+      <div class="spec-grid">
+        <div class="spec-cell"><span class="k">Engine</span><span class="v">1.6&ndash;1.8<small>L I4</small></span></div>
+        <div class="spec-cell"><span class="k">Power</span><span class="v">116&ndash;142<small>hp</small></span></div>
+        <div class="spec-cell"><span class="k">Drive</span><span class="v">RWD</span></div>
+        <div class="spec-cell"><span class="k">Weight</span><span class="v">~2,300<small>lb</small></span></div>
+        <div class="spec-cell"><span class="k">Price</span><span class="v">$3&ndash;9<small>k</small></span></div>
+      </div>
+      <div class="rev">
+        <div class="rev-label"><span>Power (stock)</span><span>redline &rarr;</span></div>
+        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:42%"></div></div>
+      </div>
+      <p class="verdict">The default answer, and for good reason. Featherweight RWD roadster, dirt-cheap parts, the <b>biggest aftermarket and community</b> of anything here, and simple enough to learn wrenching on. Not fast stock &mdash; it&rsquo;s about balance and feel; boost or swap later for speed. <b>Watch:</b> rust in frame rails and rockers, timing belt (1.8), tired soft top.</p>
+    </article>
+
+    <!-- E46 -->
+    <article class="spec-card">
+      <div class="spec-top">
+        <h2 class="spec-name">BMW E46 3-Series<span>1999&ndash;2006 &middot; (E36 for less)</span></h2>
+        <span class="tag char">Euro &middot; RWD</span>
+      </div>
+      <div class="spec-grid">
+        <div class="spec-cell"><span class="k">Engine</span><span class="v">2.5&ndash;3.0<small>L I6</small></span></div>
+        <div class="spec-cell"><span class="k">Power</span><span class="v">184&ndash;225<small>hp</small></span></div>
+        <div class="spec-cell"><span class="k">Drive</span><span class="v">RWD</span></div>
+        <div class="spec-cell"><span class="k">Weight</span><span class="v">~3,200<small>lb</small></span></div>
+        <div class="spec-cell"><span class="k">Price</span><span class="v">$4&ndash;9<small>k</small></span></div>
+      </div>
+      <div class="rev">
+        <div class="rev-label"><span>Power (stock)</span><span>redline &rarr;</span></div>
+        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:66%"></div></div>
+      </div>
+      <p class="verdict">Telepathic steering, a silky inline-6, and cheap now. A manual <b>330i ZHP or 328i</b> is the sweet spot. More involved to own than a Miata and Euro parts cost more, but hugely rewarding. <b>Watch:</b> cooling system (water pump + expansion tank &mdash; do it all at once), <b>rear subframe cracks</b> (inspect the mounting points), VANOS rattle.</p>
+    </article>
+
+    <!-- 350Z -->
+    <article class="spec-card">
+      <div class="spec-top">
+        <h2 class="spec-name">Nissan 350Z<span>2003&ndash;2009 &middot; (G35 = 4-door twin)</span></h2>
+        <span class="tag char">JDM &middot; RWD</span>
+      </div>
+      <div class="spec-grid">
+        <div class="spec-cell"><span class="k">Engine</span><span class="v">3.5<small>L V6</small></span></div>
+        <div class="spec-cell"><span class="k">Power</span><span class="v">287&ndash;306<small>hp</small></span></div>
+        <div class="spec-cell"><span class="k">Drive</span><span class="v">RWD</span></div>
+        <div class="spec-cell"><span class="k">Weight</span><span class="v">~3,300<small>lb</small></span></div>
+        <div class="spec-cell"><span class="k">Price</span><span class="v">$7&ndash;11<small>k</small></span></div>
+      </div>
+      <div class="rev">
+        <div class="rev-label"><span>Power (stock)</span><span>redline &rarr;</span></div>
+        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:88%"></div></div>
+      </div>
+      <p class="verdict">Genuine sports-car power, a <b>bombproof 6-speed</b>, and one of the deepest drift/track aftermarkets around &mdash; bolt-ons now, forced induction later. Heavier than the Miata, but the torque makes it effortless. <b>Watch:</b> oil consumption on early 03&ndash;06 (rev-up VQ), worn bushings, feathered rear tires (alignment). The G35 is the cheaper 4-door version.</p>
+    </article>
+
+    <!-- MUSTANG -->
+    <article class="spec-card">
+      <div class="spec-top">
+        <h2 class="spec-name">Ford Mustang (S197)<span>2005&ndash;2014 &middot; V6 or 4.6/5.0 GT</span></h2>
+        <span class="tag step">V8 &middot; RWD</span>
+      </div>
+      <div class="spec-grid">
+        <div class="spec-cell"><span class="k">Engine</span><span class="v">4.0 V6 / 4.6&ndash;5.0 V8</span></div>
+        <div class="spec-cell"><span class="k">Power</span><span class="v">210&ndash;420<small>hp</small></span></div>
+        <div class="spec-cell"><span class="k">Drive</span><span class="v">RWD</span></div>
+        <div class="spec-cell"><span class="k">Weight</span><span class="v">~3,500<small>lb</small></span></div>
+        <div class="spec-cell"><span class="k">Price</span><span class="v">$6&ndash;10<small>k</small></span></div>
+      </div>
+      <div class="rev">
+        <div class="rev-label"><span>Power (GT, stock)</span><span>redline &rarr;</span></div>
+        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:93%"></div></div>
+      </div>
+      <p class="verdict">American muscle you can actually afford <em>and</em> actually fix in your driveway. The <b>4.6 GT</b> sounds great and the aftermarket is bottomless; the V6 is a cheaper entry. Simple solid rear axle keeps it cheap to run. <b>Watch:</b> abused/drag-launched GTs (clutch, rear end), rust on northern cars. The 5.0 Coyote (2011+) usually breaks $10k.</p>
+    </article>
+
+    <!-- BRZ/86 -->
+    <article class="spec-card">
+      <div class="spec-top">
+        <h2 class="spec-name">Toyota 86 / Subaru BRZ / FR-S<span>2013&ndash;2020 &middot; 1st gen &ldquo;Twins&rdquo;</span></h2>
+        <span class="tag char">Modern &middot; RWD</span>
+      </div>
+      <div class="spec-grid">
+        <div class="spec-cell"><span class="k">Engine</span><span class="v">2.0<small>L flat-4</small></span></div>
+        <div class="spec-cell"><span class="k">Power</span><span class="v">~200<small>hp</small></span></div>
+        <div class="spec-cell"><span class="k">Drive</span><span class="v">RWD</span></div>
+        <div class="spec-cell"><span class="k">Weight</span><span class="v">~2,800<small>lb</small></span></div>
+        <div class="spec-cell"><span class="k">Price</span><span class="v">$8&ndash;12<small>k</small></span></div>
+      </div>
+      <div class="rev">
+        <div class="rev-label"><span>Power (stock)</span><span>redline &rarr;</span></div>
+        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:59%"></div></div>
+      </div>
+      <p class="verdict">The newest, most usable pick &mdash; modern safety, brilliant chassis, RWD, strong aftermarket. Famous for a low-end torque dip that owners fix with a tune/header (or just enjoy the balance). The cleanest way to get a <b>near-modern sports car</b> around budget. <b>Watch:</b> higher miles at this price, hard-tracked cars (rod bearings on FA20), early valve-spring recall.</p>
+    </article>
+
+    <!-- GTI -->
+    <article class="spec-card">
+      <div class="spec-top">
+        <h2 class="spec-name">VW GTI (MK5 / MK6)<span>2006&ndash;2014 &middot; the practical one</span></h2>
+        <span class="tag fam">FWD &middot; Turbo</span>
+      </div>
+      <div class="spec-grid">
+        <div class="spec-cell"><span class="k">Engine</span><span class="v">2.0<small>L turbo</small></span></div>
+        <div class="spec-cell"><span class="k">Power</span><span class="v">~200<small>hp*</small></span></div>
+        <div class="spec-cell"><span class="k">Drive</span><span class="v">FWD</span></div>
+        <div class="spec-cell"><span class="k">Weight</span><span class="v">~3,000<small>lb</small></span></div>
+        <div class="spec-cell"><span class="k">Price</span><span class="v">$5&ndash;9<small>k</small></span></div>
+      </div>
+      <div class="rev">
+        <div class="rev-label"><span>Power (stock &middot; tunes to 260+)</span><span>redline &rarr;</span></div>
+        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:59%"></div></div>
+      </div>
+      <p class="verdict">The practical one &mdash; a 4-door hot hatch that hides big, cheap power. A <b>$600 tune</b> wakes it up more than any N/A car here, and it still hauls groceries. Trade-off is upkeep: German turbo maintenance is real. <b>Watch:</b> timing chain tensioner (MK5/early MK6 &mdash; critical), carbon buildup (walnut blast), water pump, DSG service. <b>Buy on records, not looks.</b></p>
+    </article>
+
+    <div class="read">
+      <span class="eyebrow">The Read</span>
+      <p>The <b>Miata</b> is the highest-value place to start and learn &mdash; cheapest to buy, run, and fix, with the biggest community. Want power now? The <b>350Z</b> or <b>Mustang GT</b>. Want modern and usable? The <b>86 / BRZ</b>. Want a daily that mods hard and cheap? The <b>GTI</b>. Pick by your <b>project goal</b>, not just the spec sheet.</p>
+    </div>
+    <p class="naming">// FIRST RULE &mdash; Buy the best <em>example</em>, not the cheapest car. Condition, records, and a rust-free body beat low price and low miles every single time.</p>
+  </section>
+
+  <!-- MARKET VALUES -->
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><h2>Market Values</h2></div>
+    <div class="mkt-intro">
+      <p class="sec-note" style="margin-bottom:0">Typical mid-2026 asking ranges and the one thing to check hardest on each. On 15&ndash;20-year-old cars, <b style="color:#e6e2d8">condition beats mileage</b> &mdash; a documented high-mile car often beats a cheap unknown.</p>
+    </div>
+    <div class="mkt-quick">
+      <div class="qh">Contenders &mdash; Typical Price &amp; Watch-For</div>
+      <table class="mkt">
+        <thead><tr><th>Platform</th><th>Years</th><th class="n">Typical $</th><th>Watch For</th></tr></thead>
+        <tbody>
+          <tr><td class="yr">Miata NA / NB</td><td>&rsquo;90&ndash;&rsquo;05</td><td class="ask n">$3&ndash;9k</td><td>Rust (rails, rockers), timing belt</td></tr>
+          <tr><td class="yr">BMW E46 / E36</td><td>&rsquo;99&ndash;&rsquo;06</td><td class="ask n">$4&ndash;9k</td><td>Cooling, subframe cracks, VANOS</td></tr>
+          <tr><td class="yr">Nissan 350Z</td><td>&rsquo;03&ndash;&rsquo;09</td><td class="ask n">$7&ndash;11k</td><td>Early-VQ oil use, bushings</td></tr>
+          <tr><td class="yr">Mustang S197</td><td>&rsquo;05&ndash;&rsquo;14</td><td class="ask n">$6&ndash;10k</td><td>Abused GTs, rust up north</td></tr>
+          <tr><td class="yr">86 / BRZ / FR-S</td><td>&rsquo;13&ndash;&rsquo;20</td><td class="ask n">$8&ndash;12k</td><td>High miles, tracked cars</td></tr>
+          <tr><td class="yr">VW GTI MK5/6</td><td>&rsquo;06&ndash;&rsquo;14</td><td class="ask n">$5&ndash;9k</td><td>Timing tensioner, carbon, records</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sweet">Best value play: spend <b>~$6&ndash;8k on the cleanest, best-documented example</b> you can find and keep the rest for fixes and round-one mods. The cheapest car in the listings is almost never the cheapest to own.</div>
+    <p class="cross-note">// Prices reflect mid-2026 U.S. listings (Marketplace, CarGurus, Bring a Trailer, Cars &amp; Bids). Region and condition swing them hard.</p>
+  </section>
+
+  <!-- CANDIDATE LOG -->
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><h2>Candidate Log</h2></div>
+    <p class="sec-note">Log cars you&rsquo;re looking at and score them against the platforms above. Tap the blank fields to fill them in as you shop.</p>
+
+    <article class="cand-card blank">
+      <div class="cand-top">
+        <div><span class="cand-ey">Candidate 01</span><h3 class="cand-name"><span class="fill" contenteditable="true" data-ph="year / make / model"></span></h3></div>
+        <span class="vbadge todo">TBD</span>
+      </div>
+      <div class="cand-facts">
+        <div class="cand-fact"><span class="k">Price</span><span class="v"><span class="fill" contenteditable="true" data-ph="$"></span></span></div>
+        <div class="cand-fact"><span class="k">Miles</span><span class="v"><span class="fill" contenteditable="true" data-ph="&mdash;"></span></span></div>
+        <div class="cand-fact"><span class="k">Title</span><span class="v"><span class="fill" contenteditable="true" data-ph="clean?"></span></span></div>
+        <div class="cand-fact"><span class="k">Location</span><span class="v"><span class="fill" contenteditable="true" data-ph="&mdash;"></span></span></div>
+      </div>
+      <div class="blank-hint">// Check it against Market Values, run the VIN, note mods + rust + records, then set a target offer.</div>
+    </article>
+
+    <article class="cand-card blank">
+      <div class="cand-top">
+        <div><span class="cand-ey">Candidate 02</span><h3 class="cand-name"><span class="fill" contenteditable="true" data-ph="year / make / model"></span></h3></div>
+        <span class="vbadge todo">TBD</span>
+      </div>
+      <div class="cand-facts">
+        <div class="cand-fact"><span class="k">Price</span><span class="v"><span class="fill" contenteditable="true" data-ph="$"></span></span></div>
+        <div class="cand-fact"><span class="k">Miles</span><span class="v"><span class="fill" contenteditable="true" data-ph="&mdash;"></span></span></div>
+        <div class="cand-fact"><span class="k">Title</span><span class="v"><span class="fill" contenteditable="true" data-ph="clean?"></span></span></div>
+        <div class="cand-fact"><span class="k">Location</span><span class="v"><span class="fill" contenteditable="true" data-ph="&mdash;"></span></span></div>
+      </div>
+      <div class="blank-hint">// Check it against Market Values, run the VIN, note mods + rust + records, then set a target offer.</div>
+    </article>
+
+    <article class="cand-card blank">
+      <div class="cand-top">
+        <div><span class="cand-ey">Candidate 03</span><h3 class="cand-name"><span class="fill" contenteditable="true" data-ph="year / make / model"></span></h3></div>
+        <span class="vbadge todo">TBD</span>
+      </div>
+      <div class="cand-facts">
+        <div class="cand-fact"><span class="k">Price</span><span class="v"><span class="fill" contenteditable="true" data-ph="$"></span></span></div>
+        <div class="cand-fact"><span class="k">Miles</span><span class="v"><span class="fill" contenteditable="true" data-ph="&mdash;"></span></span></div>
+        <div class="cand-fact"><span class="k">Title</span><span class="v"><span class="fill" contenteditable="true" data-ph="clean?"></span></span></div>
+        <div class="cand-fact"><span class="k">Location</span><span class="v"><span class="fill" contenteditable="true" data-ph="&mdash;"></span></span></div>
+      </div>
+      <div class="blank-hint">// Check it against Market Values, run the VIN, note mods + rust + records, then set a target offer.</div>
+    </article>
+  </section>
+
+  <!-- CROSS SHOP -->
+  <section>
+    <div class="sec-head"><span class="sec-num">05</span><h2>Cross-Shop</h2></div>
+    <p class="sec-note">Honorable mentions worth a look depending on your taste and goal.</p>
+    <div class="cross">
+      <div class="cross-item">
+        <h4>Honda Civic (EG/EK) / Integra</h4>
+        <p>The FWD tuner icon &mdash; huge aftermarket, cheap parts, endless swap potential. Downside: <b>clean ones are rising fast and they&rsquo;re theft targets.</b></p>
+      </div>
+      <div class="cross-item">
+        <h4>Mazda RX-8</h4>
+        <p>The cheapest thrills here (~$4&ndash;8k) with a screaming rotary and 50/50 balance. The catch is real: <b>apex-seal/engine risk and heavy thirst.</b> Compression-test before you buy, always.</p>
+      </div>
+      <div class="cross-item">
+        <h4>Hyundai Genesis Coupe</h4>
+        <p>Underrated modern RWD &mdash; 2.0T or 306-hp 3.8 V6, 6-speed manual, $7&ndash;10k. More tech and comfort than most of this list; some still have transferable powertrain warranty.</p>
+      </div>
+      <div class="cross-item">
+        <h4>Infiniti G35</h4>
+        <p>The 350Z platform in a 4-door suit &mdash; same VQ and chassis, cheaper, and <b>painfully underrated.</b> Practical way into the Z world.</p>
+      </div>
+      <div class="cross-item">
+        <h4>Toyota MR2 Spyder</h4>
+        <p>Mid-engine RWD, under 2,200 lb, feels like a baby exotic. Slow but hilarious. <b>Watch:</b> pre-cat failure on pre-2003 cars can kill the engine &mdash; get a &rsquo;03+ or pre-cats deleted.</p>
+      </div>
+      <div class="cross-item">
+        <h4>Chevy C4 Corvette</h4>
+        <p>Cheap V8 RWD ($6&ndash;10k) &mdash; a lot of car and noise for the money. Dated interior, but the LT1 cars are strong and simple to work on.</p>
+      </div>
+      <div class="cross-item">
+        <h4>Fox Body Mustang</h4>
+        <p>Light, 5.0 V8, a drag/drift legend and a blank canvas. Prices are climbing and they&rsquo;re old now &mdash; buy a solid body, not a cheap roller.</p>
+      </div>
+    </div>
+    <p class="cross-note">// Priced out of the sub-$10k world now: Nissan 240SX, Honda S2000, R32/R34 Skyline, WRX STI. Great cars &mdash; just no longer bargains.</p>
+  </section>
+
+  <!-- BEFORE YOU COMMIT -->
+  <section>
+    <div class="sec-head"><span class="sec-num">06</span><h2>Before You Commit</h2></div>
+    <div class="weigh">
+      <div class="weigh-row"><span class="wk">Buy the best example</span><span class="wv">A clean $8k car beats a $4k &ldquo;project&rdquo; that needs everything. Fixes always run ~2&times; the estimate &mdash; condition and records are the real value.</span></div>
+      <div class="weigh-row"><span class="wk">Rust is the killer</span><span class="wv">Check frame rails, subframe mounts, floors, rockers, and arches. A <b>rust-free needs-mechanical</b> car beats a clean-running rust bucket. Salt-belt cars are risky.</span></div>
+      <div class="weigh-row"><span class="wk">Run the VIN + title</span><span class="wv">Carfax/AutoCheck for accidents, salvage/rebuilt brands, odometer, and liens. <b>Salvage</b> = cheaper but tanks resale and complicates insurance.</span></div>
+      <div class="weigh-row"><span class="wk">Aftermarket + community</span><span class="wv">A deep parts catalog and an active forum/Discord make or break a build. <b>Avoid orphan platforms</b> where every part is a scavenger hunt.</span></div>
+      <div class="weigh-row"><span class="wk">Mechanical &lt; cosmetic &lt; rust</span><span class="wv">Mechanical is the cheapest to fix. Bodywork and rust are the money pits &mdash; price accordingly and walk from hidden corrosion.</span></div>
+      <div class="weigh-row"><span class="wk">Skip abandoned builds</span><span class="wv">Half-done mods, missing OEM parts, mystery wiring, &ldquo;ran when parked.&rdquo; A <b>bone-stock</b> car is usually the smarter, cheaper start.</span></div>
+      <div class="weigh-row"><span class="wk">Manual &gt; auto</span><span class="wv">For nearly everything on this list, a manual is more fun and holds better enthusiast resale.</span></div>
+      <div class="weigh-row"><span class="wk">Know your goal first</span><span class="wv">Track, autocross, drift, stance, restomod, or daily+ &mdash; the goal picks the platform. Decide <b>before</b> you buy, not after.</span></div>
+      <div class="weigh-row"><span class="wk">Space, tools, time</span><span class="wv">Be honest about your garage, your toolset, and your bandwidth. A project you can&rsquo;t work on becomes a driveway ornament.</span></div>
+      <div class="weigh-row"><span class="wk">Emissions + insurance</span><span class="wv">Modified cars can fail state inspection/emissions &mdash; check your rules. And quote insurance first; some of these cost more to cover.</span></div>
+    </div>
+  </section>
+
+  <!-- INSPECTION -->
+  <section>
+    <div class="sec-head"><span class="sec-num">07</span><h2>Inspection / PPI</h2></div>
+    <p class="sec-note">Run this yourself before money moves &mdash; or pay a shop for a platform-specific PPI. Tap to check off as you go.</p>
+
+    <div class="check-group">
+      <h4>Paperwork</h4>
+      <ul class="check-list">
+        <li><label><input type="checkbox"><span>Title in seller&rsquo;s name; VIN matches the dash + door jamb</span></label></li>
+        <li><label><input type="checkbox"><span>Run Carfax/AutoCheck &mdash; accidents, salvage, odometer, liens</span></label></li>
+        <li><label><input type="checkbox"><span>Service records + receipts for major work</span></label></li>
+      </ul>
+    </div>
+
+    <div class="check-group">
+      <h4>Cold Start <small style="font-weight:400;color:#b7b3a9;font-family:'IBM Plex Mono';font-size:.7rem;letter-spacing:.04em;">&mdash; insist the car is cold on arrival</small></h4>
+      <ul class="check-list">
+        <li><label><input type="checkbox"><span>Fires up clean &mdash; no blue (oil), white (coolant), or black (rich) smoke</span></label></li>
+        <li><label><input type="checkbox"><span>No knock or tick; settles to a steady idle</span></label></li>
+      </ul>
+    </div>
+
+    <div class="check-group">
+      <h4>Under the Hood</h4>
+      <ul class="check-list">
+        <li><label><input type="checkbox"><span>Oil not milky (head gasket); coolant clean and full</span></label></li>
+        <li><label><input type="checkbox"><span>No active leaks; belts and hoses not cracked</span></label></li>
+        <li><label><input type="checkbox"><span>Temp gauge holds steady &mdash; no creeping toward hot</span></label></li>
+      </ul>
+    </div>
+
+    <div class="check-group">
+      <h4>Rust &amp; Body</h4>
+      <ul class="check-list">
+        <li><label><input type="checkbox"><span>Frame rails, subframe mounts, floors, rockers, arches &mdash; no rot</span></label></li>
+        <li><label><input type="checkbox"><span>Even panel gaps + consistent paint (no hidden accident / weld marks)</span></label></li>
+      </ul>
+    </div>
+
+    <div class="check-group">
+      <h4>Drive It</h4>
+      <ul class="check-list">
+        <li><label><input type="checkbox"><span>Clutch bites cleanly, no slip; shifts through all gears</span></label></li>
+        <li><label><input type="checkbox"><span>No driveline vibration; tracks + brakes straight</span></label></li>
+        <li><label><input type="checkbox"><span>Suspension quiet over bumps; even tire wear</span></label></li>
+      </ul>
+    </div>
+
+    <div class="check-group">
+      <h4>Electronics <small style="font-weight:400;color:#b7b3a9;font-family:'IBM Plex Mono';font-size:.7rem;letter-spacing:.04em;">&mdash; bring an OBD2 scanner</small></h4>
+      <ul class="check-list">
+        <li><label><input type="checkbox"><span>Scan for codes &mdash; and for recently <em>cleared</em> codes</span></label></li>
+        <li><label><input type="checkbox"><span>All lights, AC, windows, gauges work; no warning lights stuck on</span></label></li>
+        <li><label><input type="checkbox"><span>Platform check: E46 subframe &middot; 350Z oil use &middot; RX-8 compression &middot; GTI timing/carbon &middot; Miata rust</span></label></li>
+      </ul>
+    </div>
+
+    <div class="redflags"><b>Walk away if</b>Seller won&rsquo;t let it sit cold &middot; no title or a salvage surprise &middot; &ldquo;ran when parked&rdquo; &middot; abandoned half-build &middot; price too good to be true. A <b>$150&ndash;250 shop PPI</b> is the best money you&rsquo;ll spend.</div>
+  </section>
+
+  <!-- STARTER KIT -->
+  <section>
+    <div class="sec-head"><span class="sec-num">08</span><h2>Starter Kit</h2></div>
+    <div class="shop-grid">
+      <div class="shop-col">
+        <h4>Tools</h4>
+        <ul>
+          <li>Floor jack + jack stands</li>
+          <li>Socket set + torque wrench</li>
+          <li>Breaker bar</li>
+          <li>OBD2 scanner</li>
+        </ul>
+      </div>
+      <div class="shop-col">
+        <h4>Day-One Service</h4>
+        <ul>
+          <li>Oil + filter change</li>
+          <li>All fluids + air filter</li>
+          <li>Spark plugs, belts</li>
+          <li>Brake + tire check</li>
+        </ul>
+      </div>
+      <div class="shop-col">
+        <h4>Reference</h4>
+        <ul>
+          <li>Factory service manual</li>
+          <li>The platform&rsquo;s forum / Discord</li>
+          <li>Fire extinguisher</li>
+          <li>Good work lighting</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEXT STEPS -->
+  <section style="border-bottom:none;">
+    <div class="sec-head"><span class="sec-num">09</span><h2>Next Steps</h2></div>
+    <div class="steps">
+      <div class="step"><p>Pick your <b>project goal</b> (track / drift / autocross / stance / daily+) &mdash; it chooses the platform.</p></div>
+      <div class="step"><p>Set the split: cap the car around <b>$6&ndash;8k</b>, reserve the rest for fixes, tools, and round-one mods.</p></div>
+      <div class="step"><p>Shortlist <b>1&ndash;2 platforms</b> and learn their known weak points cold.</p></div>
+      <div class="step"><p>Watch listings (Marketplace, CarGurus, Cars &amp; Bids, Bring a Trailer) and <b>save comps</b>.</p></div>
+      <div class="step"><p>Run the VIN and get a <b>platform-specific PPI</b> before you commit.</p></div>
+      <div class="step"><p>Buy the <b>best example you can afford</b> &mdash; condition over everything.</p></div>
+    </div>
+  </section>
+
+</div>
+</section>
+
+<footer>
+  <p class="fnote">The Garage &mdash; one shell, two builds. Prices reflect mid-2026; condition and region swing them hard.</p>
+  <div class="sig">Build both</div>
+</footer>
+
+<script>
+(function(){
+  var views = ['garage','moto','car'];
+  function route(){
+    var h = (location.hash || '#garage').replace('#','');
+    if(views.indexOf(h) === -1) h = 'garage';
+    views.forEach(function(v){
+      var el = document.getElementById('view-'+v);
+      if(el) el.classList.toggle('active', v===h);
+      var tab = document.getElementById('tab-'+v);
+      if(tab) tab.classList.toggle('active', v===h);
+    });
+    window.scrollTo(0,0);
+  }
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>
+
+</body>
+</html>
