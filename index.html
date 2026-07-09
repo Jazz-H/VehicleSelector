@@ -417,19 +417,19 @@
 
   /* ---------- NEXT STEPS ---------- */
   .steps{counter-reset:step;display:grid;gap:10px;}
-  .step{
+  .steps .step{
     display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;
     background:var(--steel-850);border:1px solid var(--line-steel-strong);border-radius:5px;
     padding:14px 18px;
   }
-  .step::before{
+  .steps .step::before{
     counter-increment:step;content:counter(step,decimal-leading-zero);
     font-family:"Saira Condensed",sans-serif;font-weight:800;font-size:1.8rem;
     color:var(--redline);line-height:1;min-width:40px;text-align:center;
     border-right:1px solid var(--line-steel-strong);padding-right:14px;
   }
-  .step p{margin:0;font-size:.95rem;color:#d2cec4;}
-  .step b{color:var(--paper);}
+  .steps .step p{margin:0;font-size:.95rem;color:#d2cec4;}
+  .steps .step b{color:var(--paper);}
 
   footer{padding:34px 20px 56px;text-align:center;}
   footer .fnote{font-family:"IBM Plex Mono",monospace;font-size:.74rem;color:var(--ink-faint);
@@ -1255,34 +1255,33 @@
     <p class="sec-note">Mostly A2-legal, under 600cc, and in reach at $5k cash used — with one over-budget exception, flagged below. Worth a test ride against your shortlist.</p>
     <div class="cross">
       <div class="cross-item">
-        <h4>Kawasaki Ninja 400 / Z400</h4><span class="beat">One to beat</span>
-        <p>The value benchmark. 399cc twin, ~48 hp, light (~365 lb), bulletproof, cheaper to run than the KTM. Z400 naked, Ninja 400 faired. <b>Strong step up from your 300F.</b></p>
+        <h4>Chevy C6 Corvette</h4>
+        <p>The step-up fun pick &mdash; LS2/LS3 power, sharper looks, still cheap to run. Clean ones creep past budget, but it&rsquo;s the Vette to stretch for. <b>Watch:</b> tick/valvetrain on some LS, worn interior.</p>
       </div>
       <div class="cross-item">
-        <h4>Yamaha MT-03 / R3</h4>
-        <p>321cc twin, ~42 hp, smooth and comfy, the <b>cheapest of the bunch to own</b> thanks to Yamaha's parts network. A touch less punch than the Z400, but easy living.</p>
+        <h4>Nissan 370Z</h4>
+        <p>The newer, punchier Z (~332 hp) if the budget grows &mdash; more modern than the 350Z with the same bombproof feel. <b>Watch:</b> tires are pricey; some clutch/synchro wear.</p>
       </div>
       <div class="cross-item">
-        <h4>KTM 390 Duke</h4>
-        <p>Sharp, aggressive naked single (~400cc, ~45 hp), very light, with proper electronics — ride modes, traction control. The catch: <b>pricier KTM upkeep and a touchier throttle</b> than the Hondas. The choice if you want the most aggressive small single.</p>
+        <h4>Mazda RX-8</h4>
+        <p>The cheapest thrills anywhere (~$4&ndash;8k), a screaming rotary and 50/50 balance. The catch is real: <b>apex-seal/engine risk and heavy thirst.</b> Always compression-test first.</p>
       </div>
       <div class="cross-item">
-        <h4>Aprilia RS457</h4>
-        <p>Newer (2024+) 457cc twin, ~47 hp, premium feel. Sportier and pricier — clean used ones may run near or over $5k. <b>Stretch pick</b> if you want something fresh and fast.</p>
+        <h4>Jeep Cherokee XJ</h4>
+        <p>The OG cheap 4x4 &mdash; bulletproof 4.0 straight-six, light, endlessly modifiable, and a genuine trail weapon for little money. <b>Watch:</b> rust (they dissolve), tired cooling, lifted/abused rigs.</p>
       </div>
       <div class="cross-item">
-        <h4>Triumph Scrambler 400 X</h4>
-        <p>The scrambler sibling of your Speed 400 candidate — same 398cc single, ~40 hp, but upright with wider bars, handguards, a 19" front wheel, traction control, and switchable ABS for light gravel. Taller seat (~32.9") and ~20 lb heavier than the Speed 400. ~$5,595 new; used ones are scarce and near-new. <b>Pick it over the Speed 400 if you want versatility over café styling.</b></p>
+        <h4>Toyota Tacoma</h4>
+        <p>Off-road pickup that does everything and barely depreciates &mdash; a do-it-all if you want a bed. <b>Watch:</b> frame rust (recall history), high miles, and paying the Toyota tax.</p>
       </div>
       <div class="cross-item">
-        <h4>Honda CB500X</h4>
-        <p>The upright, adventure-styled 500 twin. Same engine, comfier ergonomics, bigger tank — <b>better for commuting and longer rides</b> if comfort beats sport for you.</p>
+        <h4>Subaru Forester / Outback</h4>
+        <p>The soft-roader angle &mdash; AWD, comfy, cheap, and light-trail capable if &ldquo;fun&rdquo; means trips and dirt roads over rock crawling. <b>Watch:</b> head gaskets (EJ25), oil consumption, CVT on newer ones.</p>
       </div>
       <div class="cross-item">
-        <h4>Honda SCL500</h4><span class="beat" style="background:var(--redline)">Over $5k used</span>
-        <p>Your CB500F's 471cc twin in scrambler clothing — same ~46 hp, same Honda reliability, upright do-it-all ergonomics (19" front wheel). The catch: it only launched in 2023, so used runs <b>~$5–6k, over your cash budget</b>. Mechanically it's the CB500F you can already get for ~$3,900 — you'd be paying a premium for the scrambler look and newness.</p>
+        <h4>Ford Mustang GT (S197)</h4>
+        <p>You already daily a Mustang &mdash; but a cheap 4.6/5.0 GT is the easy V8 fun alt to the Corvette. Simple, loud, bottomless aftermarket. <b>Watch:</b> abused/drag cars, rust up north.</p>
       </div>
-    </div>
     <p class="cross-note">// The Ninja 400 / Z400 is the strongest all-round alternative to the Hondas — cheaper to run than the KTM, and a real step up from your 300F.</p>
   </details>
 
@@ -1448,152 +1447,145 @@
         <div class="ledger-row"><span class="item">The car itself <small>buy the best example you can find</small></span><span class="amt">$6,000&ndash;8,000</span></div>
         <div class="ledger-row"><span class="item">Immediate needs <small>tires, brakes, fluids, deferred maintenance, PPI</small></span><span class="amt">$800&ndash;1,500</span></div>
         <div class="ledger-row"><span class="item">Tools + starter kit <small>jack, stands, sockets, OBD2 scanner</small></span><span class="amt">$300&ndash;800</span></div>
-        <div class="ledger-row"><span class="item">Round-one mods <small>coilovers, intake, exhaust, wheels</small></span><span class="amt">$1,000&ndash;2,000</span></div>
+        <div class="ledger-row"><span class="item">Round-one setup <small>tires + wheels, exhaust, or a mild lift for the 4x4</small></span><span class="amt">$1,000&ndash;2,000</span></div>
         <div class="ledger-row"><span class="item">&ldquo;Oh no&rdquo; reserve <small>keep it liquid</small></span><span class="amt">$500+</span></div>
         <div class="ledger-row total"><span class="item">$10K Program</span><span class="amt">buy quality first</span></div>
       </div>
     </div>
-    <div class="callout">Budget separately: <b>title / registration / tax</b> and <b>insurance</b> (quote it first &mdash; a 350Z or Mustang GT costs more to insure). And a <b>$150&ndash;250 pre-purchase inspection</b> is the cheapest insurance you&rsquo;ll ever buy.</div>
+    <div class="callout">Budget separately: <b>title / registration / tax</b> and <b>insurance</b> (quote it first &mdash; a Corvette costs more to insure than a Wrangler). And a <b>$150&ndash;250 pre-purchase inspection</b> is the cheapest insurance you&rsquo;ll ever buy.</div>
   </section>
 
   <!-- CONTENDERS -->
   <section>
     <div class="sec-head"><span class="sec-num">02</span><h2>The Contenders</h2></div>
-    <div class="callout" style="margin-bottom:18px;">Heads up &mdash; the direction shifted to a <b>fun secondary car</b> (no track/drift, maybe light off-road). The picks in your <b>Candidate Log</b> below &mdash; Corvette, Wrangler, 4Runner &mdash; reflect that. The sport-project platforms here are kept for reference from the earlier framing and are due for a rework.</div>
-    <p class="sec-note">The platforms that keep topping every under-$10k list &mdash; chosen for cheap parts, deep aftermarket, active communities, and a sound base to build from. The power bar is <b style="color:#e6e2d8">stock output</b>; most of these have huge room to grow.</p>
+    <p class="sec-note">Two directions for a fun secondary &mdash; <b style="color:#e6e2d8">fun on-road</b> (Corvette / 350Z / Miata) and <b style="color:#e6e2d8">light off-road</b> (Wrangler / 4Runner / Xterra). No track, no drift &mdash; just weekends. The bar shows <b style="color:#e6e2d8">stock output</b>; on the off-roaders, capability matters more than the number.</p>
 
-    <!-- MIATA -->
     <article class="spec-card">
       <div class="spec-top">
-        <h2 class="spec-name">Mazda MX-5 Miata (NA / NB)<span>1990&ndash;2005 &middot; the default answer</span></h2>
-        <span class="tag step">Top pick &middot; RWD</span>
+        <h2 class="spec-name">Chevrolet Corvette (C5)<span>1997&ndash;2004 &middot; the fun you love</span></h2>
+        <span class="tag step">Fun &middot; RWD</span>
       </div>
       <div class="spec-grid">
-        <div class="spec-cell"><span class="k">Engine</span><span class="v">1.6&ndash;1.8<small>L I4</small></span></div>
-        <div class="spec-cell"><span class="k">Power</span><span class="v">116&ndash;142<small>hp</small></span></div>
+        <div class="spec-cell"><span class="k">Engine</span><span class="v">5.7<small>L V8</small></span></div>
+        <div class="spec-cell"><span class="k">Power</span><span class="v">~345<small>hp</small></span></div>
         <div class="spec-cell"><span class="k">Drive</span><span class="v">RWD</span></div>
-        <div class="spec-cell"><span class="k">Weight</span><span class="v">~2,300<small>lb</small></span></div>
-        <div class="spec-cell"><span class="k">Price</span><span class="v">$3&ndash;9<small>k</small></span></div>
+        <div class="spec-cell"><span class="k">Weight</span><span class="v">~3,250<small>lb</small></span></div>
+        <div class="spec-cell"><span class="k">Price</span><span class="v">$11&ndash;16<small>k</small></span></div>
       </div>
       <div class="rev">
         <div class="rev-label"><span>Power (stock)</span><span>redline &rarr;</span></div>
-        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:42%"></div></div>
+        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:88%"></div></div>
       </div>
-      <p class="verdict">The default answer, and for good reason. Featherweight RWD roadster, dirt-cheap parts, the <b>biggest aftermarket and community</b> of anything here, and simple enough to learn wrenching on. Not fast stock &mdash; it&rsquo;s about balance and feel; boost or swap later for speed. <b>Watch:</b> rust in frame rails and rockers, timing belt (1.8), tired soft top.</p>
+      <p class="verdict">The V8 you keep coming back to. Effortless LS grunt, a targa top, and a genuine weekend cruiser that&rsquo;s quick <em>without</em> a track. The LS1 is cheap and bulletproof with endless parts. <b>Watch:</b> tired interior and seat bolsters, early column-lock/steering quirks, roof leaks. Runs a touch above the old $10k line.</p>
     </article>
 
-    <!-- E46 -->
     <article class="spec-card">
       <div class="spec-top">
-        <h2 class="spec-name">BMW E46 3-Series<span>1999&ndash;2006 &middot; (E36 for less)</span></h2>
-        <span class="tag char">Euro &middot; RWD</span>
-      </div>
-      <div class="spec-grid">
-        <div class="spec-cell"><span class="k">Engine</span><span class="v">2.5&ndash;3.0<small>L I6</small></span></div>
-        <div class="spec-cell"><span class="k">Power</span><span class="v">184&ndash;225<small>hp</small></span></div>
-        <div class="spec-cell"><span class="k">Drive</span><span class="v">RWD</span></div>
-        <div class="spec-cell"><span class="k">Weight</span><span class="v">~3,200<small>lb</small></span></div>
-        <div class="spec-cell"><span class="k">Price</span><span class="v">$4&ndash;9<small>k</small></span></div>
-      </div>
-      <div class="rev">
-        <div class="rev-label"><span>Power (stock)</span><span>redline &rarr;</span></div>
-        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:66%"></div></div>
-      </div>
-      <p class="verdict">Telepathic steering, a silky inline-6, and cheap now. A manual <b>330i ZHP or 328i</b> is the sweet spot. More involved to own than a Miata and Euro parts cost more, but hugely rewarding. <b>Watch:</b> cooling system (water pump + expansion tank &mdash; do it all at once), <b>rear subframe cracks</b> (inspect the mounting points), VANOS rattle.</p>
-    </article>
-
-    <!-- 350Z -->
-    <article class="spec-card">
-      <div class="spec-top">
-        <h2 class="spec-name">Nissan 350Z<span>2003&ndash;2009 &middot; (G35 = 4-door twin)</span></h2>
-        <span class="tag char">JDM &middot; RWD</span>
+        <h2 class="spec-name">Nissan 350Z<span>2003&ndash;2009 &middot; budget sports grunt</span></h2>
+        <span class="tag step">Fun &middot; RWD</span>
       </div>
       <div class="spec-grid">
         <div class="spec-cell"><span class="k">Engine</span><span class="v">3.5<small>L V6</small></span></div>
         <div class="spec-cell"><span class="k">Power</span><span class="v">287&ndash;306<small>hp</small></span></div>
         <div class="spec-cell"><span class="k">Drive</span><span class="v">RWD</span></div>
         <div class="spec-cell"><span class="k">Weight</span><span class="v">~3,300<small>lb</small></span></div>
-        <div class="spec-cell"><span class="k">Price</span><span class="v">$7&ndash;11<small>k</small></span></div>
+        <div class="spec-cell"><span class="k">Price</span><span class="v">$7&ndash;12<small>k</small></span></div>
       </div>
       <div class="rev">
         <div class="rev-label"><span>Power (stock)</span><span>redline &rarr;</span></div>
-        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:88%"></div></div>
+        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:82%"></div></div>
       </div>
-      <p class="verdict">Genuine sports-car power, a <b>bombproof 6-speed</b>, and one of the deepest drift/track aftermarkets around &mdash; bolt-ons now, forced induction later. Heavier than the Miata, but the torque makes it effortless. <b>Watch:</b> oil consumption on early 03&ndash;06 (rev-up VQ), worn bushings, feathered rear tires (alignment). The G35 is the cheaper 4-door version.</p>
+      <p class="verdict">The cheaper way into real sports-car pace &mdash; a bombproof 6-speed and easy V6 torque for a weekend blast (no track needed). The <b>G35</b> is the cheaper 4-door twin. <b>Watch:</b> oil use on early &rsquo;03&ndash;&rsquo;06 rev-up VQ, worn bushings, clutch, feathered rear tires.</p>
     </article>
 
-    <!-- MUSTANG -->
     <article class="spec-card">
       <div class="spec-top">
-        <h2 class="spec-name">Ford Mustang (S197)<span>2005&ndash;2014 &middot; V6 or 4.6/5.0 GT</span></h2>
-        <span class="tag step">V8 &middot; RWD</span>
+        <h2 class="spec-name">Mazda MX-5 Miata<span>NA&ndash;NC &middot; cheapest top-down smile</span></h2>
+        <span class="tag step">Fun &middot; RWD</span>
       </div>
       <div class="spec-grid">
-        <div class="spec-cell"><span class="k">Engine</span><span class="v">4.0 V6 / 4.6&ndash;5.0 V8</span></div>
-        <div class="spec-cell"><span class="k">Power</span><span class="v">210&ndash;420<small>hp</small></span></div>
+        <div class="spec-cell"><span class="k">Engine</span><span class="v">1.6&ndash;2.0<small>L I4</small></span></div>
+        <div class="spec-cell"><span class="k">Power</span><span class="v">116&ndash;167<small>hp</small></span></div>
         <div class="spec-cell"><span class="k">Drive</span><span class="v">RWD</span></div>
-        <div class="spec-cell"><span class="k">Weight</span><span class="v">~3,500<small>lb</small></span></div>
-        <div class="spec-cell"><span class="k">Price</span><span class="v">$6&ndash;10<small>k</small></span></div>
-      </div>
-      <div class="rev">
-        <div class="rev-label"><span>Power (GT, stock)</span><span>redline &rarr;</span></div>
-        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:93%"></div></div>
-      </div>
-      <p class="verdict">American muscle you can actually afford <em>and</em> actually fix in your driveway. The <b>4.6 GT</b> sounds great and the aftermarket is bottomless; the V6 is a cheaper entry. Simple solid rear axle keeps it cheap to run. <b>Watch:</b> abused/drag-launched GTs (clutch, rear end), rust on northern cars. The 5.0 Coyote (2011+) usually breaks $10k.</p>
-    </article>
-
-    <!-- BRZ/86 -->
-    <article class="spec-card">
-      <div class="spec-top">
-        <h2 class="spec-name">Toyota 86 / Subaru BRZ / FR-S<span>2013&ndash;2020 &middot; 1st gen &ldquo;Twins&rdquo;</span></h2>
-        <span class="tag char">Modern &middot; RWD</span>
-      </div>
-      <div class="spec-grid">
-        <div class="spec-cell"><span class="k">Engine</span><span class="v">2.0<small>L flat-4</small></span></div>
-        <div class="spec-cell"><span class="k">Power</span><span class="v">~200<small>hp</small></span></div>
-        <div class="spec-cell"><span class="k">Drive</span><span class="v">RWD</span></div>
-        <div class="spec-cell"><span class="k">Weight</span><span class="v">~2,800<small>lb</small></span></div>
-        <div class="spec-cell"><span class="k">Price</span><span class="v">$8&ndash;12<small>k</small></span></div>
+        <div class="spec-cell"><span class="k">Weight</span><span class="v">~2,300<small>lb</small></span></div>
+        <div class="spec-cell"><span class="k">Price</span><span class="v">$4&ndash;13<small>k</small></span></div>
       </div>
       <div class="rev">
         <div class="rev-label"><span>Power (stock)</span><span>redline &rarr;</span></div>
-        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:59%"></div></div>
+        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:40%"></div></div>
       </div>
-      <p class="verdict">The newest, most usable pick &mdash; modern safety, brilliant chassis, RWD, strong aftermarket. Famous for a low-end torque dip that owners fix with a tune/header (or just enjoy the balance). The cleanest way to get a <b>near-modern sports car</b> around budget. <b>Watch:</b> higher miles at this price, hard-tracked cars (rod bearings on FA20), early valve-spring recall.</p>
+      <p class="verdict">Featherweight roadster, dirt-cheap to buy and run, with the biggest community anywhere. Not fast &mdash; it&rsquo;s about top-down balance and pure smiles-per-dollar. The value play if you want fun over muscle. <b>Watch:</b> rust in rails/rockers (NA/NB), timing belt (1.8), tired soft top, clutch.</p>
     </article>
 
-    <!-- GTI -->
     <article class="spec-card">
       <div class="spec-top">
-        <h2 class="spec-name">VW GTI (MK5 / MK6)<span>2006&ndash;2014 &middot; the practical one</span></h2>
-        <span class="tag fam">FWD &middot; Turbo</span>
+        <h2 class="spec-name">Jeep Wrangler (JK)<span>2007&ndash;2018 &middot; the off-road icon</span></h2>
+        <span class="tag char">Off-road</span>
       </div>
       <div class="spec-grid">
-        <div class="spec-cell"><span class="k">Engine</span><span class="v">2.0<small>L turbo</small></span></div>
-        <div class="spec-cell"><span class="k">Power</span><span class="v">~200<small>hp*</small></span></div>
-        <div class="spec-cell"><span class="k">Drive</span><span class="v">FWD</span></div>
-        <div class="spec-cell"><span class="k">Weight</span><span class="v">~3,000<small>lb</small></span></div>
-        <div class="spec-cell"><span class="k">Price</span><span class="v">$5&ndash;9<small>k</small></span></div>
+        <div class="spec-cell"><span class="k">Engine</span><span class="v">3.6<small>L V6</small></span></div>
+        <div class="spec-cell"><span class="k">Power</span><span class="v">202&ndash;285<small>hp</small></span></div>
+        <div class="spec-cell"><span class="k">Drive</span><span class="v">4x4</span></div>
+        <div class="spec-cell"><span class="k">Weight</span><span class="v">~4,000<small>lb</small></span></div>
+        <div class="spec-cell"><span class="k">Price</span><span class="v">$13&ndash;20<small>k</small></span></div>
       </div>
       <div class="rev">
-        <div class="rev-label"><span>Power (stock &middot; tunes to 260+)</span><span>redline &rarr;</span></div>
-        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:59%"></div></div>
+        <div class="rev-label"><span>Power (stock)</span><span>redline &rarr;</span></div>
+        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:56%"></div></div>
       </div>
-      <p class="verdict">The practical one &mdash; a 4-door hot hatch that hides big, cheap power. A <b>$600 tune</b> wakes it up more than any N/A car here, and it still hauls groceries. Trade-off is upkeep: German turbo maintenance is real. <b>Watch:</b> timing chain tensioner (MK5/early MK6 &mdash; critical), carbon buildup (walnut blast), water pump, DSG service. <b>Buy on records, not looks.</b></p>
+      <p class="verdict">The other half of your shortlist. Doors and top come off, it&rsquo;ll go anywhere, and the trail aftermarket is bottomless &mdash; plus it holds value like nothing else. <b>Prefer the 3.6 Pentastar (2012+)</b> over the weak 3.8. <b>Watch:</b> &ldquo;death wobble&rdquo; (steering/track bar), rust, lifted/abused examples. Thirsty and slow-ish on-road.</p>
+    </article>
+
+    <article class="spec-card">
+      <div class="spec-top">
+        <h2 class="spec-name">Toyota 4Runner<span>4th gen &middot; 2003&ndash;2009 &middot; do-it-all</span></h2>
+        <span class="tag char">Off-road</span>
+      </div>
+      <div class="spec-grid">
+        <div class="spec-cell"><span class="k">Engine</span><span class="v">4.0<small>L V6</small></span></div>
+        <div class="spec-cell"><span class="k">Power</span><span class="v">~236<small>hp</small></span></div>
+        <div class="spec-cell"><span class="k">Drive</span><span class="v">4WD</span></div>
+        <div class="spec-cell"><span class="k">Weight</span><span class="v">~4,300<small>lb</small></span></div>
+        <div class="spec-cell"><span class="k">Price</span><span class="v">$9&ndash;16<small>k</small></span></div>
+      </div>
+      <div class="rev">
+        <div class="rev-label"><span>Power (stock)</span><span>redline &rarr;</span></div>
+        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:52%"></div></div>
+      </div>
+      <p class="verdict">The sensible middle ground &mdash; legendary Toyota reliability, genuinely capable off-road, yet comfy and roomy enough to actually use. A keep-forever for trips, gear, and trails. <b>Watch:</b> frame and rear-hatch rust (salt-belt cars), high miles (they run to 250k+), fewer flashy mods than the Jeep. The 4.7 V8 is smoother but thirstier.</p>
+    </article>
+
+    <article class="spec-card">
+      <div class="spec-top">
+        <h2 class="spec-name">Nissan Xterra<span>2005&ndash;2015 &middot; the value off-roader</span></h2>
+        <span class="tag char">Off-road</span>
+      </div>
+      <div class="spec-grid">
+        <div class="spec-cell"><span class="k">Engine</span><span class="v">4.0<small>L V6</small></span></div>
+        <div class="spec-cell"><span class="k">Power</span><span class="v">~261<small>hp</small></span></div>
+        <div class="spec-cell"><span class="k">Drive</span><span class="v">4x4</span></div>
+        <div class="spec-cell"><span class="k">Weight</span><span class="v">~4,300<small>lb</small></span></div>
+        <div class="spec-cell"><span class="k">Price</span><span class="v">$8&ndash;15<small>k</small></span></div>
+      </div>
+      <div class="rev">
+        <div class="rev-label"><span>Power (stock)</span><span>redline &rarr;</span></div>
+        <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:56%"></div></div>
+      </div>
+      <p class="verdict">The cheapest real off-roader here and wildly underrated &mdash; the tough VQ40, boxy utility, and true 4x4 for less than a Wrangler. If capability-per-dollar matters, this is it. <b>Watch (critical):</b> the &ldquo;SMOD&rdquo; on autos &mdash; radiator coolant leaking into the transmission; confirm it&rsquo;s been addressed. Also rust and timing-chain guides.</p>
     </article>
 
     <div class="read">
       <span class="eyebrow">The Read</span>
-      <p>The <b>Miata</b> is the highest-value place to start and learn &mdash; cheapest to buy, run, and fix, with the biggest community. Want power now? The <b>350Z</b> or <b>Mustang GT</b>. Want modern and usable? The <b>86 / BRZ</b>. Want a daily that mods hard and cheap? The <b>GTI</b>. Pick by your <b>project goal</b>, not just the spec sheet.</p>
+      <p>Two camps, one decision. <b>Fun on-road:</b> the <b>Corvette</b> is the V8 you love, the <b>350Z</b> the budget-grunt alt, the <b>Miata</b> the cheapest top-down smile. <b>Off-road:</b> the <b>Wrangler</b> is the icon, the <b>4Runner</b> the reliable do-it-all, the <b>Xterra</b> the value play. Decide the <b>vibe first</b> &mdash; open road or the trail &mdash; and the shortlist picks itself.</p>
     </div>
-    <p class="naming">// FIRST RULE &mdash; Buy the best <em>example</em>, not the cheapest car. Condition, records, and a rust-free body beat low price and low miles every single time.</p>
+    <p class="naming">// FIRST RULE &mdash; Buy the best <em>example</em>, not the cheapest one. Condition, records, and a rust-free <b>body &amp; frame</b> (especially on the off-roaders) beat low price and low miles every time.</p>
   </section>
 
   <!-- MARKET VALUES -->
   <details class="sec-block">
     <summary>
     <div class="sec-head"><span class="sec-num">03</span><h2>Market Values</h2></div>
-    <span class="insight"><em>Insight</em> Spend <b>~$6&ndash;8k</b> on the cleanest, best-documented example and bank the rest &mdash; condition beats mileage.</span>
+    <span class="insight"><em>Insight</em> Buy the cleanest, best-documented example &mdash; condition (and a rust-free frame on the off-roaders) beats mileage. Corvette/Wrangler run above the old $10k line.</span>
     </summary>
     <div class="mkt-intro">
       <p class="sec-note" style="margin-bottom:0">Typical mid-2026 asking ranges and the one thing to check hardest on each. On 15&ndash;20-year-old cars, <b style="color:#e6e2d8">condition beats mileage</b> &mdash; a documented high-mile car often beats a cheap unknown.</p>
@@ -1603,16 +1595,16 @@
       <table class="mkt">
         <thead><tr><th>Platform</th><th>Years</th><th class="n">Typical $</th><th>Watch For</th></tr></thead>
         <tbody>
-          <tr><td class="yr">Miata NA / NB</td><td>&rsquo;90&ndash;&rsquo;05</td><td class="ask n">$3&ndash;9k</td><td>Rust (rails, rockers), timing belt</td></tr>
-          <tr><td class="yr">BMW E46 / E36</td><td>&rsquo;99&ndash;&rsquo;06</td><td class="ask n">$4&ndash;9k</td><td>Cooling, subframe cracks, VANOS</td></tr>
-          <tr><td class="yr">Nissan 350Z</td><td>&rsquo;03&ndash;&rsquo;09</td><td class="ask n">$7&ndash;11k</td><td>Early-VQ oil use, bushings</td></tr>
-          <tr><td class="yr">Mustang S197</td><td>&rsquo;05&ndash;&rsquo;14</td><td class="ask n">$6&ndash;10k</td><td>Abused GTs, rust up north</td></tr>
-          <tr><td class="yr">86 / BRZ / FR-S</td><td>&rsquo;13&ndash;&rsquo;20</td><td class="ask n">$8&ndash;12k</td><td>High miles, tracked cars</td></tr>
-          <tr><td class="yr">VW GTI MK5/6</td><td>&rsquo;06&ndash;&rsquo;14</td><td class="ask n">$5&ndash;9k</td><td>Timing tensioner, carbon, records</td></tr>
+          <tr><td class="yr">Corvette C5</td><td>&rsquo;97&ndash;&rsquo;04</td><td class="ask n">$11&ndash;16k</td><td>Interior wear, column lock, roof leaks</td></tr>
+          <tr><td class="yr">Nissan 350Z</td><td>&rsquo;03&ndash;&rsquo;09</td><td class="ask n">$7&ndash;12k</td><td>Early-VQ oil use, bushings, clutch</td></tr>
+          <tr><td class="yr">Mazda Miata</td><td>&rsquo;90&ndash;&rsquo;15</td><td class="ask n">$4&ndash;13k</td><td>Rust (NA/NB), soft top, timing belt</td></tr>
+          <tr><td class="yr">Jeep Wrangler JK</td><td>&rsquo;07&ndash;&rsquo;18</td><td class="ask n">$13&ndash;20k</td><td>3.6&gt;3.8, death wobble, rust</td></tr>
+          <tr><td class="yr">Toyota 4Runner</td><td>&rsquo;03&ndash;&rsquo;09</td><td class="ask n">$9&ndash;16k</td><td>Frame/hatch rust, high miles</td></tr>
+          <tr><td class="yr">Nissan Xterra</td><td>&rsquo;05&ndash;&rsquo;15</td><td class="ask n">$8&ndash;15k</td><td>SMOD (coolant&rarr;trans), rust</td></tr>
         </tbody>
       </table>
     </div>
-    <div class="sweet">Best value play: spend <b>~$6&ndash;8k on the cleanest, best-documented example</b> you can find and keep the rest for fixes and round-one mods. The cheapest car in the listings is almost never the cheapest to own.</div>
+    <div class="sweet">Best value play: buy the cleanest, best-documented example you can &mdash; a <b>rust-free frame</b> on the off-roaders, honest <b>records</b> on the sports cars &mdash; and keep a reserve for tires and fixes. The cheapest one listed is almost never the cheapest to own.</div>
     <p class="cross-note">// Prices reflect mid-2026 U.S. listings (Marketplace, CarGurus, Bring a Trailer, Cars &amp; Bids). Region and condition swing them hard.</p>
   </details>
 
@@ -1725,7 +1717,7 @@
   <details class="sec-block">
     <summary>
     <div class="sec-head"><span class="sec-num">05</span><h2>Cross-Shop</h2></div>
-    <span class="insight"><em>Insight</em> By taste: <b>RX-8</b> for cheap thrills, <b>G35</b> for value, <b>MR2</b> for mid-engine fun &mdash; each has one known killer to check.</span>
+    <span class="insight"><em>Insight</em> Stretch the fun with a <b>C6 Corvette</b> or <b>370Z</b>; go cheaper off-road with a <b>Cherokee XJ</b> or <b>Tacoma</b>. Each has one known killer to check.</span>
     </summary>
     <p class="sec-note">Honorable mentions worth a look depending on your taste and goal.</p>
     <div class="cross">
@@ -1758,24 +1750,24 @@
         <p>Light, 5.0 V8, a drag/drift legend and a blank canvas. Prices are climbing and they&rsquo;re old now &mdash; buy a solid body, not a cheap roller.</p>
       </div>
     </div>
-    <p class="cross-note">// Priced out of the sub-$10k world now: Nissan 240SX, Honda S2000, R32/R34 Skyline, WRX STI. Great cars &mdash; just no longer bargains.</p>
+    <p class="cross-note">// A stretch or priced out: classic Ford Bronco, Toyota Land Cruiser (80/100), Honda S2000, new Bronco / Wrangler 392. Great &mdash; just not sub-$15k bargains.</p>
   </details>
 
   <!-- BEFORE YOU COMMIT -->
   <details class="sec-block">
     <summary>
     <div class="sec-head"><span class="sec-num">06</span><h2>Before You Commit</h2></div>
-    <span class="insight"><em>Insight</em> Buy the best example, run the VIN, and <b>know your goal first</b> &mdash; rust and abandoned builds are the money pits.</span>
+    <span class="insight"><em>Insight</em> Buy the best example, run the VIN, and <b>pick road vs. trail first</b> &mdash; rust, a beaten frame, and abused 4x4s are the money pits.</span>
     </summary>
     <div class="weigh">
       <div class="weigh-row"><span class="wk">Buy the best example</span><span class="wv">A clean $8k car beats a $4k &ldquo;project&rdquo; that needs everything. Fixes always run ~2&times; the estimate &mdash; condition and records are the real value.</span></div>
-      <div class="weigh-row"><span class="wk">Rust is the killer</span><span class="wv">Check frame rails, subframe mounts, floors, rockers, and arches. A <b>rust-free needs-mechanical</b> car beats a clean-running rust bucket. Salt-belt cars are risky.</span></div>
+      <div class="weigh-row"><span class="wk">Rust is the killer</span><span class="wv">Check frame rails, floors, rockers, arches &mdash; and the <b>full frame/undercarriage on the 4x4s</b>. A rust-free needs-mechanical rig beats a clean-running rust bucket. Salt-belt trucks are risky.</span></div>
       <div class="weigh-row"><span class="wk">Run the VIN + title</span><span class="wv">Carfax/AutoCheck for accidents, salvage/rebuilt brands, odometer, and liens. <b>Salvage</b> = cheaper but tanks resale and complicates insurance.</span></div>
       <div class="weigh-row"><span class="wk">Aftermarket + community</span><span class="wv">A deep parts catalog and an active forum/Discord make or break a build. <b>Avoid orphan platforms</b> where every part is a scavenger hunt.</span></div>
       <div class="weigh-row"><span class="wk">Mechanical &lt; cosmetic &lt; rust</span><span class="wv">Mechanical is the cheapest to fix. Bodywork and rust are the money pits &mdash; price accordingly and walk from hidden corrosion.</span></div>
       <div class="weigh-row"><span class="wk">Skip abandoned builds</span><span class="wv">Half-done mods, missing OEM parts, mystery wiring, &ldquo;ran when parked.&rdquo; A <b>bone-stock</b> car is usually the smarter, cheaper start.</span></div>
-      <div class="weigh-row"><span class="wk">Manual &gt; auto</span><span class="wv">For nearly everything on this list, a manual is more fun and holds better enthusiast resale.</span></div>
-      <div class="weigh-row"><span class="wk">Know your goal first</span><span class="wv">Track, autocross, drift, stance, restomod, or daily+ &mdash; the goal picks the platform. Decide <b>before</b> you buy, not after.</span></div>
+      <div class="weigh-row"><span class="wk">4x4 done right</span><span class="wv">On the Jeep / 4Runner / Xterra, test <b>4-Hi and 4-Lo</b> (no binding), check diffs and transfer case for leaks, and walk from lift + oversized-tire abuse &mdash; a beaten trail rig hides a lot.</span></div>
+      <div class="weigh-row"><span class="wk">Road or trail?</span><span class="wv">Fun on-road (Corvette / 350Z / Miata) and light off-road (Wrangler / 4Runner / Xterra) want different cars <em>and</em> different checks. Decide the <b>vibe before</b> you shop, not after.</span></div>
       <div class="weigh-row"><span class="wk">Space, tools, time</span><span class="wv">Be honest about your garage, your toolset, and your bandwidth. A project you can&rsquo;t work on becomes a driveway ornament.</span></div>
       <div class="weigh-row"><span class="wk">Emissions + insurance</span><span class="wv">Modified cars can fail state inspection/emissions &mdash; check your rules. And quote insurance first; some of these cost more to cover.</span></div>
     </div>
@@ -1785,7 +1777,7 @@
   <details class="sec-block">
     <summary>
     <div class="sec-head"><span class="sec-num">07</span><h2>Inspection / PPI</h2></div>
-    <span class="insight"><em>Insight</em> Cold start, hunt for rust, scan for <b>cleared codes</b> &mdash; a $150&ndash;250 shop PPI is the cheapest insurance you&rsquo;ll buy.</span>
+    <span class="insight"><em>Insight</em> Cold start, hunt for <b>frame rust</b>, work the 4x4, scan for <b>cleared codes</b> &mdash; a $150&ndash;250 shop PPI is the cheapest insurance you&rsquo;ll buy.</span>
     </summary>
     <p class="sec-note">Run this yourself before money moves &mdash; or pay a shop for a platform-specific PPI. Tap to check off as you go.</p>
 
@@ -1818,8 +1810,18 @@
     <div class="check-group">
       <h4>Rust &amp; Body</h4>
       <ul class="check-list">
-        <li><label><input type="checkbox"><span>Frame rails, subframe mounts, floors, rockers, arches &mdash; no rot</span></label></li>
+        <li><label><input type="checkbox"><span>Frame rails, floors, rockers, arches &mdash; and the <b>full frame/undercarriage on 4x4s</b> &mdash; no rot</span></label></li>
         <li><label><input type="checkbox"><span>Even panel gaps + consistent paint (no hidden accident / weld marks)</span></label></li>
+      </ul>
+    </div>
+
+    <div class="check-group">
+      <h4>4x4 &amp; Drivetrain <small style="font-weight:400;color:#b7b3a9;font-family:'IBM Plex Mono';font-size:.7rem;letter-spacing:.04em;">&mdash; off-roaders</small></h4>
+      <ul class="check-list">
+        <li><label><input type="checkbox"><span>Engage 4-Hi and 4-Lo &mdash; shifts cleanly, no binding on slow turns</span></label></li>
+        <li><label><input type="checkbox"><span>Diffs, transfer case, axle seals &mdash; no leaks or gear whine</span></label></li>
+        <li><label><input type="checkbox"><span>Look for lift + oversized-tire abuse; bent/scraped skid plates, dented arms</span></label></li>
+        <li><label><input type="checkbox"><span>Xterra (auto): no <b>SMOD</b> &mdash; check ATF isn&rsquo;t pink/milky from coolant</span></label></li>
       </ul>
     </div>
 
@@ -1837,7 +1839,7 @@
       <ul class="check-list">
         <li><label><input type="checkbox"><span>Scan for codes &mdash; and for recently <em>cleared</em> codes</span></label></li>
         <li><label><input type="checkbox"><span>All lights, AC, windows, gauges work; no warning lights stuck on</span></label></li>
-        <li><label><input type="checkbox"><span>Platform check: E46 subframe &middot; 350Z oil use &middot; RX-8 compression &middot; GTI timing/carbon &middot; Miata rust</span></label></li>
+        <li><label><input type="checkbox"><span>Platform check: Corvette column-lock/roof &middot; Wrangler death wobble &middot; 4Runner &amp; Xterra frame rust &middot; Xterra SMOD &middot; 350Z oil use &middot; Miata rust</span></label></li>
       </ul>
     </div>
 
@@ -1885,11 +1887,11 @@
   <section style="border-bottom:none;">
     <div class="sec-head"><span class="sec-num">09</span><h2>Next Steps</h2></div>
     <div class="steps">
-      <div class="step"><p>Pick your <b>project goal</b> (track / drift / autocross / stance / daily+) &mdash; it chooses the platform.</p></div>
-      <div class="step"><p>Set the split: cap the car around <b>$6&ndash;8k</b>, reserve the rest for fixes, tools, and round-one mods.</p></div>
+      <div class="step"><p>Pick the <b>vibe first</b>: fun on-road (Corvette / 350Z / Miata) or light off-road (Wrangler / 4Runner / Xterra).</p></div>
+      <div class="step"><p>Set your ceiling &mdash; a clean Corvette or Wrangler runs <b>$13&ndash;20k</b>; keep a reserve for tires, fixes, and setup.</p></div>
       <div class="step"><p>Shortlist <b>1&ndash;2 platforms</b> and learn their known weak points cold.</p></div>
       <div class="step"><p>Watch listings (Marketplace, CarGurus, Cars &amp; Bids, Bring a Trailer) and <b>save comps</b>.</p></div>
-      <div class="step"><p>Run the VIN and get a <b>platform-specific PPI</b> before you commit.</p></div>
+      <div class="step"><p>Run the VIN and get a <b>platform-specific PPI</b> (frame + 4x4 check on the off-roaders) before you commit.</p></div>
       <div class="step"><p>Buy the <b>best example you can afford</b> &mdash; condition over everything.</p></div>
     </div>
   </section>
