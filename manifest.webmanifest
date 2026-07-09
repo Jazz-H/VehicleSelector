@@ -1,7 +1,7 @@
 {
-  "name": "Two & Four",
-  "short_name": "2&4",
-  "description": "Two wheels and four — your command center for the daily, the moto build, and the car build.",
+  "name": "Motorpool",
+  "short_name": "Motorpool",
+  "description": "Your motor pool — command center for the daily, the moto build, and the car build.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
