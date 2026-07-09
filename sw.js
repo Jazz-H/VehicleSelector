@@ -1,5 +1,5 @@
 /* The Garage — service worker: network-first for HTML, cache-first for assets. */
-var CACHE = 'garage-v1';
+var CACHE = 'twofour-v2';
 var ASSETS = [
   './',
   './index.html',
