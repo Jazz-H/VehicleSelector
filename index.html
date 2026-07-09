@@ -1882,5 +1882,42 @@ if ('serviceWorker' in navigator) {
 })();
 </script>
 
+<script>
+// Persist editable candidate fields (year/make/model, price, miles…) across reloads.
+(function () {
+  function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 72); }
+  var fields = document.querySelectorAll('.fill[contenteditable]');
+  fields.forEach(function (f) {
+    var view = f.closest('.view');
+    var vid = view ? view.id : 'v';
+    var card = f.closest('.cand-card');
+    var eyEl = card ? card.querySelector('.cand-ey') : null;
+    var ey = eyEl ? (eyEl.textContent || '').trim() : 'card';
+    var label;
+    if (f.closest('.cand-name')) {
+      label = 'name';
+    } else {
+      var fact = f.closest('.cand-fact');
+      var kEl = fact ? fact.querySelector('.k') : null;
+      label = kEl ? (kEl.textContent || '').trim() : (f.getAttribute('data-ph') || 'field');
+    }
+    var k = 'mp.fld.' + slug(vid + '|' + ey + '|' + label);
+    f.dataset.persistKey = k;
+    try {
+      var v = localStorage.getItem(k);
+      if (v != null && v !== '') f.textContent = v;
+    } catch (e) {}
+    function save() {
+      try {
+        var t = (f.textContent || '').trim();
+        if (t) localStorage.setItem(k, t); else localStorage.removeItem(k);
+      } catch (e) {}
+    }
+    f.addEventListener('input', save);
+    f.addEventListener('blur', save);
+  });
+})();
+</script>
+
 </body>
 </html>
