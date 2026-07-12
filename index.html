@@ -540,6 +540,18 @@
     font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:.92rem;color:var(--ink);
     text-align:right;width:76px;border-bottom:1px dashed var(--line-strong);padding:1px 0;margin-left:1px;}
   .val-in:focus{outline:none;border-bottom-color:var(--amber);}
+  .gear-row{align-items:center;}
+  .gear-pick{display:flex;align-items:center;gap:11px;flex:1;min-width:0;cursor:pointer;margin:0;}
+  .gear-pick input[type="checkbox"]{flex:0 0 auto;width:19px;height:19px;margin:0;cursor:pointer;
+    appearance:none;-webkit-appearance:none;border:2px solid var(--line-strong);border-radius:5px;
+    background:var(--paper);position:relative;transition:background .12s,border-color .12s;}
+  .gear-pick input[type="checkbox"]:checked{background:var(--redline);border-color:var(--redline);}
+  .gear-pick input[type="checkbox"]:checked::after{content:"";position:absolute;left:5px;top:1px;
+    width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);}
+  .gear-pick input[type="checkbox"]:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+  .gear-pick .item{min-width:0;}
+  .gear-cost{width:58px;}
+  .gear-row.is-bought .gear-pick .item{color:#4f9e6a;}
   .amt .modrm{margin-left:9px;border:none;background:transparent;color:var(--ink-faint);cursor:pointer;
     font-size:1.05rem;line-height:1;padding:0 2px;vertical-align:middle;-webkit-tap-highlight-color:transparent;}
   .amt .modrm:hover{color:var(--redline-deep);}
@@ -955,16 +967,45 @@
       <div class="money-fig">$4,000<small>cash · bike only</small></div>
       <p>Enough for a clean used CB500 or most of this list &mdash; and cash keeps lower-mile examples in reach. Gear rides on top of this, so aim the bike a bit under $4k. Lead with cash on a private sale.</p>
     </div>
-    <p class="sec-note">Gear, service, and security are a separate spend you plan on top:</p>
+    <p class="sec-note">Gear, service &amp; security ride on top. Tick each as you buy it and tweak the price &mdash; the running total feeds your all-in below.</p>
     <div class="panel">
-      <div class="ledger">
-        <div class="ledger-row"><span class="item">Helmet <small>DOT / ECE, entry–mid</small></span><span class="amt">$150–400</span></div>
-        <div class="ledger-row"><span class="item">Riding pants <small>armored or Kevlar-lined</small></span><span class="amt">$150–300</span></div>
-        <div class="ledger-row"><span class="item">Boots / riding shoes</span><span class="amt">$100–250</span></div>
-        <div class="ledger-row"><span class="item">First service <small>oil + chain (less if DIY)</small></span><span class="amt">$100–250</span></div>
-        <div class="ledger-row"><span class="item">Cover</span><span class="amt">$30–60</span></div>
-        <div class="ledger-row"><span class="item">Disc lock / chain lock</span><span class="amt">$40–150</span></div>
-        <div class="ledger-row total"><span class="item">Gear + Setup</span><span class="amt">~$600–1,400</span></div>
+      <div class="ledger gear-list">
+        <div class="ledger-row gear-row">
+          <label class="gear-pick"><input type="checkbox" class="gear-chk" data-g="helmet"><span class="item">Helmet <small>DOT / ECE, entry–mid</small></span></label>
+          <span class="amt">$<input class="val-in gear-cost" type="text" data-g="helmet" inputmode="numeric" value="250" aria-label="Helmet cost"></span>
+        </div>
+        <div class="ledger-row gear-row">
+          <label class="gear-pick"><input type="checkbox" class="gear-chk" data-g="jacket"><span class="item">Jacket <small>armored / mesh</small></span></label>
+          <span class="amt">$<input class="val-in gear-cost" type="text" data-g="jacket" inputmode="numeric" value="200" aria-label="Jacket cost"></span>
+        </div>
+        <div class="ledger-row gear-row">
+          <label class="gear-pick"><input type="checkbox" class="gear-chk" data-g="pants"><span class="item">Riding pants <small>armored or Kevlar-lined</small></span></label>
+          <span class="amt">$<input class="val-in gear-cost" type="text" data-g="pants" inputmode="numeric" value="200" aria-label="Riding pants cost"></span>
+        </div>
+        <div class="ledger-row gear-row">
+          <label class="gear-pick"><input type="checkbox" class="gear-chk" data-g="gloves"><span class="item">Gloves <small>armored knuckle</small></span></label>
+          <span class="amt">$<input class="val-in gear-cost" type="text" data-g="gloves" inputmode="numeric" value="60" aria-label="Gloves cost"></span>
+        </div>
+        <div class="ledger-row gear-row">
+          <label class="gear-pick"><input type="checkbox" class="gear-chk" data-g="boots"><span class="item">Boots / riding shoes</span></label>
+          <span class="amt">$<input class="val-in gear-cost" type="text" data-g="boots" inputmode="numeric" value="150" aria-label="Boots cost"></span>
+        </div>
+        <div class="ledger-row gear-row">
+          <label class="gear-pick"><input type="checkbox" class="gear-chk" data-g="service"><span class="item">First service <small>oil + chain (less if DIY)</small></span></label>
+          <span class="amt">$<input class="val-in gear-cost" type="text" data-g="service" inputmode="numeric" value="150" aria-label="First service cost"></span>
+        </div>
+        <div class="ledger-row gear-row">
+          <label class="gear-pick"><input type="checkbox" class="gear-chk" data-g="lock"><span class="item">Disc / chain lock</span></label>
+          <span class="amt">$<input class="val-in gear-cost" type="text" data-g="lock" inputmode="numeric" value="90" aria-label="Lock cost"></span>
+        </div>
+        <div class="ledger-row gear-row">
+          <label class="gear-pick"><input type="checkbox" class="gear-chk" data-g="cover"><span class="item">Cover</span></label>
+          <span class="amt">$<input class="val-in gear-cost" type="text" data-g="cover" inputmode="numeric" value="45" aria-label="Cover cost"></span>
+        </div>
+        <div class="ledger-row total">
+          <span class="item">Bought <small id="gearNote">tick as you go</small></span>
+          <span class="amt"><span id="gearBought">&mdash;</span> <small style="color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;">/ <span id="gearPlanned">&mdash;</span> planned</small></span>
+        </div>
       </div>
     </div>
     <p class="sec-note">Bike is capped at $4k; gear rides on top. Punch in a price to see your all-in:</p>
@@ -972,7 +1013,7 @@
       <div class="ledger">
         <div class="ledger-row"><span class="item">Bike <small>your target / offer</small></span><span class="amt">$<input class="val-in" type="text" data-b="bike" inputmode="numeric" value="3600" aria-label="Bike price"></span></div>
         <div class="ledger-row"><span class="item">vs $4,000 cap <small id="capNote">headroom</small></span><span class="amt" id="capLeft">&mdash;</span></div>
-        <div class="ledger-row"><span class="item">Gear + setup <small>on top &mdash; the kit above</small></span><span class="amt">$<input class="val-in" type="text" data-b="gear" inputmode="numeric" value="1000" aria-label="Gear and setup"></span></div>
+        <div class="ledger-row"><span class="item">Gear + setup <small>full kit from the checklist above</small></span><span class="amt" id="gearAllIn">&mdash;</span></div>
         <div class="ledger-row total"><span class="item">All-in cash <small>bike + gear</small></span><span class="amt" id="allIn">&mdash;</span></div>
       </div>
     </div>
@@ -2319,44 +2360,53 @@ if ('serviceWorker' in navigator) {
 </script>
 
 <script>
-// Moto budget split — bike (vs $4k cap) + gear on top -> all-in cash. Persisted.
+// Moto budget — bike (vs $4k cap) + a tickable gear checklist -> all-in cash. Persisted.
 (function () {
-  var P = 'mp.mbud.', CAP = 4000;
   var bike = document.querySelector('.val-in[data-b="bike"]');
-  var gear = document.querySelector('.val-in[data-b="gear"]');
-  if (!bike || !gear) return;
+  if (!bike) return;
+  var CAP = 4000;
+  var costs = Array.prototype.slice.call(document.querySelectorAll('.gear-cost'));
+  var checks = Array.prototype.slice.call(document.querySelectorAll('.gear-chk'));
   function n(el) { var v = parseFloat((el.value || '').replace(/[^0-9.]/g, '')); return isFinite(v) ? v : 0; }
   function money(x) { return '$' + Math.round(x).toLocaleString('en-US'); }
+  function boughtFor(key) { var el = document.querySelector('.gear-chk[data-g="' + key + '"]'); return !!(el && el.checked); }
   function compute() {
-    var b = n(bike), g = n(gear), head = CAP - b;
-    var cl = document.getElementById('capLeft'), cn = document.getElementById('capNote'), ai = document.getElementById('allIn');
+    // Bike vs cap.
+    var b = n(bike), head = CAP - b;
+    var cl = document.getElementById('capLeft'), cn = document.getElementById('capNote');
     if (cl) { cl.textContent = (head < 0 ? '−' : '') + money(Math.abs(head)) + (head < 0 ? ' over' : ' under'); cl.style.color = head >= 0 ? '#4f9e6a' : 'var(--redline-deep)'; }
     if (cn) cn.textContent = head >= 0 ? 'under the cap' : 'over the cap';
-    if (ai) ai.textContent = money(b + g);
+    // Gear checklist totals.
+    var planned = 0, bought = 0, boughtCount = 0;
+    costs.forEach(function (el) {
+      var key = el.getAttribute('data-g'), c = n(el), row = el.closest('.gear-row');
+      planned += c;
+      if (boughtFor(key)) { bought += c; boughtCount++; if (row) row.classList.add('is-bought'); }
+      else if (row) row.classList.remove('is-bought');
+    });
+    var gp = document.getElementById('gearPlanned'), gb = document.getElementById('gearBought'), gnote = document.getElementById('gearNote');
+    if (gp) gp.textContent = money(planned);
+    if (gb) gb.textContent = money(bought);
+    if (gnote) gnote.textContent = boughtCount ? boughtCount + ' of ' + costs.length + ' bought' : 'tick as you go';
+    // Feed the all-in: bike + full planned kit.
+    var ga = document.getElementById('gearAllIn'), ai = document.getElementById('allIn');
+    if (ga) ga.textContent = money(planned);
+    if (ai) ai.textContent = money(b + planned);
   }
-  [bike, gear].forEach(function (el) {
-    var k = P + el.getAttribute('data-b');
+  // Bike price persistence.
+  try { var bs = localStorage.getItem('mp.mbud.bike'); if (bs !== null) bike.value = bs; } catch (e) {}
+  bike.addEventListener('input', function () { try { localStorage.setItem('mp.mbud.bike', bike.value); } catch (e) {} compute(); });
+  // Gear cost persistence.
+  costs.forEach(function (el) {
+    var k = 'mp.gear.cost.' + el.getAttribute('data-g');
     try { var sv = localStorage.getItem(k); if (sv !== null) el.value = sv; } catch (e) {}
     el.addEventListener('input', function () { try { localStorage.setItem(k, el.value); } catch (e) {} compute(); });
   });
-  compute();
-})();
-</script>
-
-</body>
-</html>
- + Math.round(x).toLocaleString('en-US'); }
-  function compute(){
-    var b = n(bike), g = n(gear), head = CAP - b;
-    var cl = document.getElementById('capLeft'), cn = document.getElementById('capNote'), ai = document.getElementById('allIn');
-    if (cl){ cl.textContent = (head<0?'\u2212':'') + money(Math.abs(head)) + (head<0?' over':' under'); cl.style.color = head>=0 ? '#4f9e6a' : 'var(--redline-deep)'; }
-    if (cn) cn.textContent = head>=0 ? 'under the cap' : 'over the cap';
-    if (ai) ai.textContent = money(b + g);
-  }
-  [bike, gear].forEach(function(el){
-    var k = P + el.getAttribute('data-b');
-    try { var sv = localStorage.getItem(k); if (sv !== null) el.value = sv; } catch(e){}
-    el.addEventListener('input', function(){ try { localStorage.setItem(k, el.value); } catch(e){} compute(); });
+  // Gear bought-state persistence.
+  checks.forEach(function (el) {
+    var k = 'mp.gear.chk.' + el.getAttribute('data-g');
+    try { if (localStorage.getItem(k) === '1') el.checked = true; } catch (e) {}
+    el.addEventListener('change', function () { try { localStorage.setItem(k, el.checked ? '1' : '0'); } catch (e) {} compute(); });
   });
   compute();
 })();
