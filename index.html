@@ -540,6 +540,18 @@
     font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:.92rem;color:var(--ink);
     text-align:right;width:76px;border-bottom:1px dashed var(--line-strong);padding:1px 0;margin-left:1px;}
   .val-in:focus{outline:none;border-bottom-color:var(--amber);}
+  .gear-row{align-items:center;}
+  .gear-pick{display:flex;align-items:center;gap:11px;flex:1;min-width:0;cursor:pointer;margin:0;}
+  .gear-pick input[type="checkbox"]{flex:0 0 auto;width:19px;height:19px;margin:0;cursor:pointer;
+    appearance:none;-webkit-appearance:none;border:2px solid var(--line-strong);border-radius:5px;
+    background:var(--paper);position:relative;transition:background .12s,border-color .12s;}
+  .gear-pick input[type="checkbox"]:checked{background:var(--redline);border-color:var(--redline);}
+  .gear-pick input[type="checkbox"]:checked::after{content:"";position:absolute;left:5px;top:1px;
+    width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);}
+  .gear-pick input[type="checkbox"]:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+  .gear-pick .item{min-width:0;}
+  .gear-cost{width:58px;}
+  .gear-row.is-bought .gear-pick .item{color:#4f9e6a;}
   .amt .modrm{margin-left:9px;border:none;background:transparent;color:var(--ink-faint);cursor:pointer;
     font-size:1.05rem;line-height:1;padding:0 2px;vertical-align:middle;-webkit-tap-highlight-color:transparent;}
   .amt .modrm:hover{color:var(--redline-deep);}
@@ -789,9 +801,9 @@
           </div>
           <div class="pt-stats">
             <div class="pt-stat"><span class="k">Budget</span><span class="v">$4,000 <small>cash</small></span></div>
-            <div class="pt-stat"><span class="k">Candidates</span><span class="v">3 <small>(1 passed)</small></span></div>
-            <div class="pt-stat"><span class="k">Front-runner</span><span class="v">CB500F <small>$3.9k</small></span></div>
-            <div class="pt-stat"><span class="k">Also live</span><span class="v">Triumph &middot; Ducati</span></div>
+            <div class="pt-stat"><span class="k">Candidates</span><span class="v">4 <small>(3 CB500F)</small></span></div>
+            <div class="pt-stat"><span class="k">Front-runner</span><span class="v">CB500F <small>$3.0k</small></span></div>
+            <div class="pt-stat"><span class="k">Also live</span><span class="v">Triumph 400</span></div>
           </div>
           <a class="pt-open" href="#moto">Open Moto <span class="arr">&rarr;</span></a>
         </div>
@@ -823,7 +835,6 @@
 
       <h4 class="dash-h">Decision Queue</h4>
       <ul class="check-list">
-        <li><label><input type="checkbox"><span><span class="queue-tag moto">Moto</span>Message Ducati seller &mdash; when were the timing belts last done?</span></label></li>
         <li><label><input type="checkbox"><span><span class="queue-tag moto">Moto</span>Confirm CB500F service history + book the test ride</span></label></li>
         <li><label><input type="checkbox"><span><span class="queue-tag moto">Moto</span>Get insurance quotes: CB500F vs Triumph Speed 400</span></label></li>
         <li><label><input type="checkbox"><span><span class="queue-tag car">Car</span>Pick the Mustang&rsquo;s complement &mdash; a 4-door 4x4/utility (Wrangler / 4Runner / Tacoma)</span></label></li>
@@ -955,16 +966,45 @@
       <div class="money-fig">$4,000<small>cash · bike only</small></div>
       <p>Enough for a clean used CB500 or most of this list &mdash; and cash keeps lower-mile examples in reach. Gear rides on top of this, so aim the bike a bit under $4k. Lead with cash on a private sale.</p>
     </div>
-    <p class="sec-note">Gear, service, and security are a separate spend you plan on top:</p>
+    <p class="sec-note">Gear, service &amp; security ride on top. Tick each as you buy it and tweak the price &mdash; the running total feeds your all-in below.</p>
     <div class="panel">
-      <div class="ledger">
-        <div class="ledger-row"><span class="item">Helmet <small>DOT / ECE, entry–mid</small></span><span class="amt">$150–400</span></div>
-        <div class="ledger-row"><span class="item">Riding pants <small>armored or Kevlar-lined</small></span><span class="amt">$150–300</span></div>
-        <div class="ledger-row"><span class="item">Boots / riding shoes</span><span class="amt">$100–250</span></div>
-        <div class="ledger-row"><span class="item">First service <small>oil + chain (less if DIY)</small></span><span class="amt">$100–250</span></div>
-        <div class="ledger-row"><span class="item">Cover</span><span class="amt">$30–60</span></div>
-        <div class="ledger-row"><span class="item">Disc lock / chain lock</span><span class="amt">$40–150</span></div>
-        <div class="ledger-row total"><span class="item">Gear + Setup</span><span class="amt">~$600–1,400</span></div>
+      <div class="ledger gear-list">
+        <div class="ledger-row gear-row">
+          <label class="gear-pick"><input type="checkbox" class="gear-chk" data-g="helmet"><span class="item">Helmet <small>DOT / ECE, entry–mid</small></span></label>
+          <span class="amt">$<input class="val-in gear-cost" type="text" data-g="helmet" inputmode="numeric" value="250" aria-label="Helmet cost"></span>
+        </div>
+        <div class="ledger-row gear-row">
+          <label class="gear-pick"><input type="checkbox" class="gear-chk" data-g="jacket"><span class="item">Jacket <small>armored / mesh</small></span></label>
+          <span class="amt">$<input class="val-in gear-cost" type="text" data-g="jacket" inputmode="numeric" value="200" aria-label="Jacket cost"></span>
+        </div>
+        <div class="ledger-row gear-row">
+          <label class="gear-pick"><input type="checkbox" class="gear-chk" data-g="pants"><span class="item">Riding pants <small>armored or Kevlar-lined</small></span></label>
+          <span class="amt">$<input class="val-in gear-cost" type="text" data-g="pants" inputmode="numeric" value="200" aria-label="Riding pants cost"></span>
+        </div>
+        <div class="ledger-row gear-row">
+          <label class="gear-pick"><input type="checkbox" class="gear-chk" data-g="gloves"><span class="item">Gloves <small>armored knuckle</small></span></label>
+          <span class="amt">$<input class="val-in gear-cost" type="text" data-g="gloves" inputmode="numeric" value="60" aria-label="Gloves cost"></span>
+        </div>
+        <div class="ledger-row gear-row">
+          <label class="gear-pick"><input type="checkbox" class="gear-chk" data-g="boots"><span class="item">Boots / riding shoes</span></label>
+          <span class="amt">$<input class="val-in gear-cost" type="text" data-g="boots" inputmode="numeric" value="150" aria-label="Boots cost"></span>
+        </div>
+        <div class="ledger-row gear-row">
+          <label class="gear-pick"><input type="checkbox" class="gear-chk" data-g="service"><span class="item">First service <small>oil + chain (less if DIY)</small></span></label>
+          <span class="amt">$<input class="val-in gear-cost" type="text" data-g="service" inputmode="numeric" value="150" aria-label="First service cost"></span>
+        </div>
+        <div class="ledger-row gear-row">
+          <label class="gear-pick"><input type="checkbox" class="gear-chk" data-g="lock"><span class="item">Disc / chain lock</span></label>
+          <span class="amt">$<input class="val-in gear-cost" type="text" data-g="lock" inputmode="numeric" value="90" aria-label="Lock cost"></span>
+        </div>
+        <div class="ledger-row gear-row">
+          <label class="gear-pick"><input type="checkbox" class="gear-chk" data-g="cover"><span class="item">Cover</span></label>
+          <span class="amt">$<input class="val-in gear-cost" type="text" data-g="cover" inputmode="numeric" value="45" aria-label="Cover cost"></span>
+        </div>
+        <div class="ledger-row total">
+          <span class="item">Bought <small id="gearNote">tick as you go</small></span>
+          <span class="amt"><span id="gearBought">&mdash;</span> <small style="color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;">/ <span id="gearPlanned">&mdash;</span> planned</small></span>
+        </div>
       </div>
     </div>
     <p class="sec-note">Bike is capped at $4k; gear rides on top. Punch in a price to see your all-in:</p>
@@ -972,7 +1012,7 @@
       <div class="ledger">
         <div class="ledger-row"><span class="item">Bike <small>your target / offer</small></span><span class="amt">$<input class="val-in" type="text" data-b="bike" inputmode="numeric" value="3600" aria-label="Bike price"></span></div>
         <div class="ledger-row"><span class="item">vs $4,000 cap <small id="capNote">headroom</small></span><span class="amt" id="capLeft">&mdash;</span></div>
-        <div class="ledger-row"><span class="item">Gear + setup <small>on top &mdash; the kit above</small></span><span class="amt">$<input class="val-in" type="text" data-b="gear" inputmode="numeric" value="1000" aria-label="Gear and setup"></span></div>
+        <div class="ledger-row"><span class="item">Gear + setup <small>full kit from the checklist above</small></span><span class="amt" id="gearAllIn">&mdash;</span></div>
         <div class="ledger-row total"><span class="item">All-in cash <small>bike + gear</small></span><span class="amt" id="allIn">&mdash;</span></div>
       </div>
     </div>
@@ -1158,10 +1198,122 @@
       </div>
     </article>
 
-    <!-- CANDIDATE 02 -->
+    <!-- CANDIDATE 02 — the cheaper, higher-mile CB500F -->
     <article class="cand-card">
       <div class="cand-top">
-        <div><span class="cand-ey">Candidate 02 · Dealer (Marketplace)</span><h3 class="cand-name">2025 Triumph Speed 400</h3></div>
+        <div><span class="cand-ey">Candidate 02 · Facebook Marketplace</span><h3 class="cand-name">2015 Honda CB500F</h3></div>
+        <span class="vbadge">Strong buy</span>
+      </div>
+      <div class="cand-facts">
+        <div class="cand-fact"><span class="k">Price</span><span class="v">$3,200 <small>$3,500</small></span></div>
+        <div class="cand-fact"><span class="k">Miles</span><span class="v">27,000</span></div>
+        <div class="cand-fact"><span class="k">Title</span><span class="v">Clean ✓</span></div>
+        <div class="cand-fact"><span class="k">Location</span><span class="v">Mars Hill, NC</span></div>
+      </div>
+      <div class="pos">
+        <div class="pos-row"><span>CB500F benchmark ask</span><span>$4.0k ←→ $5.0k</span></div>
+        <div class="pos-track"><div class="pos-mark" data-v="$3.2k" style="left:0%"></div></div>
+        <div class="pos-foot"><b>Cheapest running CB500F on the board</b> &mdash; $700 under Candidate 01 and well below the market floor. 27k miles is still low for this bulletproof twin (they run 60k+). <b>You&rsquo;re paying for miles + a pipe, not for trouble.</b></div>
+      </div>
+      <div class="cand-cols">
+        <div class="cand-col">
+          <h5>Condition &amp; Mods</h5>
+          <ul>
+            <li>Clean title, ~26&ndash;27k miles</li>
+            <li>Fresh oil change, good tires</li>
+            <li>LeoVince-style slip-on exhaust</li>
+            <li>1-finger adjustable clutch lever</li>
+            <li>&ldquo;No issues, ready to ride&rdquo;</li>
+            <li class="extra">Trades: MT-07 / FZ-07 only &middot; $3,200 OBO</li>
+          </ul>
+        </div>
+        <div class="cand-col">
+          <h5>Why it fits</h5>
+          <ul>
+            <li>Same &ldquo;step up&rdquo; twin, lowest cash out</li>
+            <li>Leaves the whole gear budget under $4k</li>
+            <li>~47 hp, highway-capable</li>
+            <li>Bulletproof Honda &mdash; barely broken in</li>
+            <li>Established seller (4.5&#9733;, 8 reviews)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cand-verify">
+        <div class="vh">// Confirm before buying &mdash; the miles + the exhaust are the watch-items</div>
+        <ul class="check-list">
+          <li><label><input type="checkbox"><span>Valve-clearance check &mdash; ~16k-mi interval; done, or due at 27k?</span></label></li>
+          <li><label><input type="checkbox"><span>Chain + sprockets &mdash; 27k is when they need replacing; check wear</span></label></li>
+          <li><label><input type="checkbox"><span>Exhaust: any tune / fuel controller? Decel popping or lean running?</span></label></li>
+          <li><label><input type="checkbox"><span>Check for drop damage &mdash; bar ends, levers, case covers, frame</span></label></li>
+          <li><label><input type="checkbox"><span>Confirm true odometer (26k vs 27k), VIN matches title, keys</span></label></li>
+          <li><label><input type="checkbox"><span>Cold start clean, no smoke/rattle; brakes + fork seals</span></label></li>
+        </ul>
+      </div>
+      <div class="cand-offer">
+        <div><span class="ol">Target offer</span><span class="oa">$2,900&ndash;3,100</span></div>
+        <p>Already OBO at $3,200. Higher miles + an aftermarket pipe (not every buyer wants one) are your leverage &mdash; a clean <b>cash offer near $3,000</b> is fair and keeps <b>~$900 under the $4k cap</b> for a valve/chain service cushion. It&rsquo;s a ~2-hr drive from Charlotte, so confirm condition before you make the trip.</p>
+      </div>
+    </article>
+
+    <!-- CANDIDATE 03 — cheapest CB500F, drop + odometer history -->
+    <article class="cand-card">
+      <div class="cand-top">
+        <div><span class="cand-ey">Candidate 03 · Facebook Marketplace</span><h3 class="cand-name">2014 Honda CB500F</h3></div>
+        <span class="vbadge">Strong buy*</span>
+      </div>
+      <div class="cand-facts">
+        <div class="cand-fact"><span class="k">Price</span><span class="v">$3,000</span></div>
+        <div class="cand-fact"><span class="k">Miles</span><span class="v">13,546<small>true</small></span></div>
+        <div class="cand-fact"><span class="k">Title</span><span class="v">Clean ✓</span></div>
+        <div class="cand-fact"><span class="k">Location</span><span class="v">NC</span></div>
+      </div>
+      <div class="pos">
+        <div class="pos-row"><span>CB500F benchmark ask</span><span>$4.0k ←→ $5.0k</span></div>
+        <div class="pos-track"><div class="pos-mark" data-v="$3.0k" style="left:0%"></div></div>
+        <div class="pos-foot"><b>*Cheapest of the three CB500Fs &mdash; but it&rsquo;s been laid down.</b> True miles are a genuinely-low 13,546 (dash reads ~2.5k; the cluster was swapped after the drop). <b>The asterisk is the crash history &mdash; inspect it before anything else.</b></div>
+      </div>
+      <div class="cand-cols">
+        <div class="cand-col">
+          <h5>Condition &amp; History</h5>
+          <ul>
+            <li>Clean NC title, low true miles</li>
+            <li>Regularly serviced, <b>new tires</b></li>
+            <li>Odo cluster replaced (true 13,546)</li>
+            <li class="extra">Laid down by past owner &middot; $3,000, trades OK</li>
+          </ul>
+        </div>
+        <div class="cand-col">
+          <h5>Why it fits</h5>
+          <ul>
+            <li>Lowest cash out of any pick</li>
+            <li>Low true miles + fresh rubber</li>
+            <li>Same &ldquo;step up&rdquo; twin, ~47 hp</li>
+            <li>Bulletproof Honda &mdash; cheap to run</li>
+            <li>Trade-flexible seller (or just cash)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cand-verify">
+        <div class="vh">// Confirm before buying &mdash; the drop + the odometer are the watch-items</div>
+        <ul class="check-list">
+          <li><label><input type="checkbox"><span>Crash damage: bent forks/bars, cracked case covers, frame straightness, subframe</span></label></li>
+          <li><label><input type="checkbox"><span>Does the fork compress/rebound straight? Wheels true, no wobble at speed?</span></label></li>
+          <li><label><input type="checkbox"><span>Odometer: does the NC title note the mileage discrepancy / cluster swap? Get it in writing</span></label></li>
+          <li><label><input type="checkbox"><span>Service records for the &ldquo;regularly serviced&rdquo; claim; valve check status</span></label></li>
+          <li><label><input type="checkbox"><span>Chain + sprockets and brake pad life at 13.5k</span></label></li>
+          <li><label><input type="checkbox"><span>Cold start clean, no smoke/rattle; VIN matches title; keys</span></label></li>
+        </ul>
+      </div>
+      <div class="cand-offer">
+        <div><span class="ol">Target offer</span><span class="oa">$2,600&ndash;2,800</span></div>
+        <p>The <b>laid-down history + odometer swap are real value-killers on paper</b> &mdash; use them. If the frame/forks check out straight, this is a low-mile, freshly-shod CB500F for the least money on the board. If they don&rsquo;t, walk. A cash offer <b>$2,600&ndash;2,800</b> is fair given the damage risk.</p>
+      </div>
+    </article>
+
+    <!-- CANDIDATE 04 -->
+    <article class="cand-card">
+      <div class="cand-top">
+        <div><span class="cand-ey">Candidate 04 · Dealer (Marketplace)</span><h3 class="cand-name">2025 Triumph Speed 400</h3></div>
         <span class="vbadge">Strong buy*</span>
       </div>
       <div class="cand-facts">
@@ -1213,55 +1365,10 @@
       </div>
     </article>
 
-    <!-- CANDIDATE 03 (PASSED) -->
-    <article class="cand-card passed">
-      <div class="cand-top">
-        <div><span class="cand-ey">Candidate 03 · Facebook Marketplace</span><h3 class="cand-name">2023 Royal Enfield Scram 411</h3></div>
-        <span class="vbadge pass">Passed</span>
-      </div>
-      <div class="cand-facts">
-        <div class="cand-fact"><span class="k">Price</span><span class="v">$2,900 <small>$3,200</small></span></div>
-        <div class="cand-fact"><span class="k">Miles</span><span class="v">9,801</span></div>
-        <div class="cand-fact"><span class="k">Power</span><span class="v">~24 hp</span></div>
-        <div class="cand-fact"><span class="k">Weight</span><span class="v">~408 lb</span></div>
-      </div>
-      <div class="pos">
-        <div class="pos-row"><span>used Scram 411 market</span><span>$3.5k ←→ $4.5k</span></div>
-        <div class="pos-track"><div class="pos-mark" data-v="$2.9k" style="left:2%"></div></div>
-        <div class="pos-foot"><b>Great price — ~$600–1,600 under market.</b> Clean, well-kept, motivated seller. The problem isn't value; it's fit.</div>
-      </div>
-      <div class="cand-cols">
-        <div class="cand-col">
-          <h5>The Listing (Strong)</h5>
-          <ul>
-            <li>Clean title in hand</li>
-            <li>9k service done: valve adj, plug, oil</li>
-            <li>Full maintenance records</li>
-            <li>Fresh Shinko 705 tires, GIVI guards</li>
-            <li>Garage kept, cosmetic scuffs only</li>
-          </ul>
-        </div>
-        <div class="cand-col">
-          <h5>Why We Passed</h5>
-          <ul>
-            <li>~24 hp / 408 lb — slower <em>and</em> heavier than your old CB300F</li>
-            <li>Undershoots the "step up" brief</li>
-            <li>CB500F makes ~2× the power for ~$1k more</li>
-            <li>Buzzy/strained above ~65 mph</li>
-            <li>Tell: seller's son moved <em>up</em> to a Bear 650</li>
-          </ul>
-        </div>
-      </div>
-      <div class="cand-offer pass">
-        <div><span class="ol">Verdict</span><span class="oa">Pass</span></div>
-        <p>Good price, wrong brief. Only reconsider if your priority shifts from <b>step-up performance</b> to a <b>light, cheap, dirt-curious knockaround</b> — for that, it's a well-priced, bulletproof little bike.</p>
-      </div>
-    </article>
-
-    <!-- BLANK 04 -->
+    <!-- BLANK 05 -->
     <article class="cand-card blank">
       <div class="cand-top">
-        <div><span class="cand-ey">Candidate 04</span><h3 class="cand-name"><span class="fill" contenteditable="true" data-ph="year / make / model"></span></h3></div>
+        <div><span class="cand-ey">Candidate 05</span><h3 class="cand-name"><span class="fill" contenteditable="true" data-ph="year / make / model"></span></h3></div>
         <span class="vbadge todo">TBD</span>
       </div>
       <div class="cand-facts">
@@ -1283,32 +1390,28 @@
     <p class="sec-note">Mostly A2-legal, under 600cc, and in reach at $4k cash used — with one over-budget exception, flagged below. Worth a test ride against your shortlist.</p>
     <div class="cross">
       <div class="cross-item">
-        <h4>Chevy C6 Corvette</h4>
-        <p>The step-up fun pick &mdash; LS2/LS3 power, sharper looks, still cheap to run. Clean ones creep past budget, but it&rsquo;s the Vette to stretch for. <b>Watch:</b> tick/valvetrain on some LS, worn interior.</p>
+        <h4>Kawasaki Ninja 400 / Z400</h4>
+        <p>The value benchmark &mdash; 399cc twin, ~45 hp, standard ABS, and a real step up from your 300F for cheaper running than the KTM. Z400 is the naked, Ninja 400 the faired. <b>Watch:</b> dropped/track bikes; discontinued for 2024 (&rarr; Ninja 500), so hunt the low-mile late ones.</p>
       </div>
       <div class="cross-item">
-        <h4>Nissan 370Z</h4>
-        <p>The newer, punchier Z (~332 hp) if the budget grows &mdash; more modern than the 350Z with the same bombproof feel. <b>Watch:</b> tires are pricey; some clutch/synchro wear.</p>
+        <h4>Yamaha MT-03 / R3</h4>
+        <p>The other easy twin &mdash; 321cc, ~42 hp, inverted forks + slipper clutch and the <b>lowest, friendliest seat</b> of the group. Smooth and dirt-cheap to own. <b>Watch:</b> mildest power here; some riders want more midrange for the highway.</p>
       </div>
       <div class="cross-item">
-        <h4>Mazda RX-8</h4>
-        <p>The cheapest thrills anywhere (~$4&ndash;8k), a screaming rotary and 50/50 balance. The catch is real: <b>apex-seal/engine risk and heavy thirst.</b> Always compression-test first.</p>
+        <h4>KTM 390 Duke</h4>
+        <p>The character pick &mdash; 373cc single, ~44 hp, sharpest handling and the most attitude of the bunch. <b>Watch:</b> pricier service + parts and faster depreciation than the Japanese twins; confirm ABS is present.</p>
       </div>
       <div class="cross-item">
-        <h4>Jeep Cherokee XJ</h4>
-        <p>The OG cheap 4x4 &mdash; bulletproof 4.0 straight-six, light, endlessly modifiable, and a genuine trail weapon for little money. <b>Watch:</b> rust (they dissolve), tired cooling, lifted/abused rigs.</p>
+        <h4>Honda CBR500R</h4>
+        <p>Your CB500F&rsquo;s <b>faired sibling</b> &mdash; identical 471cc twin and running gear, just a fairing and a slight forward lean for wind protection. Same bulletproof reliability. <b>Watch:</b> lean ergonomics if you prefer upright; otherwise a pure ergonomics-vs-CB500F call.</p>
       </div>
       <div class="cross-item">
-        <h4>Toyota Tacoma</h4>
-        <p>Off-road pickup that does everything and barely depreciates &mdash; a do-it-all if you want a bed. <b>Watch:</b> frame rust (recall history), high miles, and paying the Toyota tax.</p>
+        <h4>BMW G310 R</h4>
+        <p>Premium badge on a budget &mdash; 313cc single, ~34 hp, light and flickable, easy in town. <b>Watch:</b> modest power, early-build fueling quirks/recalls, and a thinner service network than Honda.</p>
       </div>
       <div class="cross-item">
-        <h4>Subaru Forester / Outback</h4>
-        <p>The soft-roader angle &mdash; AWD, comfy, cheap, and light-trail capable if &ldquo;fun&rdquo; means trips and dirt roads over rock crawling. <b>Watch:</b> head gaskets (EJ25), oil consumption, CVT on newer ones.</p>
-      </div>
-      <div class="cross-item">
-        <h4>Ford Mustang GT (S197)</h4>
-        <p>You already daily a Mustang &mdash; but a cheap 4.6/5.0 GT is the easy V8 fun alt to the Corvette. Simple, loud, bottomless aftermarket. <b>Watch:</b> abused/drag cars, rust up north.</p>
+        <h4>Kawasaki Ninja 650 / Z650 <small style="font-weight:400;color:var(--ink-faint)">— over-budget stretch</small></h4>
+        <p>The step past the brief &mdash; 649cc twin, ~67 hp, more real-world grunt. The flagged exception: it&rsquo;s <b>over 600cc and usually over $4k</b>. <b>Watch:</b> more bike than a returning rider needs day one; not A2-legal unrestricted.</p>
       </div>
     <p class="cross-note">// The Ninja 400 / Z400 is the strongest all-round alternative to the Hondas — cheaper to run than the KTM, and a real step up from your 300F.</p>
   </details>
@@ -1528,21 +1631,21 @@
 
     <article class="spec-card">
       <div class="spec-top">
-        <h2 class="spec-name">Toyota Tacoma<span>Double Cab &middot; 4-door &middot; truck utility</span></h2>
+        <h2 class="spec-name">Toyota Tacoma<span>&rsquo;13&ndash;&rsquo;15 TRD Off-Road &middot; budget-fit target</span></h2>
         <span class="tag char">Truck</span>
       </div>
       <div class="spec-grid">
         <div class="spec-cell"><span class="k">Engine</span><span class="v">4.0<small>L V6</small></span></div>
         <div class="spec-cell"><span class="k">Power</span><span class="v">~236<small>hp</small></span></div>
-        <div class="spec-cell"><span class="k">Drive</span><span class="v">4WD</span></div>
+        <div class="spec-cell"><span class="k">Drive</span><span class="v">4WD<small>+ locker</small></span></div>
         <div class="spec-cell"><span class="k">Weight</span><span class="v">~4,000<small>lb</small></span></div>
-        <div class="spec-cell"><span class="k">Price</span><span class="v">$12&ndash;22<small>k</small></span></div>
+        <div class="spec-cell"><span class="k">Price</span><span class="v">$18&ndash;22<small>k</small></span></div>
       </div>
       <div class="rev">
         <div class="rev-label"><span>Power (stock)</span><span>redline &rarr;</span></div>
         <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:52%"></div></div>
       </div>
-      <p class="verdict">Adds a <b>bed</b> and go-anywhere utility &mdash; the truck to the Mustang&rsquo;s coupe, and it barely depreciates. Double Cab keeps four doors. <b>Watch:</b> frame rust (recall history), high miles, Toyota-tax pricing; skip the base 4-cyl &mdash; get the V6.</p>
+      <p class="verdict">The <b>wallet-friendly way into the truck you drove.</b> A 2nd-gen TRD Off-Road keeps the part that matters &mdash; electronic <b>rear locker</b> + off-road package &mdash; on the bulletproof 4.0 V6, for roughly <b>half</b> your <b>2021 (~$35k dream spec)</b>. Adds a bed + trail capability the Mustang can&rsquo;t, Double Cab keeps four doors, and these run 200k+ miles. <b>Watch:</b> confirm the <b>locker button on the dash</b> (not just badges), tired shocks/bushings from off-road life; <b>skip &rsquo;16&ndash;&rsquo;17</b> (trans shudder), avoid &rsquo;06&ndash;&rsquo;09 (frame rust) &amp; &rsquo;11&ndash;&rsquo;12 (air-pump).</p>
     </article>
 
     <article class="spec-card">
@@ -1625,7 +1728,7 @@
         <tbody>
           <tr><td class="yr">Wrangler Unlimited</td><td>&rsquo;07&ndash;&rsquo;18</td><td class="ask n">$16&ndash;26k</td><td>3.6&gt;3.8, death wobble, rust</td></tr>
           <tr><td class="yr">Toyota 4Runner</td><td>&rsquo;03&ndash;&rsquo;15</td><td class="ask n">$9&ndash;20k</td><td>Frame/hatch rust, high miles</td></tr>
-          <tr><td class="yr">Toyota Tacoma</td><td>&rsquo;05&ndash;&rsquo;15</td><td class="ask n">$12&ndash;22k</td><td>Frame rust (recall), high miles</td></tr>
+          <tr><td class="yr">Toyota Tacoma (TRD Off-Road)</td><td>&rsquo;13&ndash;&rsquo;15</td><td class="ask n">$18&ndash;22k</td><td>Confirm dash locker; skip &rsquo;16&ndash;&rsquo;17</td></tr>
           <tr><td class="yr">Nissan Xterra</td><td>&rsquo;05&ndash;&rsquo;15</td><td class="ask n">$8&ndash;15k</td><td>SMOD (coolant&rarr;trans), rust</td></tr>
           <tr><td class="yr">Grand Cherokee WK2</td><td>&rsquo;11&ndash;&rsquo;16</td><td class="ask n">$10&ndash;18k</td><td>Air susp, electronics; 3.6/5.7</td></tr>
           <tr><td class="yr">Subaru Outback/Forester</td><td>&rsquo;10&ndash;&rsquo;16</td><td class="ask n">$8&ndash;16k</td><td>Head gaskets, oil use, CVT</td></tr>
@@ -1709,32 +1812,32 @@
 
     <article class="cand-card carpick">
       <div class="cand-top">
-        <div><span class="cand-ey">Candidate 03 &middot; Truck utility</span><h3 class="cand-name">Toyota Tacoma</h3></div>
+        <div><span class="cand-ey">Candidate 03 &middot; &rsquo;13&ndash;&rsquo;15 TRD Off-Road (budget-fit)</span><h3 class="cand-name">Toyota Tacoma</h3></div>
         <span class="vbadge pass">Suggested</span>
       </div>
       <div class="cand-facts">
         <div class="cand-fact"><span class="k">Engine</span><span class="v">4.0<small>L V6</small></span></div>
         <div class="cand-fact"><span class="k">Power</span><span class="v">~236<small>hp</small></span></div>
-        <div class="cand-fact"><span class="k">Drive</span><span class="v">4WD</span></div>
-        <div class="cand-fact"><span class="k">Price</span><span class="v">$12&ndash;22<small>k</small></span></div>
+        <div class="cand-fact"><span class="k">Drive</span><span class="v">4WD<small>+ locker</small></span></div>
+        <div class="cand-fact"><span class="k">Price</span><span class="v">$18&ndash;22<small>k</small></span></div>
       </div>
       <div class="cand-cols">
         <div class="cand-col">
           <h5>Why it fits</h5>
           <ul>
-            <li>Adds a <b>bed</b> the Mustang can&rsquo;t</li>
-            <li>Double Cab = 4 doors + utility</li>
-            <li>Barely depreciates; go-anywhere</li>
-            <li>Truck to the coupe&rsquo;s two-door</li>
+            <li><b>You drove the 2021 45 days</b> &mdash; know you like it</li>
+            <li>2nd-gen = same <b>rear locker</b>, ~half the price</li>
+            <li>Adds a <b>bed</b> + 4 doors the Mustang can&rsquo;t</li>
+            <li>Bulletproof 4.0 V6; runs 200k+ miles</li>
           </ul>
         </div>
         <div class="cand-col">
           <h5>Watch</h5>
           <ul>
-            <li>Frame rust (recall history)</li>
-            <li>High miles; Toyota-tax pricing</li>
-            <li>Skip the base 4-cyl &mdash; get the V6</li>
-            <li>Basic ride, rear drums</li>
+            <li>Confirm <b>locker button</b> on dash, not badges</li>
+            <li>Tired shocks/bushings from off-road use</li>
+            <li>Skip &rsquo;16&ndash;&rsquo;17 (trans shudder / oil leaks)</li>
+            <li>Avoid &rsquo;06&ndash;&rsquo;09 rust &amp; &rsquo;11&ndash;&rsquo;12 air-pump</li>
           </ul>
         </div>
       </div>
@@ -2319,44 +2422,53 @@ if ('serviceWorker' in navigator) {
 </script>
 
 <script>
-// Moto budget split — bike (vs $4k cap) + gear on top -> all-in cash. Persisted.
+// Moto budget — bike (vs $4k cap) + a tickable gear checklist -> all-in cash. Persisted.
 (function () {
-  var P = 'mp.mbud.', CAP = 4000;
   var bike = document.querySelector('.val-in[data-b="bike"]');
-  var gear = document.querySelector('.val-in[data-b="gear"]');
-  if (!bike || !gear) return;
+  if (!bike) return;
+  var CAP = 4000;
+  var costs = Array.prototype.slice.call(document.querySelectorAll('.gear-cost'));
+  var checks = Array.prototype.slice.call(document.querySelectorAll('.gear-chk'));
   function n(el) { var v = parseFloat((el.value || '').replace(/[^0-9.]/g, '')); return isFinite(v) ? v : 0; }
   function money(x) { return '$' + Math.round(x).toLocaleString('en-US'); }
+  function boughtFor(key) { var el = document.querySelector('.gear-chk[data-g="' + key + '"]'); return !!(el && el.checked); }
   function compute() {
-    var b = n(bike), g = n(gear), head = CAP - b;
-    var cl = document.getElementById('capLeft'), cn = document.getElementById('capNote'), ai = document.getElementById('allIn');
+    // Bike vs cap.
+    var b = n(bike), head = CAP - b;
+    var cl = document.getElementById('capLeft'), cn = document.getElementById('capNote');
     if (cl) { cl.textContent = (head < 0 ? '−' : '') + money(Math.abs(head)) + (head < 0 ? ' over' : ' under'); cl.style.color = head >= 0 ? '#4f9e6a' : 'var(--redline-deep)'; }
     if (cn) cn.textContent = head >= 0 ? 'under the cap' : 'over the cap';
-    if (ai) ai.textContent = money(b + g);
+    // Gear checklist totals.
+    var planned = 0, bought = 0, boughtCount = 0;
+    costs.forEach(function (el) {
+      var key = el.getAttribute('data-g'), c = n(el), row = el.closest('.gear-row');
+      planned += c;
+      if (boughtFor(key)) { bought += c; boughtCount++; if (row) row.classList.add('is-bought'); }
+      else if (row) row.classList.remove('is-bought');
+    });
+    var gp = document.getElementById('gearPlanned'), gb = document.getElementById('gearBought'), gnote = document.getElementById('gearNote');
+    if (gp) gp.textContent = money(planned);
+    if (gb) gb.textContent = money(bought);
+    if (gnote) gnote.textContent = boughtCount ? boughtCount + ' of ' + costs.length + ' bought' : 'tick as you go';
+    // Feed the all-in: bike + full planned kit.
+    var ga = document.getElementById('gearAllIn'), ai = document.getElementById('allIn');
+    if (ga) ga.textContent = money(planned);
+    if (ai) ai.textContent = money(b + planned);
   }
-  [bike, gear].forEach(function (el) {
-    var k = P + el.getAttribute('data-b');
+  // Bike price persistence.
+  try { var bs = localStorage.getItem('mp.mbud.bike'); if (bs !== null) bike.value = bs; } catch (e) {}
+  bike.addEventListener('input', function () { try { localStorage.setItem('mp.mbud.bike', bike.value); } catch (e) {} compute(); });
+  // Gear cost persistence.
+  costs.forEach(function (el) {
+    var k = 'mp.gear.cost.' + el.getAttribute('data-g');
     try { var sv = localStorage.getItem(k); if (sv !== null) el.value = sv; } catch (e) {}
     el.addEventListener('input', function () { try { localStorage.setItem(k, el.value); } catch (e) {} compute(); });
   });
-  compute();
-})();
-</script>
-
-</body>
-</html>
- + Math.round(x).toLocaleString('en-US'); }
-  function compute(){
-    var b = n(bike), g = n(gear), head = CAP - b;
-    var cl = document.getElementById('capLeft'), cn = document.getElementById('capNote'), ai = document.getElementById('allIn');
-    if (cl){ cl.textContent = (head<0?'\u2212':'') + money(Math.abs(head)) + (head<0?' over':' under'); cl.style.color = head>=0 ? '#4f9e6a' : 'var(--redline-deep)'; }
-    if (cn) cn.textContent = head>=0 ? 'under the cap' : 'over the cap';
-    if (ai) ai.textContent = money(b + g);
-  }
-  [bike, gear].forEach(function(el){
-    var k = P + el.getAttribute('data-b');
-    try { var sv = localStorage.getItem(k); if (sv !== null) el.value = sv; } catch(e){}
-    el.addEventListener('input', function(){ try { localStorage.setItem(k, el.value); } catch(e){} compute(); });
+  // Gear bought-state persistence.
+  checks.forEach(function (el) {
+    var k = 'mp.gear.chk.' + el.getAttribute('data-g');
+    try { if (localStorage.getItem(k) === '1') el.checked = true; } catch (e) {}
+    el.addEventListener('change', function () { try { localStorage.setItem(k, el.checked ? '1' : '0'); } catch (e) {} compute(); });
   });
   compute();
 })();
