@@ -1,10 +1,10 @@
 /* The Garage — service worker: network-first for HTML, cache-first for assets. */
-var CACHE = 'motorpool-v4';
+var CACHE = 'motorpool-v5';
 var ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './mustang-hero.jpg',
+  './mustang-hero-v2.jpg',
   './icon-192.png',
   './icon-512.png',
   './apple-touch-icon.png',
@@ -13,7 +13,10 @@ var ASSETS = [
 
 self.addEventListener('install', function (e) {
   e.waitUntil(
-    caches.open(CACHE).then(function (c) { return c.addAll(ASSETS); }).then(function () { return self.skipWaiting(); })
+    caches.open(CACHE).then(function (c) {
+      // Cache each asset independently so one missing file can't fail the whole install.
+      return Promise.all(ASSETS.map(function (a) { return c.add(a).catch(function () {}); }));
+    }).then(function () { return self.skipWaiting(); })
   );
 });
 
@@ -25,6 +28,11 @@ self.addEventListener('activate', function (e) {
   );
 });
 
+// Only cache real successful responses — never a 404/opaque error (which would stick).
+function cacheable(resp) {
+  return resp && resp.ok && resp.status === 200 && resp.type !== 'opaqueredirect';
+}
+
 self.addEventListener('fetch', function (e) {
   var req = e.request;
   if (req.method !== 'GET') return;
@@ -35,19 +43,18 @@ self.addEventListener('fetch', function (e) {
     // Network-first so deploys show up immediately; fall back to cache offline.
     e.respondWith(
       fetch(req).then(function (resp) {
-        var copy = resp.clone();
-        caches.open(CACHE).then(function (c) { c.put(req, copy); });
+        if (cacheable(resp)) { var copy = resp.clone(); caches.open(CACHE).then(function (c) { c.put(req, copy); }); }
         return resp;
       }).catch(function () {
         return caches.match(req).then(function (r) { return r || caches.match('./index.html'); });
       })
     );
   } else {
-    // Cache-first for static, same-origin assets.
+    // Cache-first for static, same-origin assets; only store successful responses.
     e.respondWith(
       caches.match(req).then(function (cached) {
         return cached || fetch(req).then(function (resp) {
-          if (url.origin === location.origin) {
+          if (url.origin === location.origin && cacheable(resp)) {
             var copy = resp.clone();
             caches.open(CACHE).then(function (c) { c.put(req, copy); });
           }
