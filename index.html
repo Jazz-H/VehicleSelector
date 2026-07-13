@@ -2331,6 +2331,7 @@ if ('serviceWorker' in navigator) {
   var drag = null;
   function onMove(e) {
     if (!drag) return;
+    if (e.cancelable) e.preventDefault();
     var y = e.clientY, firstSub = ledger.querySelector('.ledger-row.sub'), placed = false;
     reorderRows().forEach(function (r) {
       if (placed || r === drag.row) return;
@@ -2342,11 +2343,9 @@ if ('serviceWorker' in navigator) {
   function endDrag() {
     if (!drag) return;
     drag.row.classList.remove('dragging');
-    var g = drag.grip;
-    try { g.releasePointerCapture(drag.pointerId); } catch (e) {}
-    g.removeEventListener('pointermove', onMove);
-    g.removeEventListener('pointerup', endDrag);
-    g.removeEventListener('pointercancel', endDrag);
+    document.removeEventListener('pointermove', onMove);
+    document.removeEventListener('pointerup', endDrag);
+    document.removeEventListener('pointercancel', endDrag);
     drag = null; saveOrder();
   }
   function addGrip(r) {
@@ -2357,12 +2356,13 @@ if ('serviceWorker' in navigator) {
     it.insertBefore(g, it.firstChild);
     g.addEventListener('pointerdown', function (e) {
       e.preventDefault();
-      drag = { row: r, grip: g, pointerId: e.pointerId };
+      drag = { row: r };
       r.classList.add('dragging');
-      try { g.setPointerCapture(e.pointerId); } catch (err) {}
-      g.addEventListener('pointermove', onMove);
-      g.addEventListener('pointerup', endDrag);
-      g.addEventListener('pointercancel', endDrag);
+      // Listen on document (not the grip) so reordering the row — which moves the grip in
+      // the DOM — doesn't drop the event stream. touch-action:none on the grip blocks scroll.
+      document.addEventListener('pointermove', onMove, { passive: false });
+      document.addEventListener('pointerup', endDrag);
+      document.addEventListener('pointercancel', endDrag);
     });
   }
   function initReorder() { reorderRows().forEach(addGrip); applyOrder(); }
