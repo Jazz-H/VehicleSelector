@@ -615,7 +615,14 @@
     letter-spacing:.1em;font-size:.9rem;color:var(--paper);display:flex;align-items:center;gap:9px;}
   .wordmark::before{content:"";width:14px;height:15px;background:var(--redline);
     clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);flex:0 0 auto;}
+  .topnav-tabs{display:flex;align-items:center;gap:14px;}
   .tabs{display:flex;gap:2px;background:var(--steel-850);border:1px solid var(--line-steel-strong);border-radius:4px;padding:3px;}
+  /* Settings sits apart from the content tabs, on the far right */
+  .settings-tab{display:inline-flex;align-items:center;gap:6px;background:var(--steel-850);
+    border:1px solid var(--line-steel-strong);border-radius:4px;padding:7px 11px;}
+  .settings-tab .settings-ico{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;
+    stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto;}
+  .settings-tab.active{background:var(--redline);color:#fff;border-color:var(--redline);}
   .tab{font-family:"IBM Plex Mono",monospace;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;
     color:#b7b3a9;padding:7px 10px;border-radius:2px;text-decoration:none;font-weight:600;transition:.12s;white-space:nowrap;}
   .tab:hover{color:var(--paper);}
@@ -918,7 +925,7 @@
 
   @media (max-width:680px){
     /* Top bar becomes a slim app title bar; nav moves to the bottom */
-    .topnav .tabs{display:none;}
+    .topnav .topnav-tabs{display:none;}
     .topnav-inner{justify-content:center;}
     .wordmark{letter-spacing:.16em;}
 
@@ -1029,12 +1036,16 @@
 <nav class="topnav">
   <div class="topnav-inner">
     <span class="wordmark">Motorpool</span>
-    <div class="tabs">
-      <a id="tab-garage" class="tab active" href="#garage">Hub</a>
-      <a id="tab-daily" class="tab" href="#daily">Garage</a>
-      <a id="tab-moto" class="tab" href="#moto">Moto</a>
-      <a id="tab-car" class="tab" href="#car">Car</a>
-      <a id="tab-settings" class="tab" href="#settings">Settings</a>
+    <div class="topnav-tabs">
+      <div class="tabs">
+        <a id="tab-garage" class="tab active" href="#garage">Hub</a>
+        <a id="tab-daily" class="tab" href="#daily">Garage</a>
+        <a id="tab-moto" class="tab" href="#moto">Moto</a>
+        <a id="tab-car" class="tab" href="#car">Car</a>
+      </div>
+      <a id="tab-settings" class="tab settings-tab" href="#settings" aria-label="Settings">
+        <svg class="settings-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.4v3.1M12 18.5v3.1M4.2 4.2l2.2 2.2M17.6 17.6l2.2 2.2M2.4 12h3.1M18.5 12h3.1M4.2 19.8l2.2-2.2M17.6 6.4l2.2-2.2"/></svg>Settings
+      </a>
     </div>
   </div>
 </nav>
