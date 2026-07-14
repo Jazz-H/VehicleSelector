@@ -829,6 +829,15 @@
     background:radial-gradient(120% 100% at 50% 0,#2a3138,#1b1f24);}
   .daily-photo-fb span{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;
     letter-spacing:.05em;color:#8a9098;font-size:1.05rem;}
+  .daily-photo-edit{position:absolute;bottom:10px;right:10px;z-index:2;border:none;cursor:pointer;
+    display:inline-flex;align-items:center;gap:6px;font-family:"IBM Plex Mono",monospace;font-size:.6rem;
+    letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:#fff;background:rgba(20,22,24,.64);
+    -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);border-radius:999px;padding:8px 13px;
+    -webkit-tap-highlight-color:transparent;transition:background .15s,opacity .15s;}
+  .daily-photo-edit .dpe-cam{font-size:.9rem;line-height:1;}
+  .daily-photo-edit:hover{background:var(--redline);}
+  .daily-photo-edit:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+  @media (hover:hover){ .daily-photo-edit{opacity:0;} .daily-photo:hover .daily-photo-edit{opacity:1;} }
 
   /* ---------- COLLAPSIBLE SECTIONS ---------- */
   details.sec-block{padding:34px 0;border-bottom:1px solid var(--line-steel);}
@@ -1142,6 +1151,8 @@
              alt="2026 Ford Mustang EcoBoost Premium — starkv3.0" loading="lazy"
              onerror="this.remove();var fb=document.getElementById('dpFallback');if(fb)fb.hidden=false;">
         <div id="dpFallback" class="daily-photo-fb" hidden><span><span data-dd-echo="title1">2026 Mustang</span> &middot; <span data-dd-echo="nick">starkv3.0</span></span></div>
+        <button type="button" class="daily-photo-edit" id="dpEdit" aria-label="Replace daily driver photo"><span class="dpe-cam">&#9723;</span> Replace photo</button>
+        <input type="file" id="dpFile" accept="image/*" hidden>
       </div>
       <div class="pt-top">
         <div><span class="pt-ey">Daily Driver &middot; &ldquo;<span class="dd-field" data-dd="nick" data-dd-echo="nick" contenteditable="true" role="textbox" aria-label="Edit nickname">starkv3.0</span>&rdquo;</span><h3 class="pt-title"><span class="dd-field" data-dd="title1" data-dd-echo="title1" contenteditable="true" role="textbox" aria-label="Edit year, make and model">2026 Mustang</span><br><span class="dd-field" data-dd="title2" data-dd-echo="title2" contenteditable="true" role="textbox" aria-label="Edit trim">EcoBoost Premium</span></h3></div>
@@ -3315,6 +3326,64 @@ if ('serviceWorker' in navigator) {
     el.addEventListener('focusout', function () { commit(el); });
     el.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+    });
+  });
+})();
+</script>
+
+<script>
+// Replace the daily-driver photo — downscale to a data URI, persist, captured in your backup.
+(function () {
+  var wrap = document.querySelector('#view-daily .daily-photo');
+  var fileIn = document.getElementById('dpFile');
+  var editBtn = document.getElementById('dpEdit');
+  if (!wrap || !fileIn || !editBtn) return;
+  var KEY = 'mp.daily.photo';
+
+  function showPhoto(src) {
+    var img = wrap.querySelector('.daily-photo-img');
+    if (!img) { // the original may have been removed by its onerror fallback
+      img = document.createElement('img');
+      img.className = 'daily-photo-img';
+      img.setAttribute('loading', 'lazy');
+      wrap.insertBefore(img, wrap.firstChild);
+    }
+    img.removeAttribute('onerror'); // a user photo must not trip the fallback logic
+    img.alt = 'Your daily driver';
+    img.src = src;
+    var fb = document.getElementById('dpFallback'); if (fb) fb.hidden = true;
+  }
+  try { var saved = localStorage.getItem(KEY); if (saved) showPhoto(saved); } catch (e) {}
+
+  function downscale(file, cb) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var im = new Image();
+      im.onload = function () {
+        var MAX = 1000, w = im.width, h = im.height;
+        if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+        var cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+        cv.getContext('2d').drawImage(im, 0, 0, w, h);
+        try { cb(cv.toDataURL('image/jpeg', 0.82)); } catch (e) { cb(reader.result); }
+      };
+      im.onerror = function () { cb(null); };
+      im.src = reader.result;
+    };
+    reader.onerror = function () { cb(null); };
+    reader.readAsDataURL(file);
+  }
+
+  editBtn.addEventListener('click', function () { fileIn.click(); });
+  fileIn.addEventListener('change', function () {
+    var file = fileIn.files && fileIn.files[0];
+    fileIn.value = '';
+    if (!file) return;
+    downscale(file, function (uri) {
+      if (!uri) return;
+      try { localStorage.setItem(KEY, uri); } catch (e) { alert('Photo too large to save. Try a smaller image.'); return; }
+      var ok = null; try { ok = localStorage.getItem(KEY); } catch (e) {}
+      if (!ok) { alert('Photo too large to save. Try a smaller image.'); return; }
+      showPhoto(uri);
     });
   });
 })();
