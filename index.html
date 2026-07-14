@@ -3089,7 +3089,11 @@ if ('serviceWorker' in navigator) {
   }
   keys.forEach(function (k) {
     if (!inp[k]) return;
-    try { var s = localStorage.getItem(P + k); if (s !== null) inp[k].value = s; } catch (e) {}
+    try {
+      var s = localStorage.getItem(P + k);
+      if (s !== null) inp[k].value = s;
+      else localStorage.setItem(P + k, inp[k].value); // snapshot default into backup
+    } catch (e) {}
     inp[k].addEventListener('input', function () {
       try { localStorage.setItem(P + k, inp[k].value); } catch (e) {}
       compute();
@@ -3135,13 +3139,13 @@ if ('serviceWorker' in navigator) {
     if (ga) ga.textContent = money(planned);
     if (ai) ai.textContent = money(b + planned);
   }
-  // Bike price persistence.
-  try { var bs = localStorage.getItem('mp.mbud.bike'); if (bs !== null) bike.value = bs; } catch (e) {}
+  // Bike price persistence (+ snapshot default into backup on first load).
+  try { var bs = localStorage.getItem('mp.mbud.bike'); if (bs !== null) bike.value = bs; else localStorage.setItem('mp.mbud.bike', bike.value); } catch (e) {}
   bike.addEventListener('input', function () { try { localStorage.setItem('mp.mbud.bike', bike.value); } catch (e) {} compute(); });
-  // Gear cost persistence.
+  // Gear cost persistence (+ snapshot default into backup on first load).
   costs.forEach(function (el) {
     var k = 'mp.gear.cost.' + el.getAttribute('data-g');
-    try { var sv = localStorage.getItem(k); if (sv !== null) el.value = sv; } catch (e) {}
+    try { var sv = localStorage.getItem(k); if (sv !== null) el.value = sv; else localStorage.setItem(k, el.value); } catch (e) {}
     el.addEventListener('input', function () { try { localStorage.setItem(k, el.value); } catch (e) {} compute(); });
   });
   // Gear bought-state persistence.
@@ -3290,6 +3294,16 @@ if ('serviceWorker' in navigator) {
   Object.keys(store).forEach(function (f) {
     if (store[f] != null && store[f] !== '') render(f, store[f]);
   });
+  // One-time snapshot: capture identity defaults into saved data so they travel in your backup.
+  var snapped = false;
+  try { snapped = localStorage.getItem('mp.daily.snapshotted') === '1'; } catch (e) {}
+  if (!snapped) {
+    Object.keys(defaults).forEach(function (f) {
+      if (store[f] == null || store[f] === '') store[f] = defaults[f];
+    });
+    save();
+    try { localStorage.setItem('mp.daily.snapshotted', '1'); } catch (e) {}
+  }
   function commit(el) {
     var f = el.getAttribute('data-dd');
     var v = (el.textContent || '').replace(/\s+/g, ' ').trim();
