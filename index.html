@@ -750,6 +750,22 @@
   .cand-card.st-passed{opacity:.62;}
   .cand-card.st-passed .uc-name{color:var(--ink-soft);text-decoration:line-through;text-decoration-color:var(--ink-faint);}
   .cand-card.st-passed .uc-status select{color:var(--ink-faint);}
+  /* Candidate photo */
+  .uc-photo{position:relative;display:block;width:100%;aspect-ratio:16/10;overflow:hidden;
+    border-bottom:1px solid var(--line);background:#e7e3db;}
+  .uc-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .uc-photo-add{width:100%;aspect-ratio:16/10;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:6px;border:none;border-bottom:1px dashed var(--line-strong);background:repeating-linear-gradient(45deg,#eeeae2,#eeeae2 10px,#e9e5dc 10px,#e9e5dc 20px);
+    color:var(--ink-soft);cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.12em;
+    text-transform:uppercase;-webkit-tap-highlight-color:transparent;transition:color .15s,background .15s;}
+  .uc-photo-add:hover{color:var(--redline-deep);}
+  .uc-photo-add .cam{font-size:1.4rem;line-height:1;}
+  .uc-photo-add:focus-visible{outline:2px solid var(--amber);outline-offset:-3px;}
+  .uc-photo-rm{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;border:none;
+    background:rgba(20,22,24,.62);color:#fff;font-size:1rem;line-height:1;cursor:pointer;display:flex;
+    align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;backdrop-filter:blur(2px);}
+  .uc-photo-rm:hover{background:var(--redline);}
+  .uc-photo-rm:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
   .addcand{display:block;width:100%;margin-bottom:16px;font-family:"Saira Condensed",sans-serif;font-weight:700;
     text-transform:uppercase;letter-spacing:.04em;font-size:.98rem;color:var(--paper);background:var(--steel-850);
     border:1px dashed var(--line-steel-strong);border-radius:6px;padding:15px;cursor:pointer;
@@ -2655,6 +2671,28 @@ if ('serviceWorker' in navigator) {
   function save(scope, a) { try { localStorage.setItem(key(scope), JSON.stringify(a)); } catch (e) {} }
   function attr(s) { return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
+  // Downscale a chosen image to a small JPEG data URI so localStorage stays lean.
+  function downscale(file, cb) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        var MAX = 560;
+        var w = img.width, h = img.height;
+        if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+        var cv = document.createElement('canvas');
+        cv.width = w; cv.height = h;
+        cv.getContext('2d').drawImage(img, 0, 0, w, h);
+        try { cb(cv.toDataURL('image/jpeg', 0.72)); }
+        catch (e) { cb(reader.result); } // fallback: original (e.g. non-rasterizable)
+      };
+      img.onerror = function () { cb(null); };
+      img.src = reader.result;
+    };
+    reader.onerror = function () { cb(null); };
+    reader.readAsDataURL(file);
+  }
+
   function fact(label, f, ph, val) {
     return '<div class="cand-fact"><span class="k">' + label + '</span>' +
       '<input class="uc-f" data-f="' + f + '" maxlength="24" placeholder="' + ph + '" value="' + attr(val) + '"></div>';
@@ -2673,9 +2711,17 @@ if ('serviceWorker' in navigator) {
     }).join('');
     return '<span class="uc-status"><select class="uc-st" aria-label="Candidate status">' + opts + '</select></span>';
   }
+  function photoHtml(c) {
+    if (c.photo) {
+      return '<div class="uc-photo"><img src="' + attr(c.photo) + '" alt="Candidate photo">' +
+        '<button class="uc-photo-rm" type="button" aria-label="Remove photo">&times;</button></div>';
+    }
+    return '<button class="uc-photo-add" type="button"><span class="cam">&#9723;</span>Add photo</button>';
+  }
   function cardHtml(c, i) {
     var st = c.status || 'watch';
     return '<article class="cand-card usercand st-' + st + '" data-idx="' + i + '">' +
+      photoHtml(c) +
       '<div class="cand-top"><div><span class="cand-ey">Your candidate</span>' +
       '<input class="uc-name" data-f="name" maxlength="60" placeholder="Year / make / model" value="' + attr(c.name) + '"></div>' +
       '<div class="uc-head-actions">' + statusSelect(st) +
@@ -2714,9 +2760,35 @@ if ('serviceWorker' in navigator) {
     btn.type = 'button';
     btn.className = 'addcand';
     btn.innerHTML = '<span class="plus">+</span> Add candidate';
+    // Hidden file input shared by every card in this section; targetIdx tracks which card asked.
+    var fileIn = document.createElement('input');
+    fileIn.type = 'file';
+    fileIn.accept = 'image/*';
+    fileIn.style.display = 'none';
+    var targetIdx = -1;
     sec.appendChild(container);
     sec.appendChild(btn);
+    sec.appendChild(fileIn);
     render(container, scope);
+
+    fileIn.addEventListener('change', function () {
+      var file = fileIn.files && fileIn.files[0];
+      var idx = targetIdx;
+      fileIn.value = ''; // allow re-selecting the same file later
+      if (!file || idx < 0) return;
+      downscale(file, function (dataUri) {
+        if (!dataUri) return;
+        var arr = load(scope);
+        if (!arr[idx]) return;
+        arr[idx].photo = dataUri;
+        try { save(scope, arr); }
+        catch (e) {}
+        // Guard against localStorage quota: if the photo didn't stick, warn instead of silently losing it.
+        var check = load(scope);
+        if (!check[idx] || !check[idx].photo) { alert('Photo too large to save. Try a smaller image.'); return; }
+        render(container, scope);
+      });
+    });
 
     btn.addEventListener('click', function () {
       var arr = load(scope);
@@ -2743,6 +2815,21 @@ if ('serviceWorker' in navigator) {
       if (arr[idx]) { arr[idx].status = sel.value; save(scope, arr); render(container, scope); }
     });
     container.addEventListener('click', function (e) {
+      var add = e.target.closest('.uc-photo-add');
+      if (add) {
+        var ac = add.closest('.cand-card.usercand');
+        targetIdx = parseInt(ac.getAttribute('data-idx'), 10);
+        fileIn.click();
+        return;
+      }
+      var prm = e.target.closest('.uc-photo-rm');
+      if (prm) {
+        var pc = prm.closest('.cand-card.usercand');
+        var pidx = parseInt(pc.getAttribute('data-idx'), 10);
+        var parr = load(scope);
+        if (parr[pidx]) { delete parr[pidx].photo; save(scope, parr); render(container, scope); }
+        return;
+      }
       var rm = e.target.closest('.uc-rm');
       if (!rm) return;
       var card = rm.closest('.cand-card.usercand');
