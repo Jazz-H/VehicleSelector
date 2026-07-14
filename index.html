@@ -474,6 +474,18 @@
     table.mkt td{font-size:.92rem;}
     table.mkt td.yr{font-size:1.08rem;}
   }
+  /* section rail (long pages) — hidden until desktop */
+  .railnav{display:none;}
+  .railnav .rl-title{font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.16em;
+    text-transform:uppercase;color:#71757b;margin-bottom:13px;padding-left:13px;}
+  .railnav a{display:block;font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.01em;
+    color:#a6a29a;text-decoration:none;padding:6px 0 6px 13px;border-left:2px solid rgba(255,255,255,.12);
+    transition:color .15s,border-color .15s;line-height:1.35;}
+  .railnav a:hover{color:#ece9e0;border-left-color:rgba(255,255,255,.32);}
+  .railnav a.active{color:#e6503f;border-left-color:var(--redline);}
+  .railnav a .rl-n{color:#6b6f74;margin-right:8px;}
+  .railnav a:focus-visible{outline:2px solid var(--amber);outline-offset:2px;border-radius:3px;}
+
   /* ============ DESKTOP LAYER — Pass 1: Hub + Garage (mobile untouched) ============ */
   @media (min-width:960px){
     .topnav-inner,.whatsnew-inner{max-width:1180px;}
@@ -501,7 +513,10 @@
     .garage-cols .dash-h{margin-top:0;}
 
     /* MOTO + CAR — wider frame; contenders & candidates onto a comparison grid */
-    #view-moto .wrap,#view-car .wrap{max-width:1180px;}
+    #view-moto .wrap,#view-car .wrap{max-width:1180px;
+      display:grid;grid-template-columns:184px minmax(0,1fr);column-gap:40px;align-items:start;}
+    #view-moto .wrap > :not(.railnav),#view-car .wrap > :not(.railnav){grid-column:2;min-width:0;}
+    .railnav{display:block;grid-column:1;grid-row:1 / span 60;position:sticky;top:64px;align-self:start;}
     .cardsec{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;}
     .cardsec > :not(.spec-card):not(.cand-card){grid-column:1 / -1;}
     .cardsec > .sec-note{margin-bottom:0;}
@@ -2669,6 +2684,55 @@ if ('serviceWorker' in navigator) {
     el.addEventListener('change', function () { try { localStorage.setItem(k, el.checked ? '1' : '0'); } catch (e) {} compute(); });
   });
   compute();
+})();
+</script>
+
+<script>
+// Sticky section rail with scroll-spy on the long pages (Moto, Car). Built from the section headers.
+(function () {
+  ['view-moto', 'view-car'].forEach(function (vid) {
+    var view = document.getElementById(vid); if (!view) return;
+    var wrap = view.querySelector('.wrap'); if (!wrap) return;
+    var secs = [];
+    Array.prototype.forEach.call(wrap.children, function (el) {
+      if (el.classList && el.classList.contains('railnav')) return;
+      var head = el.querySelector && el.querySelector('.sec-head'); if (!head) return;
+      var h2 = head.querySelector('h2'); if (!h2) return;
+      var numEl = head.querySelector('.sec-num');
+      var num = numEl ? numEl.textContent.trim() : '';
+      var title = h2.textContent.trim();
+      if (!el.id) el.id = vid + '-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      secs.push({ el: el, num: num, title: title });
+    });
+    if (secs.length < 3) return;
+    var nav = document.createElement('nav'); nav.className = 'railnav'; nav.setAttribute('aria-label', 'Sections on this page');
+    var t = document.createElement('div'); t.className = 'rl-title'; t.textContent = 'On this page'; nav.appendChild(t);
+    secs.forEach(function (s) {
+      var a = document.createElement('a'); a.href = '#' + s.el.id;
+      a.innerHTML = (s.num ? '<span class="rl-n">' + s.num + '</span>' : '') + s.title.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+      a.addEventListener('click', function (e) { e.preventDefault(); s.el.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+      nav.appendChild(a); s.a = a;
+    });
+    wrap.insertBefore(nav, wrap.firstChild);
+    function spy() {
+      if (!nav.offsetParent) return; // rail hidden (mobile, or inactive view)
+      var cur = secs[0]; // viewport-relative top: works regardless of which element scrolls
+      for (var i = 0; i < secs.length; i++) {
+        if (secs[i].el.getBoundingClientRect().top <= 140) cur = secs[i]; else break;
+      }
+      secs.forEach(function (x) { if (x.a) x.a.classList.toggle('active', x === cur); });
+    }
+    var ticking = false;
+    function onScroll() {
+      if (ticking) return; ticking = true;
+      window.requestAnimationFrame(function () { spy(); ticking = false; });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    document.addEventListener('scroll', onScroll, true); // capture: catch scroll from any container
+    window.addEventListener('resize', onScroll, { passive: true });
+    window.addEventListener('hashchange', spy);
+    spy();
+  });
 })();
 </script>
 
