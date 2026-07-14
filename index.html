@@ -989,6 +989,39 @@
     /* leave room under the sticky bars when jumping to a section */
     #view-moto .wrap > section[id],#view-car .wrap > section[id]{scroll-margin-top:100px;}
   }
+  /* ---------- PHOTO CROP MODAL ---------- */
+  .crop-modal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;
+    background:rgba(10,12,14,.82);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);padding:16px;}
+  .crop-modal[hidden]{display:none;}
+  .crop-box{width:min(92vw,520px);max-height:92vh;overflow:auto;background:var(--steel-900);
+    border:1px solid var(--line-steel-strong);border-radius:12px;box-shadow:0 30px 80px -20px rgba(0,0,0,.85);
+    display:flex;flex-direction:column;}
+  .crop-head{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;
+    font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+    color:var(--paper);border-bottom:1px solid var(--line-steel);font-size:1.05rem;}
+  .crop-x{border:none;background:transparent;color:#9a9fa5;font-size:1.6rem;line-height:1;cursor:pointer;padding:0 6px;
+    -webkit-tap-highlight-color:transparent;}
+  .crop-x:hover{color:var(--paper);}
+  .crop-stage{position:relative;background:#0d0f11;line-height:0;touch-action:none;cursor:grab;overflow:hidden;}
+  .crop-stage:active{cursor:grabbing;}
+  .crop-stage canvas{width:100%;height:auto;display:block;touch-action:none;}
+  .crop-ctrls{display:flex;align-items:center;gap:12px;padding:14px 16px 2px;}
+  .crop-zoom{display:flex;align-items:center;gap:11px;flex:1;font-family:"IBM Plex Mono",monospace;font-size:.6rem;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);}
+  .crop-zoom input[type=range]{flex:1;accent-color:var(--redline);height:22px;}
+  .crop-hint{padding:6px 16px 0;font-family:"IBM Plex Mono",monospace;font-size:.58rem;color:#7e838a;letter-spacing:.06em;}
+  .crop-err{margin:11px 16px 0;padding:10px 12px;border-radius:6px;background:rgba(216,58,41,.16);
+    border:1px solid rgba(216,58,41,.55);color:#f2b6ac;font-size:.82rem;line-height:1.35;}
+  .crop-err[hidden]{display:none;}
+  .crop-actions{display:flex;gap:10px;padding:14px 16px 16px;}
+  .crop-actions button{flex:1;font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;
+    letter-spacing:.04em;font-size:.98rem;padding:13px;border-radius:7px;cursor:pointer;
+    border:1px solid var(--line-steel-strong);-webkit-tap-highlight-color:transparent;transition:background .15s,border-color .15s;}
+  .crop-cancel{background:transparent;color:var(--paper);}
+  .crop-cancel:hover{border-color:var(--paper);}
+  .crop-save{background:var(--redline);color:#fff;border-color:var(--redline);}
+  .crop-save:hover{background:var(--redline-deep);}
+  .crop-actions button:focus-visible,.crop-x:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
 </style>
 </head>
 <body>
@@ -2865,27 +2898,6 @@ if ('serviceWorker' in navigator) {
   function save(scope, a) { try { localStorage.setItem(key(scope), JSON.stringify(a)); } catch (e) {} }
   function attr(s) { return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-  // Downscale a chosen image to a small JPEG data URI so localStorage stays lean.
-  function downscale(file, cb) {
-    var reader = new FileReader();
-    reader.onload = function () {
-      var img = new Image();
-      img.onload = function () {
-        var MAX = 560;
-        var w = img.width, h = img.height;
-        if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
-        var cv = document.createElement('canvas');
-        cv.width = w; cv.height = h;
-        cv.getContext('2d').drawImage(img, 0, 0, w, h);
-        try { cb(cv.toDataURL('image/jpeg', 0.72)); }
-        catch (e) { cb(reader.result); } // fallback: original (e.g. non-rasterizable)
-      };
-      img.onerror = function () { cb(null); };
-      img.src = reader.result;
-    };
-    reader.onerror = function () { cb(null); };
-    reader.readAsDataURL(file);
-  }
 
   function fact(label, f, ph, val) {
     return '<div class="cand-fact"><span class="k">' + label + '</span>' +
@@ -2970,18 +2982,17 @@ if ('serviceWorker' in navigator) {
       var idx = targetIdx;
       fileIn.value = ''; // allow re-selecting the same file later
       if (!file || idx < 0) return;
-      downscale(file, function (dataUri) {
-        if (!dataUri) return;
+      // Crop to the 16:10 card frame; onSave persists and reports success so the cropper can warn on quota.
+      window.mpCrop(file, { aspect: 16 / 10, outW: 640, onSave: function (uri) {
         var arr = load(scope);
-        if (!arr[idx]) return;
-        arr[idx].photo = dataUri;
-        try { save(scope, arr); }
-        catch (e) {}
-        // Guard against localStorage quota: if the photo didn't stick, warn instead of silently losing it.
+        if (!arr[idx]) return true; // card removed mid-crop; nothing to do
+        arr[idx].photo = uri;
+        try { save(scope, arr); } catch (e) {}
         var check = load(scope);
-        if (!check[idx] || !check[idx].photo) { alert('Photo too large to save. Try a smaller image.'); return; }
+        if (!check[idx] || check[idx].photo !== uri) return false; // didn't stick (quota)
         render(container, scope);
-      });
+        return true;
+      } });
     });
 
     btn.addEventListener('click', function () {
@@ -3361,37 +3372,122 @@ if ('serviceWorker' in navigator) {
   }
   try { var saved = localStorage.getItem(KEY); if (saved) showPhoto(saved); } catch (e) {}
 
-  function downscale(file, cb) {
-    var reader = new FileReader();
-    reader.onload = function () {
-      var im = new Image();
-      im.onload = function () {
-        var MAX = 1000, w = im.width, h = im.height;
-        if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
-        var cv = document.createElement('canvas'); cv.width = w; cv.height = h;
-        cv.getContext('2d').drawImage(im, 0, 0, w, h);
-        try { cb(cv.toDataURL('image/jpeg', 0.82)); } catch (e) { cb(reader.result); }
-      };
-      im.onerror = function () { cb(null); };
-      im.src = reader.result;
-    };
-    reader.onerror = function () { cb(null); };
-    reader.readAsDataURL(file);
-  }
-
   editBtn.addEventListener('click', function () { fileIn.click(); });
   fileIn.addEventListener('change', function () {
     var file = fileIn.files && fileIn.files[0];
     fileIn.value = '';
     if (!file) return;
-    downscale(file, function (uri) {
-      if (!uri) return;
-      try { localStorage.setItem(KEY, uri); } catch (e) { alert('Photo too large to save. Try a smaller image.'); return; }
+    // Crop to the 12:5 hero frame; onSave persists and reports success so the cropper can warn on quota.
+    window.mpCrop(file, { aspect: 12 / 5, outW: 1080, onSave: function (uri) {
+      try { localStorage.setItem(KEY, uri); } catch (e) { return false; }
       var ok = null; try { ok = localStorage.getItem(KEY); } catch (e) {}
-      if (!ok) { alert('Photo too large to save. Try a smaller image.'); return; }
+      if (ok !== uri) return false;
       showPhoto(uri);
-    });
+      return true;
+    } });
   });
+})();
+</script>
+
+<div id="cropModal" class="crop-modal" hidden role="dialog" aria-modal="true" aria-label="Crop photo">
+  <div class="crop-box">
+    <div class="crop-head">Position &amp; crop<button type="button" class="crop-x" aria-label="Cancel">&times;</button></div>
+    <div class="crop-stage" id="cropStage"><canvas id="cropCanvas"></canvas></div>
+    <div class="crop-ctrls"><label class="crop-zoom">Zoom<input type="range" id="cropZoom" min="1" max="4" step="0.01" value="1" aria-label="Zoom"></label></div>
+    <div class="crop-hint">Drag to reposition &middot; slide to zoom</div>
+    <div class="crop-err" id="cropErr" role="alert" hidden></div>
+    <div class="crop-actions"><button type="button" class="crop-cancel">Cancel</button><button type="button" class="crop-save">Use photo</button></div>
+  </div>
+</div>
+
+<script>
+// Reusable photo cropper: pan + zoom to a fixed aspect frame, export JPEG. window.mpCrop(file, opts).
+(function () {
+  var modal = document.getElementById('cropModal');
+  var canvas = document.getElementById('cropCanvas');
+  var stage = document.getElementById('cropStage');
+  var zoom = document.getElementById('cropZoom');
+  var errBox = document.getElementById('cropErr');
+  if (!modal || !canvas || !stage || !zoom) return;
+  var ctx = canvas.getContext('2d');
+  var state = null;
+
+  function showErr(m) { errBox.textContent = m; errBox.hidden = false; }
+  function clearErr() { errBox.hidden = true; errBox.textContent = ''; }
+  function show() { modal.hidden = false; document.body.style.overflow = 'hidden'; }
+  function hide() { modal.hidden = true; document.body.style.overflow = ''; state = null; clearErr(); }
+
+  function draw() {
+    if (!state) return;
+    var s = state, iw = s.img.naturalWidth, ih = s.img.naturalHeight;
+    var sc = s.minSc * s.zoom, dw = iw * sc, dh = ih * sc;
+    s.ox = Math.min(0, Math.max(s.outW - dw, s.ox));
+    s.oy = Math.min(0, Math.max(s.outH - dh, s.oy));
+    ctx.clearRect(0, 0, s.outW, s.outH);
+    ctx.drawImage(s.img, s.ox, s.oy, dw, dh);
+  }
+
+  function open(file, opts) {
+    clearErr();
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onerror = function () { show(); showErr('Could not read that file. Try another image.'); };
+    reader.onload = function () {
+      var img = new Image();
+      img.onerror = function () { show(); showErr('That image format isn’t supported — try a JPG or PNG.'); };
+      img.onload = function () {
+        var outW = opts.outW, outH = Math.round(outW / opts.aspect);
+        canvas.width = outW; canvas.height = outH;
+        var minSc = Math.max(outW / img.naturalWidth, outH / img.naturalHeight);
+        state = { img: img, outW: outW, outH: outH, onSave: opts.onSave, minSc: minSc, zoom: 1,
+          ox: (outW - img.naturalWidth * minSc) / 2, oy: (outH - img.naturalHeight * minSc) / 2 };
+        zoom.value = 1;
+        show(); draw();
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  zoom.addEventListener('input', function () { if (state) { state.zoom = parseFloat(zoom.value) || 1; draw(); } });
+
+  var dragging = false, lastX = 0, lastY = 0;
+  function ratio() { var w = stage.getBoundingClientRect().width; return w ? state.outW / w : 1; }
+  stage.addEventListener('pointerdown', function (e) {
+    if (!state) return; dragging = true; lastX = e.clientX; lastY = e.clientY;
+    try { stage.setPointerCapture(e.pointerId); } catch (er) {}
+  });
+  stage.addEventListener('pointermove', function (e) {
+    if (!dragging || !state) return;
+    var r = ratio();
+    state.ox += (e.clientX - lastX) * r; state.oy += (e.clientY - lastY) * r;
+    lastX = e.clientX; lastY = e.clientY; draw();
+  });
+  function endDrag() { dragging = false; }
+  stage.addEventListener('pointerup', endDrag);
+  stage.addEventListener('pointercancel', endDrag);
+
+  function trySave() {
+    if (!state) return;
+    clearErr();
+    var qs = [0.82, 0.62, 0.45];
+    for (var i = 0; i < qs.length; i++) {
+      var uri;
+      try { uri = canvas.toDataURL('image/jpeg', qs[i]); }
+      catch (e) { showErr('Could not process that image.'); return; }
+      var ok = false;
+      try { ok = state.onSave(uri); } catch (e) { ok = false; }
+      if (ok !== false) { hide(); return; }
+    }
+    showErr('That photo is too large to save, even compressed — try a smaller image.');
+  }
+  modal.querySelector('.crop-save').addEventListener('click', trySave);
+  modal.querySelector('.crop-cancel').addEventListener('click', hide);
+  modal.querySelector('.crop-x').addEventListener('click', hide);
+  modal.addEventListener('click', function (e) { if (e.target === modal) hide(); });
+  document.addEventListener('keydown', function (e) { if (!modal.hidden && e.key === 'Escape') hide(); });
+
+  window.mpCrop = open;
 })();
 </script>
 
