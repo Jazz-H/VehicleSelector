@@ -162,6 +162,13 @@
   .ledger-row .amt .amt-val{cursor:text;border-radius:3px;padding:0 3px;outline:none;transition:background .12s,box-shadow .12s;}
   @media (hover:hover){ .ledger-row .amt .amt-val:hover{background:rgba(216,58,41,.07);box-shadow:inset 0 -1px 0 var(--line-strong);} }
   .ledger-row .amt .amt-val:focus{background:#fff;box-shadow:inset 0 -1.5px 0 var(--amber);color:#1a1c1e;}
+  /* Touch: prices can't reveal on hover, so give a persistent editable cue + bigger tap targets */
+  @media (hover:none){
+    .ledger-row .amt .amt-val{display:inline-block;border-bottom:1px dashed var(--line-strong);
+      padding:4px 5px 3px;border-radius:3px 3px 0 0;}
+    .ledger-row .amt .modrm{padding:6px 7px;font-size:1.2rem;}
+    .ledger-row .amt .modbought{padding:6px;margin-left:6px;}
+  }
   .ledger-row.total{background:var(--paper-dim);border-top:2px solid var(--ink);}
   .ledger-row.total .item{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;font-size:1.15rem;letter-spacing:.02em;}
   .ledger-row.total .amt{font-weight:600;color:var(--redline-deep);}
