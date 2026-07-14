@@ -497,6 +497,9 @@
   .data-btn.primary:hover{background:var(--redline-deep);border-color:var(--redline-deep);}
   .data-btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
   .data-status{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--amber);letter-spacing:.02em;min-height:1em;}
+  .val-stamp{font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-faint);padding:9px 14px 2px;border-top:1px solid var(--line);margin-top:2px;}
+  .val-stamp b{color:var(--ink-soft);font-weight:600;}
 
   /* live daily-driver glance on the Hub */
   .daily-glance{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;justify-content:space-between;
@@ -922,7 +925,7 @@
 <div id="whatsnew" class="whatsnew" role="status" hidden>
   <div class="whatsnew-inner">
     <span class="wn-tag">New</span>
-    <span class="wn-text">A <b>Garage</b> tab for your daily &amp; mods, collapsible <b>insights</b>, and one-tap <b>install as an app</b>.</span>
+    <span class="wn-text">Now: <b>photos</b> &amp; <b>front-runner / passed</b> status on candidates, <b>tap-to-edit prices</b> in the mod ledger, and <b>export/import</b> to back up everything.</span>
     <button class="wn-x" type="button" aria-label="Dismiss">&times;</button>
   </div>
 </div>
@@ -1097,6 +1100,7 @@
         <div class="ledger-row total"><span class="item">Equity <small id="eqNote">private party &minus; owed</small></span><span class="amt" id="eqVal">&mdash;</span></div>
         <div class="ledger-row sub"><span class="item">Loan-to-value <small>owed &divide; private party</small></span><span class="amt" id="ltvVal">&mdash;</span></div>
       </div>
+      <div class="val-stamp" id="valStamp" aria-live="polite"></div>
     </div>
     <div class="callout">KBB has no free data feed, so this can&rsquo;t auto-pull &mdash; the figures are rough estimates for a 2026 EcoBoost Premium at 3,500 mi. <b>Punch in your real numbers</b> from <a href="https://www.kbb.com/whats-my-car-worth/" target="_blank" rel="noopener" style="color:var(--amber);text-decoration:underline">KBB&rsquo;s valuation tool &#8599;</a> and the equity updates live. Owed is set to <b>$24,380</b>.</div>
     </div>
@@ -2844,7 +2848,7 @@ if ('serviceWorker' in navigator) {
 <script>
 // What's-new banner — shows once, remembers dismissal. Bump the version to re-announce.
 (function () {
-  var KEY = 'mp.whatsnew.v1';
+  var KEY = 'mp.whatsnew.v2';
   var el = document.getElementById('whatsnew');
   if (!el) return;
   var dismissed = false;
@@ -2883,15 +2887,44 @@ if ('serviceWorker' in navigator) {
     var hubEq = document.getElementById('hubEquity');
     if (hubEq) { hubEq.textContent = (eq < 0 ? '−' : '') + money(Math.abs(eq)); hubEq.style.color = eq >= 0 ? '#4f9e6a' : 'var(--redline-deep)'; }
   }
+  // "Last updated" freshness stamp — set when the user edits a figure, shown relative + absolute.
+  var UKEY = P + 'updated';
+  var stamp = document.getElementById('valStamp');
+  function fmtDate(d) {
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+  function relDays(then) {
+    var days = Math.floor((Date.now() - then) / 86400000);
+    if (days <= 0) return 'today';
+    if (days === 1) return 'yesterday';
+    if (days < 30) return days + ' days ago';
+    if (days < 60) return 'a month ago';
+    return Math.floor(days / 30) + ' months ago';
+  }
+  function renderStamp() {
+    if (!stamp) return;
+    var iso = null;
+    try { iso = localStorage.getItem(UKEY); } catch (e) {}
+    if (!iso) { stamp.innerHTML = 'Estimates &mdash; <b>not yet updated</b>. Edit any figure to date it.'; return; }
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) { stamp.innerHTML = 'Estimates &mdash; <b>not yet updated</b>.'; return; }
+    stamp.innerHTML = 'Your figures &mdash; updated <b>' + relDays(d.getTime()) + '</b> &middot; ' + fmtDate(d);
+  }
+  function touchStamp() {
+    try { localStorage.setItem(UKEY, new Date().toISOString()); } catch (e) {}
+    renderStamp();
+  }
   keys.forEach(function (k) {
     if (!inp[k]) return;
     try { var s = localStorage.getItem(P + k); if (s !== null) inp[k].value = s; } catch (e) {}
     inp[k].addEventListener('input', function () {
       try { localStorage.setItem(P + k, inp[k].value); } catch (e) {}
       compute();
+      touchStamp();
     });
   });
   compute();
+  renderStamp();
 })();
 </script>
 
