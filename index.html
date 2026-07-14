@@ -908,6 +908,29 @@
     .tabbar-item.active{color:var(--redline);}
     .tabbar-item.active .dot{background:var(--redline);}
     .tabbar-item:active svg{transform:scale(.88);}
+
+    /* Section rail becomes a sticky horizontal chip bar on the long pages */
+    .railnav{
+      display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+      position:sticky;top:calc(env(safe-area-inset-top) + 44px);z-index:40;
+      margin:0 -20px 16px;padding:9px 20px;
+      background:rgba(22,26,31,.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+      border-top:1px solid var(--line-steel);border-bottom:1px solid var(--line-steel);
+      scrollbar-width:none;scroll-snap-type:x proximity;
+    }
+    .railnav::-webkit-scrollbar{display:none;}
+    .railnav .rl-title{display:none;}
+    .railnav a{
+      flex:0 0 auto;white-space:nowrap;scroll-snap-align:start;
+      border:1px solid var(--line-steel-strong);border-left:1px solid var(--line-steel-strong);
+      border-radius:999px;padding:9px 14px;margin:0;
+      font-size:.72rem;color:#b7bcc2;background:var(--steel-850);
+    }
+    .railnav a:hover{border-left-color:var(--line-steel-strong);}
+    .railnav a.active{background:var(--redline);color:#fff;border-color:var(--redline);}
+    .railnav a.active .rl-n{color:rgba(255,255,255,.72);}
+    /* leave room under the sticky bars when jumping to a section */
+    #view-moto .wrap > section[id],#view-car .wrap > section[id]{scroll-margin-top:100px;}
   }
 </style>
 </head>
