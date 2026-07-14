@@ -790,6 +790,9 @@
   /* ---------- ADD-MOD FORM ---------- */
   .modadd{background:var(--steel-850);border:1px solid var(--line-steel-strong);border-radius:8px;
     padding:14px;margin-bottom:16px;display:flex;flex-direction:column;gap:10px;}
+  .modadd-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .modadd-title{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;
+    letter-spacing:.04em;font-size:1.05rem;color:var(--paper);}
   .modadd-row{display:flex;gap:10px;}
   .modadd input[type="text"]{flex:1;min-width:0;background:var(--steel-900);border:1px solid var(--line-steel-strong);
     border-radius:6px;color:var(--paper);padding:10px 12px;font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.92rem;}
@@ -1297,6 +1300,18 @@
     </div>
     <div class="g-col">
     <h4 class="dash-h">Mod List</h4>
+    <form id="modAddForm" class="modadd" autocomplete="off">
+      <div class="modadd-head">
+        <span class="modadd-title">Add a mod</span>
+        <button type="submit" class="modadd-btn">+ Add mod</button>
+      </div>
+      <div class="modadd-row">
+        <input class="modadd-name" type="text" placeholder="Mod name" aria-label="Mod name" maxlength="80" required>
+        <input class="modadd-price" type="text" inputmode="decimal" placeholder="$ price" aria-label="Price" maxlength="12" required>
+      </div>
+      <input class="modadd-note" type="text" placeholder="Note (optional)" aria-label="Note" maxlength="120">
+      <label class="modadd-bought"><input type="checkbox" class="modadd-boughtcb"> Already bought</label>
+    </form>
     <div class="panel" style="margin-bottom:16px;">
       <div class="ledger" id="modLedger">
         <div class="ledger-row done"><span class="item">SpeedForm Sport Quarter Window Louvers <span class="owned">Bought &check;</span><small>Gloss black &middot; adhesive-mount, cure before first wash</small></span><span class="amt">$71.41</span></div>
@@ -1316,17 +1331,6 @@
         <div class="ledger-row total"><span class="item">Total &middot; All Mods</span><span class="amt">$2,453.23</span></div>
       </div>
     </div>
-    <form id="modAddForm" class="modadd" autocomplete="off">
-      <div class="modadd-row">
-        <input class="modadd-name" type="text" placeholder="Mod name" aria-label="Mod name" maxlength="80" required>
-        <input class="modadd-price" type="text" inputmode="decimal" placeholder="$ price" aria-label="Price" maxlength="12" required>
-      </div>
-      <input class="modadd-note" type="text" placeholder="Note (optional)" aria-label="Note" maxlength="120">
-      <div class="modadd-actions">
-        <label class="modadd-bought"><input type="checkbox" class="modadd-boughtcb"> Already bought</label>
-        <button type="submit" class="modadd-btn">+ Add mod</button>
-      </div>
-    </form>
     <div class="callout" data-dk="mods">All appearance &amp; sound so far &mdash; louvers, rear diffuser, chin spoiler, smoked tails, and the Roush axle-back. The quarter-window louvers are already bought; the rest are the running list. <b>Add a mod above</b> &mdash; the Spent / Still-to-buy / All-in totals update automatically.</div>
     </div>
     </div>
