@@ -1294,8 +1294,11 @@
     </div>
 
     <div class="garage-cols">
-    <div class="g-col">
+    <details class="sec-block g-col" id="garage-value" style="padding-top:8px;">
+    <summary>
     <h4 class="dash-h">Value &amp; Equity</h4>
+    <span class="insight"><em>Equity</em> <b data-mirror="eqVal">&mdash;</b> &middot; loan-to-value <b data-mirror="ltvVal">&mdash;</b> &middot; tap to update your KBB figures.</span>
+    </summary>
     <div class="panel" style="margin-bottom:16px;">
       <div class="ledger">
         <div class="ledger-row"><span class="item">KBB Trade-In <small>rough &mdash; update from KBB</small></span><span class="amt">$<input class="val-in" type="text" data-v="trade" inputmode="numeric" value="30500" aria-label="KBB trade-in value"></span></div>
@@ -1308,10 +1311,13 @@
       <div class="val-stamp" id="valStamp" aria-live="polite"></div>
     </div>
     <div class="callout" data-dk="kbb">KBB has no free data feed, so this can&rsquo;t auto-pull &mdash; the figures are rough estimates for a 2026 EcoBoost Premium at 3,500 mi. <b>Punch in your real numbers</b> from <a href="https://www.kbb.com/whats-my-car-worth/" target="_blank" rel="noopener" style="color:var(--amber);text-decoration:underline">KBB&rsquo;s valuation tool &#8599;</a> and the equity updates live. Owed is set to <b>$24,380</b>.</div>
-    </div>
-    <div class="g-col">
-    <div class="modlist-head">
-      <h4 class="dash-h">Mod List</h4>
+    </details>
+    <details class="sec-block g-col" id="garage-mods" style="padding-top:8px;">
+    <summary>
+    <h4 class="dash-h">Mod List</h4>
+    <span class="insight"><em>Mods</em> Spent <b data-mirror="hubModSpent">&mdash;</b> &middot; <b data-mirror="roGarMods">&mdash;</b> logged &middot; tap to edit prices or add a mod.</span>
+    </summary>
+    <div class="modlist-head" style="justify-content:flex-end;">
       <button type="button" class="ml-add-btn" id="modAddToggle" aria-expanded="false" aria-controls="modAddForm">
         <span class="ml-add-ico" aria-hidden="true">+</span> Add a mod
       </button>
@@ -1347,7 +1353,7 @@
       </div>
     </div>
     <div class="callout" data-dk="mods">All appearance &amp; sound so far &mdash; louvers, rear diffuser, chin spoiler, smoked tails, and the Roush axle-back. The quarter-window louvers are already bought; the rest are the running list. <b>Add a mod above</b> &mdash; the Spent / Still-to-buy / All-in totals update automatically.</div>
-    </div>
+    </details>
     </div>
   </section>
 </div>
@@ -1383,8 +1389,11 @@
 <div class="wrap">
 
   <!-- MONEY -->
-  <section>
+  <details class="sec-block" id="moto-money">
+    <summary>
     <div class="sec-head"><span class="sec-num">01</span><h2>The Money</h2></div>
+    <span class="insight"><em>All-in</em> Bike + gear target: <b data-mirror="allIn">&mdash;</b> &middot; keep it under the <b>$4k</b> cash cap.</span>
+    </summary>
     <div class="money-lead">
       <div class="money-fig">$4,000<small>cash · bike only</small></div>
       <p>Enough for a clean used CB500 or most of this list &mdash; and cash keeps lower-mile examples in reach. Gear rides on top of this, so aim the bike a bit under $4k. Lead with cash on a private sale.</p>
@@ -1440,11 +1449,14 @@
       </div>
     </div>
     <div class="callout">Also budget separately: <b>title / registration / tax</b> and <b>insurance</b> (varies a lot by state and age — quote it before you buy). Plus gloves and a jacket if you don't already have them.</div>
-  </section>
+  </details>
 
   <!-- CONTENDERS -->
-  <section class="cardsec">
+  <details class="sec-block" id="moto-contenders">
+    <summary>
     <div class="sec-head"><span class="sec-num">02</span><h2>The Contenders</h2></div>
+    <span class="insight"><em>Familiar vs. step up</em> <b>CB300R</b> (~31 hp, the bike you knew) vs the <b>CB500F</b> twin (~47 hp, the real upgrade).</span>
+    </summary>
     <p class="sec-note">All under 600cc and A2-legal. Since you've already lived with the CB300F, the real question is <b style="color:#e6e2d8">familiar vs. step up</b>. The bar marks where your old 300F sits (~30 hp) — watch which bikes actually move past it.</p>
 
     <!-- CB300R -->
@@ -1500,7 +1512,7 @@
       <p>Since you've owned the CB300F, a CB300R is the safe-but-uninspiring choice — you'd likely want more before long. The <b>CB500 twin</b> is the genuine upgrade: same Honda ease, meaningfully more bike, and it's the sensible move over re-buying what you already had. For something with more style and character, that's where the candidates below come in.</p>
     </div>
     <p class="naming">// NAMING — Honda's "F" bikes (CB300R, CB500F) are naked/upright. The "R"/CBR bikes (CBR300R, CBR500R) are faired sportbikes with a slight lean. Same engines, different ergonomics + weather protection.</p>
-  </section>
+  </details>
 
   <!-- MARKET VALUES -->
   <details class="sec-block">
@@ -1574,8 +1586,11 @@
   </details>
 
   <!-- CANDIDATES -->
-  <section class="cardsec">
+  <details class="sec-block" id="moto-candidates">
+    <summary>
     <div class="sec-head"><span class="sec-num">04</span><h2>Candidate Log</h2></div>
+    <span class="insight"><em>Front-runner</em> 5 bikes scored vs the CB500F benchmark &mdash; lead pick a clean <b>2015 CB500F ~$3.6k</b>, plus a Triumph Speed 400 wildcard.</span>
+    </summary>
     <p class="sec-note">Bikes you're actually looking at, scored against the benchmarks above. Tap the blank fields to fill in the next ones.</p>
 
     <!-- CANDIDATE 01 -->
@@ -1816,7 +1831,7 @@
       </div>
       <div class="blank-hint">// Check it against the Market Values table, then note mods, condition, and your target offer.</div>
     </article>
-  </section>
+  </details>
 
   <!-- CROSS SHOP -->
   <details class="sec-block">
@@ -1963,8 +1978,11 @@
   </details>
 
   <!-- NEXT STEPS -->
-  <section style="border-bottom:none;">
+  <details class="sec-block" id="moto-next" style="border-bottom:none;">
+    <summary>
     <div class="sec-head"><span class="sec-num">09</span><h2>Next Steps</h2></div>
+    <span class="insight"><em>The path</em> Confirm history &rarr; test ride &rarr; <b>~$3.3k cash</b> offer &rarr; insure &rarr; ride. Keep <b>~$600&ndash;1,400</b> for gear.</span>
+    </summary>
     <div class="steps">
       <div class="step"><p>Cap the bike at <b>$4k cash</b> and bring it as leverage on private sales — sellers move on a clean cash offer.</p></div>
       <div class="step"><p>Get <b>insurance quotes</b> for your shortlist — comprehensive, not just liability. It may settle the decision.</p></div>
@@ -1972,7 +1990,7 @@
       <div class="step"><p>Line up a <b>pre-purchase inspection</b> before committing.</p></div>
       <div class="step"><p>Keep <b>~$600–1,400</b> aside for gear + setup — non-negotiable, even on a tight day.</p></div>
     </div>
-  </section>
+  </details>
 
 </div>
 </section>
@@ -2008,8 +2026,11 @@
 <div class="wrap">
 
   <!-- MONEY -->
-  <section>
+  <details class="sec-block" id="car-money">
+    <summary>
     <div class="sec-head"><span class="sec-num">01</span><h2>The Money</h2></div>
+    <span class="insight"><em>Program, not price</em> <b>$10,000</b> total &mdash; ~<b>$6&ndash;8k</b> on the car, the rest on fixes, tools, setup &amp; reserve. Don't blow it all on the car.</span>
+    </summary>
     <div class="money-lead">
       <div class="money-fig">$10,000<small>program &middot; not car price</small></div>
       <p>The golden rule: <b>don&rsquo;t spend it all on the car.</b> A clean $8k car beats a $4k &ldquo;project&rdquo; that needs everything &mdash; because fixes always cost about 2&times; the estimate. Your $10k is a <b>program</b>, not a purchase price.</p>
@@ -2026,11 +2047,14 @@
       </div>
     </div>
     <div class="callout">Budget separately: <b>title / registration / tax</b> and <b>insurance</b> (quote it first &mdash; a newer Grand Cherokee costs more to insure than an Xterra). And a <b>$150&ndash;250 pre-purchase inspection</b> is the cheapest insurance you&rsquo;ll ever buy.</div>
-  </section>
+  </details>
 
   <!-- CONTENDERS -->
-  <section class="cardsec">
+  <details class="sec-block" id="car-contenders">
+    <summary>
     <div class="sec-head"><span class="sec-num">02</span><h2>The Contenders</h2></div>
+    <span class="insight"><em>Complement the &rsquo;Stang</em> 6 rigs &mdash; Wrangler, 4Runner, Tacoma, Xterra, Grand Cherokee, Subaru &mdash; weighed on 4x4 capability vs. running cost.</span>
+    </summary>
     <p class="sec-note">The <b style="color:#e6e2d8">complement</b> to your Mustang &mdash; a coupe already covers RWD on-road fun, so these do what it <em>can&rsquo;t</em>: 4 doors, 4x4 / AWD, weather, trails, and gear. Ideally four doors, though the Wrangler works either way.</p>
 
     <article class="spec-card">
@@ -2152,7 +2176,7 @@
       <p>Your Mustang already nails RWD on-road fun, so another coupe (Corvette, 350Z, Miata) would just <b>duplicate</b> it. The complement is a <b>4-door</b> that does the opposite. Rugged and open-air? The <b>Wrangler Unlimited</b>. Reliable do-it-all? The <b>4Runner</b>. A bed? The <b>Tacoma</b>. Value? The <b>Xterra</b>. Comfort + towing? The <b>Grand Cherokee</b>. Easiest all-weather daily? A <b>Subaru</b>.</p>
     </div>
     <p class="naming">// COMPLEMENT, DON&rsquo;T DUPLICATE &mdash; the &rsquo;Stang is your fun RWD 2-door. Buy the thing it can&rsquo;t be: 4 doors, 4x4/AWD, weather, cargo, a bed. Condition and a rust-free <b>frame</b> beat low price every time.</p>
-  </section>
+  </details>
 
   <!-- MARKET VALUES -->
   <details class="sec-block">
@@ -2182,8 +2206,11 @@
   </details>
 
   <!-- CANDIDATE LOG -->
-  <section class="cardsec">
+  <details class="sec-block" id="car-candidates">
+    <summary>
     <div class="sec-head"><span class="sec-num">04</span><h2>Candidate Log</h2></div>
+    <span class="insight"><em>Picks</em> 3 logged &mdash; <b>Wrangler Unlimited</b> (loved), with the <b>4Runner</b> &amp; <b>Tacoma</b> as the sensible do-it-all suggestions.</span>
+    </summary>
     <p class="sec-note">Goal: a <b style="color:#e6e2d8">fun secondary car</b> &mdash; no track or drift, maybe some light off-road. Your two loves pull in opposite directions (open-road V8 vs. go-anywhere 4x4); here they are side by side, plus a do-it-all wildcard. Add more with the button below.</p>
 
         <article class="cand-card carpick">
@@ -2284,7 +2311,7 @@
         </div>
       </div>
     </article>
-  </section>
+  </details>
 
   <!-- CROSS SHOP -->
   <details class="sec-block">
@@ -2452,8 +2479,11 @@
   </details>
 
   <!-- NEXT STEPS -->
-  <section style="border-bottom:none;">
+  <details class="sec-block" id="car-next" style="border-bottom:none;">
+    <summary>
     <div class="sec-head"><span class="sec-num">09</span><h2>Next Steps</h2></div>
+    <span class="insight"><em>The path</em> Pick 1&ndash;2 platforms &rarr; learn their weak points &rarr; VIN + <b>frame/4x4 PPI</b> &rarr; buy the cleanest example, <b>$16&ndash;24k</b>.</span>
+    </summary>
     <div class="steps">
       <div class="step"><p><b>Complement the Mustang</b>: pick a 4-door that does what it can&rsquo;t &mdash; Wrangler Unlimited, 4Runner, Tacoma, Xterra, Grand Cherokee, or a Subaru.</p></div>
       <div class="step"><p>Set your ceiling &mdash; a clean Wrangler Unlimited or 4Runner runs <b>$16&ndash;24k</b>; keep a reserve for tires, fixes, and setup.</p></div>
@@ -2462,7 +2492,7 @@
       <div class="step"><p>Run the VIN and get a <b>platform-specific PPI</b> (frame + 4x4 check on the off-roaders) before you commit.</p></div>
       <div class="step"><p>Buy the <b>best example you can afford</b> &mdash; condition over everything.</p></div>
     </div>
-  </section>
+  </details>
 
 </div>
 </section>
@@ -3675,6 +3705,40 @@ if ('serviceWorker' in navigator) {
   document.addEventListener('keydown', function (e) { if (!modal.hidden && e.key === 'Escape') hide(); });
 
   window.mpCrop = open;
+})();
+</script>
+
+<script>
+/* ---- Collapsible sections: default-collapsed, remembered per section ---- */
+(function () {
+  function keyFor(vid, det) {
+    if (det.id) return 'mp.sec.' + det.id;
+    var h = det.querySelector('summary .sec-head h2, summary .dash-h, summary h2, summary h4');
+    var label = vid + '-' + (h ? h.textContent : det.textContent.slice(0, 24));
+    return 'mp.sec.' + label.replace(/[^a-z0-9]+/gi, '-').toLowerCase().replace(/^-+|-+$/g, '');
+  }
+  ['view-daily', 'view-moto', 'view-car'].forEach(function (vid) {
+    var view = document.getElementById(vid);
+    if (!view) return;
+    view.querySelectorAll('details.sec-block').forEach(function (det) {
+      var k = keyFor(vid, det);
+      var stored = null;
+      try { stored = localStorage.getItem(k); } catch (e) {}
+      det.open = (stored === '1'); // default collapsed unless explicitly opened before
+      det.addEventListener('toggle', function () {
+        try { localStorage.setItem(k, det.open ? '1' : '0'); } catch (e) {}
+      });
+    });
+  });
+
+  /* live summary mirrors: <span data-mirror="elemId"> copies that element's text, kept in sync */
+  document.querySelectorAll('[data-mirror]').forEach(function (sp) {
+    var src = document.getElementById(sp.getAttribute('data-mirror'));
+    if (!src) return;
+    var sync = function () { sp.textContent = (src.textContent || '').trim(); };
+    sync();
+    try { new MutationObserver(sync).observe(src, { childList: true, characterData: true, subtree: true }); } catch (e) {}
+  });
 })();
 </script>
 
