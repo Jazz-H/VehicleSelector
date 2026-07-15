@@ -790,17 +790,20 @@
   /* ---------- ADD-MOD FORM ---------- */
   .modadd{background:var(--steel-850);border:1px solid var(--line-steel-strong);border-radius:8px;
     padding:14px;margin-bottom:16px;display:flex;flex-direction:column;gap:10px;}
-  .modadd-head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
-  .modadd-toggle{display:inline-flex;align-items:center;gap:9px;background:none;border:none;padding:2px 0;
-    cursor:pointer;-webkit-tap-highlight-color:transparent;}
-  .modadd-toggle:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:3px;}
-  .modadd-chev{display:inline-block;color:var(--ink-faint);font-size:.8rem;line-height:1;transition:transform .15s ease;}
-  .modadd:not(.collapsed) .modadd-chev{transform:rotate(90deg);}
-  .modadd-title{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;
-    letter-spacing:.04em;font-size:1.05rem;color:var(--paper);}
-  .modadd-body{display:flex;flex-direction:column;gap:10px;}
-  .modadd.collapsed .modadd-body{display:none;}
-  .modadd.collapsed .modadd-btn{display:none;}
+  /* Mod List header: title left, Add-a-mod toggle button right */
+  .modlist-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;}
+  .modlist-head .dash-h{margin:0;}
+  .ml-add-btn{display:inline-flex;align-items:center;gap:7px;flex:0 0 auto;font-family:"IBM Plex Mono",monospace;
+    font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:#c8c4ba;
+    background:var(--steel-850);border:1px solid var(--line-steel-strong);border-radius:6px;padding:8px 13px;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color .15s,background .15s,border-color .15s;}
+  .ml-add-btn:hover{color:var(--paper);border-color:var(--redline);}
+  .ml-add-btn .ml-add-ico{font-size:1.05rem;line-height:1;color:var(--redline);transition:transform .18s ease,color .15s;}
+  .ml-add-btn[aria-expanded="true"]{background:var(--redline);border-color:var(--redline);color:#fff;}
+  .ml-add-btn[aria-expanded="true"] .ml-add-ico{transform:rotate(45deg);color:#fff;}
+  .ml-add-btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+  .modadd.collapsed{display:none;}
+  .modadd-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
   .modadd-row{display:flex;gap:10px;}
   .modadd input[type="text"]{flex:1;min-width:0;background:var(--steel-900);border:1px solid var(--line-steel-strong);
     border-radius:6px;color:var(--paper);padding:10px 12px;font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:.92rem;}
@@ -1307,21 +1310,21 @@
     <div class="callout" data-dk="kbb">KBB has no free data feed, so this can&rsquo;t auto-pull &mdash; the figures are rough estimates for a 2026 EcoBoost Premium at 3,500 mi. <b>Punch in your real numbers</b> from <a href="https://www.kbb.com/whats-my-car-worth/" target="_blank" rel="noopener" style="color:var(--amber);text-decoration:underline">KBB&rsquo;s valuation tool &#8599;</a> and the equity updates live. Owed is set to <b>$24,380</b>.</div>
     </div>
     <div class="g-col">
-    <h4 class="dash-h">Mod List</h4>
+    <div class="modlist-head">
+      <h4 class="dash-h">Mod List</h4>
+      <button type="button" class="ml-add-btn" id="modAddToggle" aria-expanded="false" aria-controls="modAddForm">
+        <span class="ml-add-ico" aria-hidden="true">+</span> Add a mod
+      </button>
+    </div>
     <form id="modAddForm" class="modadd collapsed" autocomplete="off">
-      <div class="modadd-head">
-        <button type="button" class="modadd-toggle" id="modAddToggle" aria-expanded="false" aria-controls="modAddBody">
-          <span class="modadd-chev" aria-hidden="true">&#9656;</span><span class="modadd-title">Add a mod</span>
-        </button>
-        <button type="submit" class="modadd-btn">+ Add mod</button>
+      <div class="modadd-row">
+        <input class="modadd-name" type="text" placeholder="Mod name" aria-label="Mod name" maxlength="80" required>
+        <input class="modadd-price" type="text" inputmode="decimal" placeholder="$ price" aria-label="Price" maxlength="12" required>
       </div>
-      <div class="modadd-body" id="modAddBody">
-        <div class="modadd-row">
-          <input class="modadd-name" type="text" placeholder="Mod name" aria-label="Mod name" maxlength="80" required>
-          <input class="modadd-price" type="text" inputmode="decimal" placeholder="$ price" aria-label="Price" maxlength="12" required>
-        </div>
-        <input class="modadd-note" type="text" placeholder="Note (optional)" aria-label="Note" maxlength="120">
+      <input class="modadd-note" type="text" placeholder="Note (optional)" aria-label="Note" maxlength="120">
+      <div class="modadd-foot">
         <label class="modadd-bought"><input type="checkbox" class="modadd-boughtcb"> Already bought</label>
+        <button type="submit" class="modadd-btn">+ Add mod</button>
       </div>
     </form>
     <div class="panel" style="margin-bottom:16px;">
