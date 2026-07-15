@@ -154,6 +154,11 @@
   }
   .money-fig small{display:block;font-size:.8rem;font-family:"IBM Plex Mono",monospace;
     letter-spacing:.12em;text-transform:uppercase;color:var(--redline-deep);font-weight:600;margin-top:6px;}
+  .money-figblock{display:flex;flex-direction:column;align-items:flex-start;}
+  .money-tag{display:inline-block;margin-top:10px;font-size:.8rem;font-family:"IBM Plex Mono",monospace;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--redline-deep);font-weight:600;
+    cursor:text;border-bottom:1px dashed rgba(176,44,29,.45);outline:none;}
+  .money-tag:focus{border-bottom-style:solid;border-bottom-color:var(--redline);}
   .money-lead p{margin:0;flex:1;min-width:200px;color:#33373c;font-size:.97rem;}
 
   .ledger{padding:6px 0;}
@@ -534,7 +539,7 @@
     .cand-fact:last-child{border-right:none;}
     .cand-cols{grid-template-columns:1fr 1fr;}
     .cand-col:first-child{border-right:1px solid var(--line);border-bottom:none;}
-    .money-fig{border-right:3px solid var(--redline);border-bottom:none;padding-right:20px;padding-bottom:0;}
+    .money-figblock{padding-right:4px;}
     .mkt-head{flex-direction:row;align-items:baseline;gap:10px;}
     .shop-grid{grid-template-columns:repeat(3,1fr);}
     table.mkt th,table.mkt td{padding-left:16px;padding-right:16px;}
@@ -1405,7 +1410,10 @@
     <span class="insight"><em>All-in</em> Bike + gear target: <b data-mirror="allIn">&mdash;</b> &middot; keep it under the <b>$4k</b> cash cap.</span>
     </summary>
     <div class="money-lead">
-      <div class="money-fig">$<span id="motoCap" class="num-edit" contenteditable="true" role="textbox" aria-label="Edit cash cap">4,000</span><small>cash · bike only</small></div>
+      <div class="money-figblock">
+        <div class="money-fig">$<span id="motoCap" class="num-edit" contenteditable="true" role="textbox" aria-label="Edit cash cap">4,000</span></div>
+        <span class="money-tag" id="motoTag" contenteditable="true" role="textbox" aria-label="Edit funding note — e.g. cash or financed">cash · bike only</span>
+      </div>
       <p>Enough for a clean used CB500 or most of this list &mdash; and cash keeps lower-mile examples in reach. Gear rides on top of this, so aim the bike a bit under $4k. Lead with cash on a private sale.</p>
     </div>
     <p class="sec-note">Gear, service &amp; security ride on top. Tick each as you buy it and tweak the price &mdash; the running total feeds your all-in below.</p>
@@ -2042,7 +2050,10 @@
     <span class="insight"><em>Program, not price</em> <b data-mirror="carProgram">$10,000</b> total &mdash; ~<b>$6&ndash;8k</b> on the car, the rest on fixes, tools, setup &amp; reserve. Don't blow it all on the car.</span>
     </summary>
     <div class="money-lead">
-      <div class="money-fig"><span class="fill-amt" id="carProgram" contenteditable="true" role="textbox" data-cm="program" aria-label="Edit program budget">$10,000</span><small>program &middot; not car price</small></div>
+      <div class="money-figblock">
+        <div class="money-fig"><span class="fill-amt" id="carProgram" contenteditable="true" role="textbox" data-cm="program" aria-label="Edit program budget">$10,000</span></div>
+        <span class="money-tag" id="carTag" contenteditable="true" role="textbox" data-cm="tag" aria-label="Edit funding note">program &middot; not car price</span>
+      </div>
       <p>The golden rule: <b>don&rsquo;t spend it all on the car.</b> A clean $8k car beats a $4k &ldquo;project&rdquo; that needs everything &mdash; because fixes always cost about 2&times; the estimate. Your $10k is a <b>program</b>, not a purchase price.</p>
     </div>
     <p class="sec-note">Roughly where a smart $10k goes (the car slice shrinks the more you plan to build):</p>
@@ -3451,6 +3462,10 @@ if ('serviceWorker' in navigator) {
   // cap persistence (+ snapshot default on first load)
   try { var cps = localStorage.getItem('mp.mbud.cap'); if (cps !== null && capEl) capEl.textContent = cps; else if (capEl) localStorage.setItem('mp.mbud.cap', (capEl.textContent || '').trim()); } catch (e) {}
   if (capEl) capEl.addEventListener('input', function () { try { localStorage.setItem('mp.mbud.cap', (capEl.textContent || '').trim()); } catch (e) {} compute(); });
+  // funding note (cash / financed …) persistence
+  var tagEl = document.getElementById('motoTag');
+  try { var ts = localStorage.getItem('mp.mbud.tag'); if (ts !== null && tagEl) tagEl.textContent = ts; else if (tagEl) localStorage.setItem('mp.mbud.tag', (tagEl.textContent || '').trim()); } catch (e) {}
+  if (tagEl) { var saveTag = function () { try { localStorage.setItem('mp.mbud.tag', (tagEl.textContent || '').trim()); } catch (e) {} }; tagEl.addEventListener('input', saveTag); tagEl.addEventListener('blur', saveTag); }
   // bike persistence
   try { var bs = localStorage.getItem('mp.mbud.bike'); if (bs !== null) bike.value = bs; else localStorage.setItem('mp.mbud.bike', bike.value); } catch (e) {}
   bike.addEventListener('input', function () { try { localStorage.setItem('mp.mbud.bike', bike.value); } catch (e) {} compute(); });
