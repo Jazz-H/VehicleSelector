@@ -548,6 +548,8 @@
   }
   /* section rail (long pages) — hidden until desktop */
   .railnav{display:none;}
+  .rl-current{display:none;}
+  .rl-list{display:block;}
   .railnav .rl-title{font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.16em;
     text-transform:uppercase;color:#71757b;margin-bottom:13px;padding-left:13px;}
   .railnav a{display:block;font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.01em;
@@ -1026,11 +1028,8 @@
     .hero-sub{display:none;}
     /* Collapse the stat pills into one compact, horizontally-scrollable row */
     .hero{padding-top:24px;}
-    .chips{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;gap:7px;
-      margin:14px -18px 0;padding:2px 18px;scrollbar-width:none;-webkit-overflow-scrolling:touch;
-      -webkit-mask-image:linear-gradient(90deg,#000 92%,transparent);mask-image:linear-gradient(90deg,#000 92%,transparent);}
-    .chips::-webkit-scrollbar{display:none;}
-    .chip{flex:0 0 auto;font-size:.7rem;padding:6px 10px;}
+    .chips{flex-wrap:wrap;justify-content:center;gap:7px;margin:14px 0 0;padding:0;}
+    .chip{flex:0 1 auto;font-size:.7rem;padding:6px 10px;}
 
     /* Touch tap-target sizing for small controls */
     .uc-status select{padding:10px 24px 10px 13px;font-size:.64rem;}
@@ -1061,28 +1060,34 @@
     .tabbar-item.active .dot{background:var(--redline);}
     .tabbar-item:active svg{transform:scale(.88);}
 
-    /* Section rail becomes a sticky horizontal chip bar on the long pages */
+    /* Section rail becomes a compact "jump to" dropdown on the long pages */
     .railnav{
-      display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;
-      position:sticky;top:calc(env(safe-area-inset-top) + 44px);z-index:40;
+      display:block;position:sticky;top:calc(env(safe-area-inset-top) + 44px);z-index:40;
       margin:0 -20px 16px;padding:9px 20px;
       background:rgba(22,26,31,.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
       border-top:1px solid var(--line-steel);border-bottom:1px solid var(--line-steel);
-      scrollbar-width:none;scroll-snap-type:x proximity;
     }
-    .railnav::-webkit-scrollbar{display:none;}
     .railnav .rl-title{display:none;}
-    .railnav a{
-      flex:0 0 auto;white-space:nowrap;scroll-snap-align:start;
-      border:1px solid var(--line-steel-strong);border-left:1px solid var(--line-steel-strong);
-      border-radius:999px;padding:9px 14px;margin:0;
-      font-size:.72rem;color:#b7bcc2;background:var(--steel-850);
-    }
-    .railnav a:hover{border-left-color:var(--line-steel-strong);}
-    .railnav a.active{background:var(--redline);color:#fff;border-color:var(--redline);}
-    .railnav a.active .rl-n{color:rgba(255,255,255,.72);}
+    .rl-current{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+      font-family:"IBM Plex Mono",monospace;font-size:.74rem;letter-spacing:.02em;color:#e6e2d8;
+      background:var(--steel-850);border:1px solid var(--line-steel-strong);border-radius:999px;
+      padding:10px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+    .rl-current .rl-cur-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .rl-current .chev{color:var(--redline);transition:transform .2s;font-size:.7rem;flex:0 0 auto;}
+    .railnav.open .rl-current .chev{transform:rotate(180deg);}
+    .rl-current:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+    .rl-list{display:none;position:absolute;left:20px;right:20px;top:calc(100% - 2px);z-index:60;
+      background:rgba(20,24,29,.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+      border:1px solid var(--line-steel-strong);border-radius:12px;padding:6px;
+      max-height:62vh;overflow-y:auto;box-shadow:0 20px 44px -18px rgba(0,0,0,.75);}
+    .railnav.open .rl-list{display:block;}
+    .rl-list a{display:block;white-space:normal;border:none;border-radius:8px;margin:0;
+      padding:12px 14px;font-size:.82rem;color:#c8ccd2;background:transparent;letter-spacing:.01em;}
+    .rl-list a:hover{background:var(--steel-800);}
+    .rl-list a.active{background:var(--redline);color:#fff;}
+    .rl-list a.active .rl-n{color:rgba(255,255,255,.72);}
     /* leave room under the sticky bars when jumping to a section */
-    #view-moto .wrap > section[id],#view-car .wrap > section[id]{scroll-margin-top:100px;}
+    #view-moto .wrap > [id],#view-car .wrap > [id]{scroll-margin-top:100px;}
   }
   /* ---------- PHOTO CROP MODAL ---------- */
   .crop-modal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;
@@ -3561,20 +3566,34 @@ if ('serviceWorker' in navigator) {
     if (secs.length < 3) return;
     var nav = document.createElement('nav'); nav.className = 'railnav'; nav.setAttribute('aria-label', 'Sections on this page');
     var t = document.createElement('div'); t.className = 'rl-title'; t.textContent = 'On this page'; nav.appendChild(t);
+    // compact "jump to" trigger (mobile) — shows the current section, opens the list
+    var curBtn = document.createElement('button'); curBtn.type = 'button'; curBtn.className = 'rl-current';
+    curBtn.setAttribute('aria-expanded', 'false'); curBtn.setAttribute('aria-label', 'Jump to section');
+    var curLabel = document.createElement('span'); curLabel.className = 'rl-cur-label';
+    var curChev = document.createElement('span'); curChev.className = 'chev'; curChev.setAttribute('aria-hidden', 'true'); curChev.textContent = '▾';
+    curBtn.appendChild(curLabel); curBtn.appendChild(curChev); nav.appendChild(curBtn);
+    function labelFor(s) { return (s.num ? s.num + ' · ' : '') + s.title; }
+    var listEl = document.createElement('div'); listEl.className = 'rl-list';
+    function closeNav() { nav.classList.remove('open'); curBtn.setAttribute('aria-expanded', 'false'); }
     secs.forEach(function (s) {
       var a = document.createElement('a'); a.href = '#' + s.el.id;
       a.innerHTML = (s.num ? '<span class="rl-n">' + s.num + '</span>' : '') + s.title.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-      a.addEventListener('click', function (e) { e.preventDefault(); s.el.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
-      nav.appendChild(a); s.a = a;
+      a.addEventListener('click', function (e) { e.preventDefault(); closeNav(); s.el.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+      listEl.appendChild(a); s.a = a;
     });
+    nav.appendChild(listEl);
+    curBtn.addEventListener('click', function (e) { e.stopPropagation(); var open = nav.classList.toggle('open'); curBtn.setAttribute('aria-expanded', open ? 'true' : 'false'); });
+    document.addEventListener('click', function (e) { if (!nav.contains(e.target)) closeNav(); });
+    curLabel.textContent = labelFor(secs[0]);
     wrap.insertBefore(nav, wrap.firstChild);
     function spy() {
-      if (!nav.offsetParent) return; // rail hidden (mobile, or inactive view)
+      if (!nav.offsetParent) return; // rail hidden (inactive view)
       var cur = secs[0]; // viewport-relative top: works regardless of which element scrolls
       for (var i = 0; i < secs.length; i++) {
         if (secs[i].el.getBoundingClientRect().top <= 140) cur = secs[i]; else break;
       }
       secs.forEach(function (x) { if (x.a) x.a.classList.toggle('active', x === cur); });
+      curLabel.textContent = labelFor(cur);
     }
     var ticking = false;
     function onScroll() {
