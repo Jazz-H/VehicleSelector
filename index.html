@@ -591,6 +591,23 @@
   .data-btn.danger:hover{border-color:var(--redline);color:#fff;background:rgba(216,58,41,.14);}
   .data-btn.danger.armed{background:var(--redline);border-color:var(--redline);color:#fff;}
   .data-status{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--amber);letter-spacing:.02em;min-height:1em;}
+  /* profiles */
+  .profile-list{display:flex;flex-direction:column;gap:8px;margin:2px 0 16px;}
+  .profile-row{display:flex;align-items:center;gap:8px;padding:11px 13px;border-radius:8px;
+    background:var(--steel-850);border:1px solid var(--line-steel-strong);}
+  .profile-row.active{border-color:var(--redline);}
+  .profile-name{flex:1;min-width:0;font-family:"IBM Plex Sans",sans-serif;font-size:.92rem;color:var(--paper);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;outline:none;}
+  .profile-name[contenteditable="true"]{border-bottom:1px dashed var(--redline);text-overflow:clip;}
+  .profile-badge{flex:0 0 auto;font-family:"IBM Plex Mono",monospace;font-size:.54rem;letter-spacing:.12em;
+    text-transform:uppercase;color:#fff;background:var(--redline);padding:3px 7px;border-radius:2px;}
+  .profile-act{flex:0 0 auto;border:none;background:transparent;color:var(--ink-faint);cursor:pointer;
+    font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.07em;text-transform:uppercase;
+    padding:5px 8px;border-radius:4px;-webkit-tap-highlight-color:transparent;transition:color .12s,background .12s;}
+  .profile-act:hover{color:var(--paper);background:var(--steel-700);}
+  .profile-act.switch{color:var(--amber);}
+  .profile-act.del.armed{color:#fff;background:var(--redline);}
+  .profile-act:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
   .val-stamp{font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;
     color:var(--ink-faint);padding:9px 14px 2px;border-top:1px solid var(--line);margin-top:2px;}
   .val-stamp b{color:var(--ink-soft);font-weight:600;}
@@ -2547,12 +2564,23 @@
 <!-- =================== SETTINGS =================== -->
 <section id="view-settings" class="view">
 <header class="hero">
-  <div class="gauge-cap">Settings &middot; Backup &amp; Restore</div>
+  <div class="gauge-cap">Settings &middot; Profiles &amp; Data</div>
   <h1>Your <span class="rev">Data</span></h1>
-  <p class="hero-sub">Everything you enter lives on this device. Back it up, move it between devices, or restore it here.</p>
+  <p class="hero-sub">Separate builds as profiles, back them up, and reset &mdash; all on this device (cloud sync coming soon).</p>
 </header>
 <div class="wrap">
   <section style="border-bottom:none;">
+    <div class="sec-head"><span class="sec-num">&#9670;</span><h2>Profiles</h2></div>
+    <p class="sec-note">Keep separate builds &mdash; one per person, or one per vehicle. Each profile stores its own data on this device. <b style="color:#e6e2d8">Sign-in &amp; cloud sync are coming;</b> for now profiles live on this device only.</p>
+    <div id="profileList" class="profile-list" aria-live="polite"></div>
+    <div class="data-actions">
+      <button type="button" class="data-btn" id="profileAdd">+&ensp;New profile</button>
+      <span class="data-status" id="profileStatus" role="status" aria-live="polite"></span>
+    </div>
+    <div class="callout">Switching or deleting the active profile reloads the app. A brand-new profile starts as a fresh copy of the sample build &mdash; edit it into your own.</div>
+  </section>
+
+  <section style="border-top:1px solid var(--line-steel);border-bottom:none;padding-top:26px;">
     <div class="sec-head"><span class="sec-num">&#9670;</span><h2>Backup &amp; Restore</h2></div>
     <p class="sec-note">Everything you enter &mdash; mods, candidates, values, and checklists &mdash; is saved <b style="color:#e6e2d8">on this device only</b>. Export a backup before clearing your browser, reinstalling the app, or switching devices &mdash; then import it anywhere to pick up where you left off.</p>
     <div class="data-actions">
@@ -2571,7 +2599,7 @@
       <button type="button" class="data-btn danger" id="dataReset">&#8635;&ensp;Reset to the sample</button>
       <span class="data-status" id="resetStatus" role="status" aria-live="polite"></span>
     </div>
-    <div class="callout">Reset <b>clears everything you&rsquo;ve entered on this device</b> and restores the original sample build &mdash; <b>export a backup first</b> if you might want it back. This can&rsquo;t be undone.</div>
+    <div class="callout">Reset <b>clears this profile&rsquo;s data</b> and restores the original sample build &mdash; <b>export a backup first</b> if you might want it back. Other profiles aren&rsquo;t affected. This can&rsquo;t be undone.</div>
   </section>
 </div>
 </section>
@@ -3352,12 +3380,90 @@ if ('serviceWorker' in navigator) {
       return;
     }
     try {
-      var kill = [];
-      for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k && k.indexOf('mp.') === 0) kill.push(k); }
+      var kill = (window.mpProfiles && window.mpProfiles.buildKeys)
+        ? window.mpProfiles.buildKeys()
+        : (function () { var a = []; for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k && k.indexOf('mp.') === 0) a.push(k); } return a; })();
       kill.forEach(function (k) { localStorage.removeItem(k); });
     } catch (e) {}
     if (status) status.textContent = 'Reset — reloading…';
     setTimeout(function () { location.hash = '#hub'; location.reload(); }, 250);
+  });
+})();
+</script>
+
+<script>
+// Profiles — multiple separate builds on this device. (Phase 1: local only; cloud sync later.)
+// Model: the live working set is plain mp.* ; each profile is a saved snapshot of that build data.
+(function () {
+  var PKEY = 'mp.profiles', AKEY = 'mp.activeProfile', SNAP = 'mp.profile.';
+  var GLOBALS = ['mp.profiles', 'mp.activeProfile', 'mp.profile.', 'mp.whatsnew', 'mp.hint', 'mp.prefs'];
+  function isGlobal(k) { for (var i = 0; i < GLOBALS.length; i++) { if (k.indexOf(GLOBALS[i]) === 0) return true; } return false; }
+  function buildKeys() { var out = []; for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k && k.indexOf('mp.') === 0 && !isGlobal(k)) out.push(k); } return out; }
+  function jget(k, d) { try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }
+  function jset(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function list() { return jget(PKEY, []); }
+  function active() { try { return localStorage.getItem(AKEY); } catch (e) { return null; } }
+  function setActive(id) { try { localStorage.setItem(AKEY, id); } catch (e) {} }
+  function uid() { return 'p' + Date.now().toString(36) + Math.floor(Math.random() * 1e4).toString(36); }
+
+  // migration: wrap any existing data as the first profile
+  (function () {
+    if (list().length) { if (!active()) setActive(list()[0].id); return; }
+    var id = 'p1'; jset(PKEY, [{ id: id, name: 'My Build', createdAt: Date.now() }]); setActive(id);
+  })();
+
+  function saveSnapshot(id) { if (!id) return; var blob = {}; buildKeys().forEach(function (k) { blob[k] = localStorage.getItem(k); }); jset(SNAP + id, blob); }
+  function clearBuild() { buildKeys().forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} }); }
+  function loadSnapshot(id) { clearBuild(); var blob = jget(SNAP + id, null); if (blob) { Object.keys(blob).forEach(function (k) { try { localStorage.setItem(k, blob[k]); } catch (e) {} }); } }
+  function reload() { location.hash = '#settings'; location.reload(); }
+
+  function switchTo(id) { if (id === active()) return; saveSnapshot(active()); loadSnapshot(id); setActive(id); reload(); }
+  function add(name) { var p = list(), id = uid(); p.push({ id: id, name: name || ('Build ' + (p.length + 1)), createdAt: Date.now() }); jset(PKEY, p); jset(SNAP + id, {}); return id; }
+  function rename(id, name) { var p = list(); p.forEach(function (x) { if (x.id === id) x.name = name; }); jset(PKEY, p); }
+  function remove(id) {
+    var wasActive = (id === active());
+    var p = list().filter(function (x) { return x.id !== id; }); jset(PKEY, p);
+    try { localStorage.removeItem(SNAP + id); } catch (e) {}
+    if (wasActive && p.length) { loadSnapshot(p[0].id); setActive(p[0].id); reload(); return; }
+    if (typeof render === 'function') render();
+  }
+  window.mpProfiles = { buildKeys: buildKeys, list: list, active: active };
+
+  // ---- Settings UI ----
+  var listEl = document.getElementById('profileList'), addBtn = document.getElementById('profileAdd');
+  if (!listEl) return;
+  function render() {
+    var ps = list(), act = active(); listEl.innerHTML = '';
+    ps.forEach(function (p) {
+      var row = document.createElement('div'); row.className = 'profile-row' + (p.id === act ? ' active' : '');
+      var name = document.createElement('span'); name.className = 'profile-name'; name.textContent = p.name; row.appendChild(name);
+      if (p.id === act) { var b = document.createElement('span'); b.className = 'profile-badge'; b.textContent = 'Active'; row.appendChild(b); }
+      else { var sw = document.createElement('button'); sw.type = 'button'; sw.className = 'profile-act switch'; sw.textContent = 'Switch'; sw.addEventListener('click', function () { switchTo(p.id); }); row.appendChild(sw); }
+      var rn = document.createElement('button'); rn.type = 'button'; rn.className = 'profile-act'; rn.textContent = 'Rename';
+      rn.addEventListener('click', function () {
+        name.setAttribute('contenteditable', 'true'); name.focus();
+        try { var sel = window.getSelection(); sel.selectAllChildren(name); } catch (e) {}
+        function done() { name.removeAttribute('contenteditable'); var v = name.textContent.trim() || p.name; name.textContent = v; rename(p.id, v); name.removeEventListener('blur', done); }
+        name.addEventListener('blur', done);
+        name.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); name.blur(); } });
+      });
+      row.appendChild(rn);
+      if (ps.length > 1) {
+        var del = document.createElement('button'); del.type = 'button'; del.className = 'profile-act del'; del.textContent = 'Delete';
+        var armed = false, t = null;
+        del.addEventListener('click', function () {
+          if (!armed) { armed = true; del.classList.add('armed'); del.textContent = 'Confirm'; t = setTimeout(function () { armed = false; del.classList.remove('armed'); del.textContent = 'Delete'; }, 3500); return; }
+          if (t) clearTimeout(t); remove(p.id);
+        });
+        row.appendChild(del);
+      }
+      listEl.appendChild(row);
+    });
+  }
+  render();
+  if (addBtn) addBtn.addEventListener('click', function () {
+    add(); render();
+    var st = document.getElementById('profileStatus'); if (st) { st.textContent = 'Added — tap Switch to start it as a fresh sample.'; setTimeout(function () { st.textContent = ''; }, 3500); }
   });
 })();
 </script>
