@@ -106,6 +106,20 @@
   .chip b{color:var(--paper);font-weight:600;}
   .chip.hot{border-color:rgba(216,58,41,.55);color:#f0d9d4;}
   .chip.hot b{color:#ffb3a6;}
+  /* Editable, addable "note" chips — auto-seeded suggestions the user makes their own */
+  .chip.note{display:inline-flex;align-items:center;gap:6px;padding-right:7px;}
+  .chip .chip-txt{outline:none;min-width:10px;}
+  .chip .chip-txt:empty::before{content:"note";color:var(--ink-faint);}
+  .chip.note:focus-within{border-color:var(--amber);}
+  .chip-x{border:none;background:transparent;color:var(--ink-faint);cursor:pointer;font-size:1rem;line-height:1;
+    padding:0 1px;-webkit-tap-highlight-color:transparent;transition:color .12s;}
+  .chip-x:hover{color:var(--redline);}
+  .chip-x:focus-visible{outline:2px solid var(--amber);outline-offset:2px;border-radius:3px;}
+  .chip-add{font-family:"IBM Plex Mono",monospace;font-size:.74rem;letter-spacing:.04em;padding:7px 12px;
+    border:1px dashed var(--line-steel-strong);border-radius:2px;background:transparent;color:var(--ink-soft);
+    cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color .15s,border-color .15s;}
+  .chip-add:hover{color:var(--redline);border-color:var(--redline);}
+  .chip-add:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
 
   /* Hero: gauge removed; description shown once for new users (kept for first-run onboarding) */
   .hero .gauge,.hero .gauge-row{display:none;}
@@ -1527,12 +1541,7 @@
   <div class="gauge-cap">Returning Rider · Build Sheet</div>
   <h1>Motorcycle<br>Buying <span class="rev">Plan</span></h1>
   <p class="hero-sub">You've done this before. This is the shortlist, the money, and the checks — built for a rider stepping back on, not starting out.</p>
-  <div class="chips">
-    <span class="chip hot"><b>$4K cash</b> · bike only</span>
-    <span class="chip"><b>M</b> endorsement</span>
-    <span class="chip">ex-<b>CB300F</b> + Kymco Spade</span>
-    <span class="chip">under <b>600cc</b>, light</span>
-  </div>
+  <div class="chips" data-notes="moto" aria-label="Your moto notes — tap to edit or add"></div>
   <div class="hero-readout">
     <div class="ro"><span class="k">Cash cap</span><span class="v"><em>$4,000</em></span></div>
     <div class="ro"><span class="k">License</span><span class="v">Class M</span></div>
@@ -1622,7 +1631,7 @@
     <div class="sec-head"><span class="sec-num">03</span><h2>The Contenders</h2></div>
     <span class="insight"><em>Familiar vs. step up</em> <b>CB300R</b> (~31 hp, the bike you knew) vs the <b>CB500F</b> twin (~47 hp, the real upgrade).</span>
     </summary>
-    <p class="sec-note">All under 600cc and A2-legal. Since you've already lived with the CB300F, the real question is <b style="color:#e6e2d8">familiar vs. step up</b>. The bar marks where your old 300F sits (~30 hp) — watch which bikes actually move past it.</p>
+    <p class="sec-note">All under 600cc and A2-legal. If you've ridden an entry 300 before, the real question is <b style="color:#e6e2d8">familiar vs. step up</b>. The bar marks a ~30 hp baseline (about where a 300-class single sits) — watch which bikes actually move past it.</p>
 
     <!-- CB300R -->
     <article class="spec-card">
@@ -1645,7 +1654,7 @@
           <div class="rev-mark" style="left:60%"></div>
         </div>
       </div>
-      <p class="verdict">Essentially the modern version of the CB300F you already owned — same single, ~30 lb lighter, restyled, with ABS and a slip/assist clutch. You'd know exactly what you're getting. <b>Cheap, light, reliable, familiar — but a sidestep, not an upgrade.</b> You may want more after a season.</p>
+      <p class="verdict">Essentially the modern version of the CB300F — same single, ~30 lb lighter, restyled, with ABS and a slip/assist clutch. If you've ridden a 300-class single, you'd know exactly what you're getting. <b>Cheap, light, reliable, familiar — but a sidestep, not an upgrade.</b> You may want more after a season.</p>
     </article>
 
     <!-- CB500 -->
@@ -1674,7 +1683,7 @@
 
     <div class="read">
       <span class="eyebrow">My Read</span>
-      <p>Since you've owned the CB300F, a CB300R is the safe-but-uninspiring choice — you'd likely want more before long. The <b>CB500 twin</b> is the genuine upgrade: same Honda ease, meaningfully more bike, and it's the sensible move over re-buying what you already had. For something with more style and character, that's where the candidates below come in.</p>
+      <p>If you're coming off a 300-class single, a CB300R is the safe-but-uninspiring choice — you'd likely want more before long. The <b>CB500 twin</b> is the genuine upgrade: same Honda ease, meaningfully more bike, and it's the sensible step up rather than re-buying what you already had. For something with more style and character, that's where the candidates below come in.</p>
     </div>
     <p class="naming">// NAMING — Honda's "F" bikes (CB300R, CB500F) are naked/upright. The "R"/CBR bikes (CBR300R, CBR500R) are faired sportbikes with a slight lean. Same engines, different ergonomics + weather protection.</p>
   </details>
@@ -2174,13 +2183,7 @@
   <div class="gauge-cap">Under $10K &middot; Build Sheet</div>
   <h1>Project <span class="rev">Car</span></h1>
   <p class="hero-sub">How to find a project worth building &mdash; the platforms, the money, and the checks that separate a good one from someone else&rsquo;s headache.</p>
-  <div class="chips">
-    <span class="chip hot">complements the <b>daily</b></span>
-    <span class="chip">ideally <b>4-door</b></span>
-    <span class="chip"><b>4x4 / AWD</b></span>
-    <span class="chip">trails &middot; weather &middot; gear</span>
-    <span class="chip">condition &gt; miles</span>
-  </div>
+  <div class="chips" data-notes="car" aria-label="Your car notes — tap to edit or add"></div>
   <div class="hero-readout">
     <div class="ro"><span class="k">Budget</span><span class="v"><em>$10,000</em></span></div>
     <div class="ro"><span class="k">Drivetrain</span><span class="v">4x4 &middot; AWD</span></div>
@@ -2241,7 +2244,7 @@
         <div class="rev-label"><span>Power (stock)</span><span>redline &rarr;</span></div>
         <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:56%"></div></div>
       </div>
-      <p class="verdict">Everything the daily isn&rsquo;t &mdash; doors and top come off, it climbs anything, and the <b>4-door</b> adds real back-seat and cargo room over the two-door. Your loved pick, in the practical body. <b>Prefer the 3.6 (2012+)</b>. <b>Watch:</b> &ldquo;death wobble&rdquo; (steering/track bar), rust, lifted/abused rigs; thirsty and slow-ish on-road.</p>
+      <p class="verdict">Everything the daily isn&rsquo;t &mdash; doors and top come off, it climbs anything, and the <b>4-door</b> adds real back-seat and cargo room over the two-door. A favorite for a reason, in the practical body. <b>Prefer the 3.6 (2012+)</b>. <b>Watch:</b> &ldquo;death wobble&rdquo; (steering/track bar), rust, lifted/abused rigs; thirsty and slow-ish on-road.</p>
     </article>
 
     <article class="spec-card">
@@ -2279,7 +2282,7 @@
         <div class="rev-label"><span>Power (stock)</span><span>redline &rarr;</span></div>
         <div class="rev-track"><div class="rev-redzone"></div><div class="rev-fill" style="width:52%"></div></div>
       </div>
-      <p class="verdict">The <b>wallet-friendly way into the truck you drove.</b> A 2nd-gen TRD Off-Road keeps the part that matters &mdash; electronic <b>rear locker</b> + off-road package &mdash; on the bulletproof 4.0 V6, for roughly <b>half</b> your <b>2021 (~$35k dream spec)</b>. Adds a bed + trail capability the daily can&rsquo;t, Double Cab keeps four doors, and these run 200k+ miles. <b>Watch:</b> confirm the <b>locker button on the dash</b> (not just badges), tired shocks/bushings from off-road life; <b>skip &rsquo;16&ndash;&rsquo;17</b> (trans shudder), avoid &rsquo;06&ndash;&rsquo;09 (frame rust) &amp; &rsquo;11&ndash;&rsquo;12 (air-pump).</p>
+      <p class="verdict">The <b>wallet-friendly way into a proven truck.</b> A 2nd-gen TRD Off-Road keeps the part that matters &mdash; electronic <b>rear locker</b> + off-road package &mdash; on the bulletproof 4.0 V6, for roughly <b>half</b> the cost of a new <b>2021 (~$35k dream spec)</b>. Adds a bed + trail capability the daily can&rsquo;t, Double Cab keeps four doors, and these run 200k+ miles. <b>Watch:</b> confirm the <b>locker button on the dash</b> (not just badges), tired shocks/bushings from off-road life; <b>skip &rsquo;16&ndash;&rsquo;17</b> (trans shudder), avoid &rsquo;06&ndash;&rsquo;09 (frame rust) &amp; &rsquo;11&ndash;&rsquo;12 (air-pump).</p>
     </article>
 
     <article class="spec-card">
@@ -2462,7 +2465,7 @@
         <div class="cand-col">
           <h5>Why it fits</h5>
           <ul>
-            <li><b>You drove the 2021 45 days</b> &mdash; know you like it</li>
+            <li><b>Proven do-it-all</b> &mdash; easy to live with day to day</li>
             <li>2nd-gen = same <b>rear locker</b>, ~half the price</li>
             <li>Adds a <b>bed</b> + 4 doors the daily can&rsquo;t</li>
             <li>Bulletproof 4.0 V6; runs 200k+ miles</li>
@@ -3948,6 +3951,63 @@ if ('serviceWorker' in navigator) {
     var view = h.closest('.view'); var scope = (view && /car/.test(view.id)) ? 'car' : 'moto';
     if (seen[scope]) return; seen[scope] = 1;
     mountRater(sec, scope);
+  });
+})();
+</script>
+
+<script>
+// Hero note-chips — auto-seeded suggestions on the Moto & Car heroes that the user can edit,
+// add to, or remove. Persisted per profile (mp.notes.<scope>). For a new user the seeds act as
+// suggestions ("ideally 4-door", …) they make their own; each chip is editable, with a + to add.
+(function () {
+  var SEEDS = {
+    moto: ['budget: bike only', 'A2-legal / under 600cc', 'low miles', 'clean title', 'test-ride first'],
+    car:  ['complements the daily', 'ideally 4-door', '4x4 / AWD', 'within budget', 'condition > miles']
+  };
+  function esc(s) { return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function save(scope, a) { try { localStorage.setItem('mp.notes.' + scope, JSON.stringify(a)); } catch (e) {} }
+  function load(scope) {
+    var raw = null; try { raw = localStorage.getItem('mp.notes.' + scope); } catch (e) {}
+    if (raw === null) { var d = (SEEDS[scope] || []).slice(); save(scope, d); return d; } // seed once for new users
+    try { var a = JSON.parse(raw); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.chips[data-notes]'), function (box) {
+    var scope = box.getAttribute('data-notes');
+    var notes = load(scope);
+    function render() {
+      box.innerHTML = notes.map(function (t, i) {
+        return '<span class="chip note' + (i === 0 ? ' hot' : '') + '" data-i="' + i + '">' +
+          '<span class="chip-txt" contenteditable="true" role="textbox" aria-label="Edit note">' + esc(t) + '</span>' +
+          '<button type="button" class="chip-x" aria-label="Remove note">&times;</button></span>';
+      }).join('') + '<button type="button" class="chip-add" aria-label="Add a note"><span aria-hidden="true">+</span> note</button>';
+    }
+    render();
+    function idxOf(el) { var c = el.closest('.chip.note'); return c ? parseInt(c.getAttribute('data-i'), 10) : -1; }
+    function clean(s) { return (s == null ? '' : String(s)).replace(/\s+/g, ' ').trim(); }
+
+    box.addEventListener('input', function (e) {
+      var t = e.target.closest('.chip-txt'); if (!t) return;
+      var i = idxOf(t); if (i >= 0) { notes[i] = clean(t.textContent); save(scope, notes); } // update in place, keep focus
+    });
+    box.addEventListener('keydown', function (e) {
+      if (e.target.classList && e.target.classList.contains('chip-txt') && e.key === 'Enter') { e.preventDefault(); e.target.blur(); }
+    });
+    box.addEventListener('blur', function (e) {
+      var t = e.target.closest && e.target.closest('.chip-txt'); if (!t) return;
+      var i = idxOf(t); if (i < 0) return;
+      var v = clean(t.textContent);
+      if (!v) { notes.splice(i, 1); save(scope, notes); render(); } // an emptied chip drops out
+      else { notes[i] = v; save(scope, notes); }
+    }, true); // capture — blur doesn't bubble
+    box.addEventListener('click', function (e) {
+      var x = e.target.closest('.chip-x');
+      if (x) { var i = idxOf(x); if (i >= 0) { notes.splice(i, 1); save(scope, notes); render(); } return; }
+      if (e.target.closest('.chip-add')) {
+        notes.push(''); save(scope, notes); render();
+        var last = box.querySelector('.chip.note:last-of-type .chip-txt'); if (last) last.focus();
+      }
+    });
   });
 })();
 </script>
