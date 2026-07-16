@@ -1068,6 +1068,12 @@
   .ovf-row.total .k{color:var(--ink);font-weight:700;}
   .ovf-tag{font-family:"IBM Plex Mono",monospace;font-size:.54rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-left:7px;font-weight:400;}
   .ovf-eq{font-family:"Saira Condensed",sans-serif;font-weight:700;font-size:1.2rem;font-variant-numeric:tabular-nums;}
+  /* Owned vehicles as a 2-up gallery on wider screens — keeps each card's photo a sane size
+     (a single full-width card made the 16:10 photo enormous). */
+  @media (min-width:720px){
+    #garage-owned .owned-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;align-items:start;}
+    #garage-owned .owned-card{margin-bottom:0;}
+  }
 
   /* ---------- AI LISTING RATER ---------- */
   .ai-row{display:flex;flex-direction:column;gap:7px;margin:0 0 14px;}
@@ -3613,7 +3619,7 @@ if ('serviceWorker' in navigator) {
   function financeHtml(v) {
     var financed = v.finance === 'financed';
     return '<div class="ovf">' +
-      '<div class="ovf-row"><span class="k">Value <small>rough</small></span><span class="amt">$<input class="ovf-in" data-f="value" inputmode="numeric" maxlength="9" placeholder="0" value="' + attr(v.value) + '" aria-label="Estimated value"></span></div>' +
+      '<div class="ovf-row"><span class="k">Value</span><span class="amt">$<input class="ovf-in" data-f="value" inputmode="numeric" maxlength="9" placeholder="0" value="' + attr(v.value) + '" aria-label="Estimated value"></span></div>' +
       (financed ?
         '<div class="ovf-row"><span class="k">Owed</span><span class="amt">$<input class="ovf-in" data-f="owed" inputmode="numeric" maxlength="9" placeholder="0" value="' + attr(v.owed) + '" aria-label="Amount owed"></span></div>' +
         '<div class="ovf-row"><span class="k">Payment</span><span class="amt">$<input class="ovf-in" data-f="payment" inputmode="numeric" maxlength="7" placeholder="0" value="' + attr(v.payment) + '" aria-label="Monthly payment"><small>/mo</small></span></div>'
