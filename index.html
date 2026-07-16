@@ -676,6 +676,18 @@
   @media (min-width:960px){
     .topnav-inner,.whatsnew-inner{max-width:1180px;}
     #view-hub .wrap,#view-garage .wrap{max-width:1180px;}
+    /* Roomier top nav on desktop — bigger tabs, wordmark, and settings gear.
+       Prefixed with .topnav so they outrank the base nav rules, which are
+       defined LATER in the sheet than this media query (equal specificity
+       would otherwise lose to them). */
+    .topnav .topnav-inner{padding:15px 20px;}
+    .topnav .topnav-tabs{gap:20px;}
+    .topnav .tabs{padding:4px;gap:3px;}
+    .topnav .tab{font-size:.82rem;padding:10px 18px;letter-spacing:.1em;}
+    .topnav .settings-tab{padding:10px;}
+    .topnav .settings-tab .settings-ico{width:20px;height:20px;}
+    .topnav .wordmark{font-size:1.3rem;gap:11px;}
+    .topnav .wordmark::before{width:18px;height:19px;}
     /* keep reading lines from stretching on wide screens */
     .hero-sub{max-width:54ch;}
     .callout{max-width:76ch;}
@@ -1069,11 +1081,11 @@
   .daily-photo-fb span{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;
     letter-spacing:.05em;color:#8a9098;font-size:1.05rem;}
   .daily-photo-edit{position:absolute;bottom:10px;right:10px;z-index:2;border:none;cursor:pointer;
-    display:inline-flex;align-items:center;gap:6px;font-family:"IBM Plex Mono",monospace;font-size:.6rem;
-    letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:#fff;background:rgba(20,22,24,.64);
-    -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);border-radius:999px;padding:8px 13px;
+    display:inline-flex;align-items:center;justify-content:center;color:#fff;background:rgba(20,22,24,.64);
+    -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);border-radius:999px;padding:9px;
     -webkit-tap-highlight-color:transparent;transition:background .15s,opacity .15s;}
-  .daily-photo-edit .dpe-cam{font-size:.9rem;line-height:1;}
+  .daily-photo-edit .dpe-ico{width:18px;height:18px;display:block;stroke:currentColor;fill:none;
+    stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
   .daily-photo-edit:hover{background:var(--redline);}
   .daily-photo-edit:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
   @media (hover:hover){ .daily-photo-edit{opacity:0;} .daily-photo:hover .daily-photo-edit{opacity:1;} }
@@ -1446,7 +1458,7 @@
     <div class="proj-tile" style="margin-bottom:18px;">
       <div class="daily-photo">
         <div id="dpFallback" class="daily-photo-fb"><span>Add a photo of your daily driver</span></div>
-        <button type="button" class="daily-photo-edit" id="dpEdit" aria-label="Replace daily driver photo"><span class="dpe-cam">&#9723;</span> Replace photo</button>
+        <button type="button" class="daily-photo-edit" id="dpEdit" aria-label="Replace daily driver photo" title="Replace photo"><svg class="dpe-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5h3l1.4-2.2a1 1 0 0 1 .84-.46h5.52a1 1 0 0 1 .84.46L16.9 8.5H20a1 1 0 0 1 1 1v8.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.2"/></svg></button>
         <input type="file" id="dpFile" accept="image/*" hidden>
       </div>
       <div class="pt-top">
@@ -4766,11 +4778,12 @@ if ('serviceWorker' in navigator) {
       };
       ['view-garage', 'view-moto', 'view-car'].forEach(function (vid) {
         var view = document.getElementById(vid); if (!view) return;
-        var first = view.querySelector('details.sec-block'); if (!first) return;
+        if (!view.querySelector('details.sec-block')) return; // only views with collapsible sections
+        var wrap = view.querySelector('.wrap') || view;
         var hint = document.createElement('div'); hint.className = 'expand-hint'; hint.setAttribute('role', 'note');
         hint.innerHTML = '<span>&#9662; Tap any section to expand or collapse it &mdash; each shows a summary while closed.</span><button type="button" aria-label="Got it">&times;</button>';
         hint.querySelector('button').addEventListener('click', dismiss);
-        first.parentNode.insertBefore(hint, first);
+        wrap.insertBefore(hint, wrap.firstChild); // top of the content, right under the hero — not mid-page
       });
       Array.prototype.forEach.call(document.querySelectorAll('details.sec-block'), function (d) {
         d.addEventListener('toggle', function () { dismiss(); }, { once: true });
