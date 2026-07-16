@@ -3,7 +3,7 @@
 Working list, roughly in priority order. Knock 'em down top to bottom.
 
 ## ⭐ Queued features
-- [ ] **Rate a vehicle from photos** — no way today for a user to submit photos of a vehicle they're considering and have the app score/rate it. (Ties into the split-off `jazz-h/vehicle-match` tool — integrate its scoring, or add a photo-in → rating flow inside a candidate card.)
+- [x] _(All five queued features shipped — see Done below.)_
 
 ## Reframe as a shareable, portfolio-worthy tool
 - [ ] **Accounts Phase 2–3** — real login + cloud sync via Supabase. Scoped in `docs/accounts-scope.md`; needs a Supabase project + the 4 open decisions. (Phase 1 — local profiles — is shipped.)
@@ -34,6 +34,7 @@ Working list, roughly in priority order. Knock 'em down top to bottom.
 - [x] **Dismissible amber side-quotes** — every `.insight` yellow-bordered note in a section summary gets a subtle ×; dismissal is remembered globally (`mp.hint.insight.*`, seen-once like the NEW banner)
 - [x] **Gear as its own Moto section** — pulled the gear/setup list out of "01 The Money" into a standalone collapsible **02 Gear & Setup** section with its own live summary; remaining sections renumbered
 - [x] **Owned vehicles in the Garage** — new **Also Owned** section: add/edit/remove vehicles you already own, each with a photo, four spec cells, and its own per-vehicle mod list (installed vs. planned totals), persisted to `mp.garage.owned`
+- [x] **AI listing rater** — bring-your-own Anthropic key (Settings → AI, stored on-device, excluded from backups); drop listing photos atop either Candidate Log and Claude vision returns a verdict + score + pros/cons/red-flags/questions/suggested-offer, savable straight to the log. Direct browser call — no backend
 - [x] **Daily-photo render fix** (fallback overlay was covering saved photos) + cropper hardening (downscale + size fallback)
 - [x] **Unified high-quality checkboxes** + **strikethrough on checked items**
 - [x] **Bought gear sinks to the bottom** of the list
