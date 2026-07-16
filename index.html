@@ -214,6 +214,18 @@
     padding:18px 20px 14px;border-bottom:1px solid var(--line);
     background:linear-gradient(180deg,#f1eee6,var(--paper));
   }
+  /* removable cards (contenders / candidates / cross-shop) */
+  .spec-card,.cand-card,.cross-item{position:relative;}
+  .card-rm{position:absolute;top:9px;right:9px;z-index:4;border:none;background:rgba(26,29,33,.06);
+    color:var(--ink-faint);cursor:pointer;height:24px;min-width:24px;padding:0;border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;font-size:1.1rem;line-height:1;
+    -webkit-tap-highlight-color:transparent;transition:background .12s,color .12s;}
+  .card-rm:hover{background:var(--redline);color:#fff;}
+  .card-rm.armed{background:var(--redline);color:#fff;border-radius:13px;min-width:0;height:22px;padding:0 11px;
+    font-size:.56rem;font-family:"IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;}
+  .card-rm:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+  .spec-card.has-rm .spec-top,.cand-card.has-rm .cand-top{padding-right:40px;}
+  .cross-item.has-rm{padding-right:42px;}
   .spec-name{font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;
     font-size:1.5rem;line-height:1;letter-spacing:.01em;margin:0;}
   .spec-name span{display:block;font-family:"IBM Plex Mono",monospace;font-weight:400;
@@ -4095,6 +4107,50 @@ if ('serviceWorker' in navigator) {
       });
     }
   } catch (e) {}
+})();
+</script>
+
+<script>
+// Removable cards — delete cards from Contenders / Candidate Log / Cross-Shop (persisted per profile).
+(function () {
+  function loadSet(k) { try { return JSON.parse(localStorage.getItem(k) || '[]'); } catch (e) { return []; } }
+  function saveSet(k, a) { try { localStorage.setItem(k, JSON.stringify(a)); } catch (e) {} }
+
+  function makeRemovable(section, selector, storeKey) {
+    if (!section) return;
+    var removed = loadSet(storeKey);
+    Array.prototype.slice.call(section.querySelectorAll(selector)).forEach(function (card, idx) {
+      if (removed.indexOf(idx) >= 0) { card.remove(); return; }
+      if (card.querySelector('.card-rm')) return;
+      card.classList.add('has-rm');
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'card-rm'; btn.setAttribute('aria-label', 'Remove this card'); btn.innerHTML = '&times;';
+      var armed = false, t = null;
+      btn.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        if (!armed) { armed = true; btn.classList.add('armed'); btn.textContent = 'Remove?'; t = setTimeout(function () { armed = false; btn.classList.remove('armed'); btn.innerHTML = '&times;'; }, 3000); return; }
+        if (t) clearTimeout(t);
+        var set = loadSet(storeKey); if (set.indexOf(idx) < 0) set.push(idx); saveSet(storeKey, set);
+        card.remove();
+      });
+      card.appendChild(btn);
+    });
+  }
+
+  var targets = [
+    ['moto-contenders', '.spec-card', 'mp.rm.moto-contenders'],
+    ['car-contenders', '.spec-card', 'mp.rm.car-contenders'],
+    ['moto-candidates', '.cand-card:not(.blank):not(.usercand)', 'mp.rm.moto-candidates'],
+    ['car-candidates', '.cand-card:not(.blank):not(.usercand)', 'mp.rm.car-candidates']
+  ];
+  targets.forEach(function (t) { makeRemovable(document.getElementById(t[0]), t[1], t[2]); });
+  // cross-shop lives in the details whose heading is "Cross-Shop"
+  ['view-moto', 'view-car'].forEach(function (vid) {
+    var v = document.getElementById(vid); if (!v) return;
+    var cross = null;
+    v.querySelectorAll('details.sec-block').forEach(function (d) { var h = d.querySelector('summary h2'); if (h && /Cross-Shop/i.test(h.textContent)) cross = d; });
+    makeRemovable(cross, '.cross-item', 'mp.rm.' + vid + '-cross');
+  });
 })();
 </script>
 
