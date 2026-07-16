@@ -3592,6 +3592,14 @@ if ('serviceWorker' in navigator) {
     x.addEventListener('click', onClick); amt.appendChild(x);
   }
 
+  function reorderGear() {
+    if (!list || !totalRow) return;
+    var rows = Array.prototype.slice.call(list.querySelectorAll('.gear-row'));
+    var bought = [], unbought = [];
+    rows.forEach(function (r) { var c = r.querySelector('.gear-chk'); (c && c.checked ? bought : unbought).push(r); });
+    unbought.concat(bought).forEach(function (r) { list.insertBefore(r, totalRow); }); // bought sink to the bottom, above the total
+  }
+
   function wireSeed(row) {
     var cost = row.querySelector('.gear-cost'), chk = row.querySelector('.gear-chk');
     if (!cost) return;
@@ -3600,7 +3608,7 @@ if ('serviceWorker' in navigator) {
     cost.addEventListener('input', function () { try { localStorage.setItem('mp.gear.cost.' + key, cost.value); } catch (e) {} compute(); });
     if (chk) {
       try { if (localStorage.getItem('mp.gear.chk.' + key) === '1') chk.checked = true; } catch (e) {}
-      chk.addEventListener('change', function () { try { localStorage.setItem('mp.gear.chk.' + key, chk.checked ? '1' : '0'); } catch (e) {} compute(); });
+      chk.addEventListener('change', function () { try { localStorage.setItem('mp.gear.chk.' + key, chk.checked ? '1' : '0'); } catch (e) {} compute(); reorderGear(); });
     }
     addX(row, function () {
       var rm = loadArr(RMKEY); if (rm.indexOf(key) < 0) rm.push(key); saveArr(RMKEY, rm);
@@ -3627,7 +3635,7 @@ if ('serviceWorker' in navigator) {
     }
     it.addEventListener('input', persist);
     cost.addEventListener('input', function () { persist(); compute(); });
-    chk.addEventListener('change', function () { persist(); compute(); });
+    chk.addEventListener('change', function () { persist(); compute(); reorderGear(); });
     addX(row, function () {
       saveArr(USERKEY, loadArr(USERKEY).filter(function (g) { return g.id !== item.id; }));
       row.remove(); compute();
@@ -3672,6 +3680,7 @@ if ('serviceWorker' in navigator) {
     });
   }
   compute();
+  reorderGear();
 })();
 </script>
 
