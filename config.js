@@ -9,8 +9,8 @@
  * Account section stays hidden and nothing leaves the device.
  */
 window.MP_SUPABASE = {
-  url: '',        // e.g. 'https://abcdefgh.supabase.co'
-  anonKey: '',    // the "anon public" key (a long JWT)
+  url: 'https://jwkvfibsetjwsfnvmqvy.supabase.co',
+  anonKey: 'sb_publishable_ZZTdegcyK_W2DaZ4H27RMQ_rWn5bJP7',  // publishable key — safe to commit, protected by RLS
   // Sign-in methods to offer — remove any you haven't enabled in Supabase Auth.
   providers: ['magiclink', 'google', 'github']
 };
