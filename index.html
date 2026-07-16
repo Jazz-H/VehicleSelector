@@ -209,7 +209,8 @@
     background:var(--steel-850);border-radius:0 4px 4px 0;font-size:.92rem;color:#cfcbc1;
   }
   .callout b{color:var(--paper);}
-  .callout[data-dk]{position:relative;padding-right:38px;}
+  .callout{position:relative;}
+  .callout:has(.callout-x){padding-right:38px;}
   .callout[hidden]{display:none;}
   .callout-x{position:absolute;top:8px;right:8px;border:none;background:transparent;color:var(--ink-faint);
     cursor:pointer;font-size:1.15rem;line-height:1;padding:2px 6px;opacity:.6;-webkit-tap-highlight-color:transparent;
@@ -1690,7 +1691,7 @@
           <div class="rev-mark" style="left:60%"></div>
         </div>
       </div>
-      <p class="verdict">The natural step up from your 300F: same easygoing Honda manners, but the twin adds real midrange and highway legs you'll feel immediately. ~100 lb heavier — clearly within your range. <b>The faired CBR500R adds wind protection (slight lean); the naked CB500F stays upright. Same engine, your call on ergonomics.</b></p>
+      <p class="verdict">The natural step up from a 300-class single: same easygoing Honda manners, but the twin adds real midrange and highway legs you'll feel immediately. ~100 lb heavier — clearly within your range. <b>The faired CBR500R adds wind protection (slight lean); the naked CB500F stays upright. Same engine, your call on ergonomics.</b></p>
     </article>
 
     <div class="read">
@@ -2003,33 +2004,19 @@
       </div>
     </article>
 
-    <!-- BLANK 05 -->
-    <article class="cand-card blank">
-      <div class="cand-top">
-        <div><span class="cand-ey">Candidate 05</span><h3 class="cand-name"><span class="fill" contenteditable="true" data-ph="year / make / model"></span></h3></div>
-        <span class="vbadge todo">TBD</span>
-      </div>
-      <div class="cand-facts">
-        <div class="cand-fact"><span class="k">Price</span><span class="v"><span class="fill" contenteditable="true" data-ph="$"></span></span></div>
-        <div class="cand-fact"><span class="k">Miles</span><span class="v"><span class="fill" contenteditable="true" data-ph="—"></span></span></div>
-        <div class="cand-fact"><span class="k">Listed</span><span class="v"><span class="fill" contenteditable="true" data-ph="—"></span></span></div>
-        <div class="cand-fact"><span class="k">Location</span><span class="v"><span class="fill" contenteditable="true" data-ph="—"></span></span></div>
-      </div>
-      <div class="blank-hint">// Check it against the Market Values table, then note mods, condition, and your target offer.</div>
-    </article>
   </details>
 
   <!-- CROSS SHOP -->
   <details class="sec-block">
     <summary>
     <div class="sec-head"><span class="sec-num">06</span><h2>Cross-Shop</h2></div>
-    <span class="insight"><em>Insight</em> The <b>Ninja 400 / Z400</b> is the value benchmark &mdash; a real step up from your 300F and cheaper to run than the KTM.</span>
+    <span class="insight"><em>Insight</em> The <b>Ninja 400 / Z400</b> is the value benchmark &mdash; a real step up from a 300-class single and cheaper to run than the KTM.</span>
     </summary>
     <p class="sec-note">Mostly A2-legal, under 600cc, and in reach at $4k cash used — with one over-budget exception, flagged below. Worth a test ride against your shortlist.</p>
     <div class="cross">
       <div class="cross-item">
         <h4>Kawasaki Ninja 400 / Z400</h4>
-        <p>The value benchmark &mdash; 399cc twin, ~45 hp, standard ABS, and a real step up from your 300F for cheaper running than the KTM. Z400 is the naked, Ninja 400 the faired. <b>Watch:</b> dropped/track bikes; discontinued for 2024 (&rarr; Ninja 500), so hunt the low-mile late ones.</p>
+        <p>The value benchmark &mdash; 399cc twin, ~45 hp, standard ABS, and a real step up from a 300-class single for cheaper running than the KTM. Z400 is the naked, Ninja 400 the faired. <b>Watch:</b> dropped/track bikes; discontinued for 2024 (&rarr; Ninja 500), so hunt the low-mile late ones.</p>
       </div>
       <div class="cross-item">
         <h4>Yamaha MT-03 / R3</h4>
@@ -2051,7 +2038,7 @@
         <h4>Kawasaki Ninja 650 / Z650 <small style="font-weight:400;color:var(--ink-faint)">— over-budget stretch</small></h4>
         <p>The step past the brief &mdash; 649cc twin, ~67 hp, more real-world grunt. The flagged exception: it&rsquo;s <b>over 600cc and usually over $4k</b>. <b>Watch:</b> more bike than a returning rider needs day one; not A2-legal unrestricted.</p>
       </div>
-    <p class="cross-note">// The Ninja 400 / Z400 is the strongest all-round alternative to the Hondas — cheaper to run than the KTM, and a real step up from your 300F.</p>
+    <p class="cross-note">// The Ninja 400 / Z400 is the strongest all-round alternative to the Hondas — cheaper to run than the KTM, and a real step up from a 300-class single.</p>
   </details>
 
   <!-- THINGS TO WEIGH -->
@@ -2775,9 +2762,18 @@
   if(toggle)toggle.addEventListener('click',function(){var willCollapse=!form.classList.contains('collapsed');set(willCollapse,!willCollapse);});
 })();
 // Dismissible insight callouts — each remembers its own dismissal by key.
-(function(){var cs=document.querySelectorAll('.callout[data-dk]');
-  Array.prototype.forEach.call(cs,function(c){
-    var key='mp.callout.'+c.getAttribute('data-dk');
+(function(){
+  // Every amber callout is dismissible (seen-once). data-dk ones keep their existing
+  // key; the rest key off the nearest section id, stored global like the insight × .
+  function keyFor(c){
+    var dk=c.getAttribute('data-dk'); if(dk) return 'mp.callout.'+dk;
+    var host=c.closest('[id]'), base=host?host.id:'doc';
+    var sibs=(host||document).getElementsByClassName('callout');
+    var idx=Array.prototype.indexOf.call(sibs,c);
+    return 'mp.hint.callout.'+base+(idx>0?('-'+idx):'');
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.callout'),function(c){
+    var key=keyFor(c);
     try{if(localStorage.getItem(key)){c.hidden=true;return;}}catch(e){}
     var x=document.createElement('button');x.type='button';x.className='callout-x';x.setAttribute('aria-label','Dismiss this note');x.innerHTML='&times;';
     x.addEventListener('click',function(){c.hidden=true;try{localStorage.setItem(key,'1');}catch(e){}});
