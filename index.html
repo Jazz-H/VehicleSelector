@@ -677,6 +677,7 @@
   .profile-name[contenteditable="true"]{border-bottom:1px dashed var(--redline);text-overflow:clip;}
   .profile-badge{flex:0 0 auto;font-family:"IBM Plex Mono",monospace;font-size:.54rem;letter-spacing:.12em;
     text-transform:uppercase;color:#fff;background:var(--redline);padding:3px 7px;border-radius:2px;}
+  .profile-badge.muted{background:transparent;border:1px solid var(--line-steel-strong);color:var(--ink-faint);}
   .profile-act{flex:0 0 auto;border:none;background:transparent;color:var(--ink-faint);cursor:pointer;
     font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.07em;text-transform:uppercase;
     padding:5px 8px;border-radius:4px;-webkit-tap-highlight-color:transparent;transition:color .12s,background .12s;}
@@ -1143,6 +1144,8 @@
   .ov-cta:hover{transform:translateY(-1px);box-shadow:0 1px 0 rgba(255,255,255,.3) inset,0 16px 30px -12px rgba(216,58,41,.5);}
   .ov-cta:active{transform:translateY(0);}
   .ov-cta:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+  .ov-cta.ghost{background:transparent;border:1.5px solid var(--line-steel-strong);box-shadow:none;color:var(--paper-dim);}
+  .ov-cta.ghost:hover{border-color:var(--paper);color:var(--paper);box-shadow:none;transform:none;}
   .ov-modal .ov-check{display:flex;align-items:center;gap:9px;margin-top:15px;cursor:pointer;
     font-family:"IBM Plex Mono",monospace;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:#b7b3a9;}
   .ov-modal .ov-check input{width:16px;height:16px;accent-color:var(--redline);cursor:pointer;flex:0 0 auto;}
@@ -2979,7 +2982,7 @@
       <button type="button" class="data-btn" id="profileAdd">+&ensp;New profile</button>
       <span class="data-status" id="profileStatus" role="status" aria-live="polite"></span>
     </div>
-    <div class="callout">Switching or deleting the active profile reloads the app. A brand-new profile starts as a fresh copy of the sample build &mdash; edit it into your own.</div>
+    <div class="callout">Switching or deleting the active profile reloads the app. A new profile can start as a copy of the sample build to explore, or completely <b style="color:#e6e2d8">blank</b> so you're never editing someone else's numbers.</div>
   </section>
 
   <section style="border-bottom:none;padding-top:26px;">
@@ -4536,7 +4539,7 @@ window.mpAddModal = function (cfg) {
 // Model: the live working set is plain mp.* ; each profile is a saved snapshot of that build data.
 (function () {
   var PKEY = 'mp.profiles', AKEY = 'mp.activeProfile', SNAP = 'mp.profile.';
-  var GLOBALS = ['mp.profiles', 'mp.activeProfile', 'mp.profile.', 'mp.whatsnew', 'mp.hint', 'mp.prefs', 'mp.ai.'];
+  var GLOBALS = ['mp.profiles', 'mp.activeProfile', 'mp.profile.', 'mp.whatsnew', 'mp.hint', 'mp.prefs', 'mp.ai.', 'mp.welcome', 'mp.pendingBlank'];
   function isGlobal(k) { for (var i = 0; i < GLOBALS.length; i++) { if (k.indexOf(GLOBALS[i]) === 0) return true; } return false; }
   function buildKeys() { var out = []; for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k && k.indexOf('mp.') === 0 && !isGlobal(k)) out.push(k); } return out; }
   function jget(k, d) { try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }
@@ -4558,7 +4561,7 @@ window.mpAddModal = function (cfg) {
   function reload() { location.hash = '#settings'; location.reload(); }
 
   function switchTo(id) { if (id === active()) return; saveSnapshot(active()); loadSnapshot(id); setActive(id); reload(); }
-  function add(name) { var p = list(), id = uid(); p.push({ id: id, name: name || ('Build ' + (p.length + 1)), createdAt: Date.now() }); jset(PKEY, p); jset(SNAP + id, {}); return id; }
+  function add(name, blank) { var p = list(), id = uid(); p.push({ id: id, name: name || ('Build ' + (p.length + 1)), createdAt: Date.now(), blank: blank || undefined }); jset(PKEY, p); jset(SNAP + id, {}); return id; }
   function rename(id, name) { var p = list(); p.forEach(function (x) { if (x.id === id) x.name = name; }); jset(PKEY, p); }
   function remove(id) {
     var wasActive = (id === active());
@@ -4616,7 +4619,15 @@ window.mpAddModal = function (cfg) {
       var row = document.createElement('div'); row.className = 'profile-row' + (p.id === act ? ' active' : '');
       var name = document.createElement('span'); name.className = 'profile-name'; name.textContent = p.name; row.appendChild(name);
       if (p.id === act) { var b = document.createElement('span'); b.className = 'profile-badge'; b.textContent = 'Active'; row.appendChild(b); }
-      else { var sw = document.createElement('button'); sw.type = 'button'; sw.className = 'profile-act switch'; sw.textContent = 'Switch'; sw.addEventListener('click', function () { switchTo(p.id); }); row.appendChild(sw); }
+      else {
+        if (p.blank) { var bb = document.createElement('span'); bb.className = 'profile-badge muted'; bb.textContent = 'Blank'; row.appendChild(bb); }
+        var sw = document.createElement('button'); sw.type = 'button'; sw.className = 'profile-act switch'; sw.textContent = 'Switch';
+        sw.addEventListener('click', function () {
+          if (p.blank) { try { localStorage.setItem('mp.pendingBlank', '1'); } catch (e) {} }
+          switchTo(p.id);
+        });
+        row.appendChild(sw);
+      }
       var rn = document.createElement('button'); rn.type = 'button'; rn.className = 'profile-act'; rn.textContent = 'Rename';
       rn.addEventListener('click', function () {
         name.setAttribute('contenteditable', 'true'); name.focus();
@@ -4640,8 +4651,34 @@ window.mpAddModal = function (cfg) {
   }
   render();
   if (addBtn) addBtn.addEventListener('click', function () {
-    add(); render();
-    var st = document.getElementById('profileStatus'); if (st) { st.textContent = 'Added — tap Switch to start it as a fresh sample.'; setTimeout(function () { st.textContent = ''; }, 3500); }
+    if (!window.mpAddModal) { add(); render(); return; }
+    var m = window.mpAddModal({
+      label: 'New profile',
+      submitLabel: 'Create profile',
+      hint: 'Switch to it from the list to load it',
+      bodyHtml:
+        '<div class="ov-fld"><label>Name</label><input class="pa-name" type="text" maxlength="40" placeholder="e.g. My Build, Wife&rsquo;s Car"></div>' +
+        '<div class="ov-add-opts"><div class="ov-opt"><span class="ov-opt-l">Starting point</span>' +
+          '<div class="ov-seg pa-seg" role="group">' +
+            '<button type="button" class="ov-seg-btn on" data-start="sample">Sample build</button>' +
+            '<button type="button" class="ov-seg-btn" data-start="blank">Blank</button>' +
+          '</div></div></div>',
+      onSubmit: function (form) {
+        var name = (form.querySelector('.pa-name').value || '').trim();
+        var on = form.querySelector('.ov-seg-btn.on');
+        var blank = !!(on && on.getAttribute('data-start') === 'blank');
+        add(name, blank); render();
+        var st = document.getElementById('profileStatus');
+        if (st) { st.textContent = 'Added — tap Switch to load it.'; setTimeout(function () { st.textContent = ''; }, 3500); }
+      }
+    });
+    m.form.querySelectorAll('.pa-seg .ov-seg-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        m.form.querySelectorAll('.pa-seg .ov-seg-btn').forEach(function (b) { b.classList.remove('on'); });
+        btn.classList.add('on');
+      });
+    });
+    m.open();
   });
 })();
 </script>
@@ -5812,6 +5849,81 @@ window.mpAddModal = function (cfg) {
     var open = !card.classList.contains('open');
     card.classList.toggle('open', open);
     exp.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+})();
+</script>
+
+<script>
+// Blank slate — strip the sample build down to an empty starting point: every seeded
+// contender / candidate / mod / gear item removed (via the same per-item removal each
+// already supports), identity fields swapped for neutral placeholders (a few — like the
+// daily driver's name — are never allowed to sit truly empty), and every dollar figure
+// zeroed. Exposed globally so both the new-profile flow and the first-run welcome can use it.
+window.mpBlankSlate = function () {
+  function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  set('mp.daily', JSON.stringify({ nick: 'ride', title1: 'Your Vehicle', title2: '', engine: '—', output: '—', drive: '—', miles: '—' }));
+  set('mp.daily.snapshotted', '1');
+  ['trade', 'private', 'retail', 'owed'].forEach(function (k) { set('mp.val.' + k, '0'); });
+  set('mp.mbud.cap', '0'); set('mp.mbud.tag', ''); set('mp.mbud.bike', '0');
+  ['program', 'car', 'immediate', 'tools', 'setup', 'reserve'].forEach(function (f) { set('mp.carmoney.' + f, '$0'); });
+  set('mp.carmoney.tag', '');
+  [['#moto-contenders .spec-card', 'mp.rm.moto-contenders'],
+   ['#car-contenders .spec-card', 'mp.rm.car-contenders'],
+   ['#moto-candidates .cand-card:not(.blank):not(.usercand)', 'mp.rm.moto-candidates'],
+   ['#car-candidates .cand-card:not(.blank):not(.usercand)', 'mp.rm.car-candidates']
+  ].forEach(function (t) {
+    var n = document.querySelectorAll(t[0]).length, arr = [];
+    for (var i = 0; i < n; i++) arr.push(i);
+    set(t[1], JSON.stringify(arr));
+  });
+  ['view-moto', 'view-car'].forEach(function (vid) {
+    var v = document.getElementById(vid); if (!v) return;
+    var cross = null;
+    v.querySelectorAll('details.sec-block').forEach(function (d) { var h = d.querySelector('summary h2'); if (h && /Cross-Shop/i.test(h.textContent)) cross = d; });
+    if (!cross) return;
+    var n = cross.querySelectorAll('.cross-item').length, arr = [];
+    for (var i = 0; i < n; i++) arr.push(i);
+    set('mp.rm.' + vid + '-cross', JSON.stringify(arr));
+  });
+  // Mods migrate into mp.mods.user on their very first render (see the Add-a-mod module),
+  // which has always already happened by the time this runs — so clearing that array is
+  // what actually empties the ledger; the seed-removal path it replaced is dead by then.
+  set('mp.mods.user', '[]');
+  var gearKeys = [];
+  document.querySelectorAll('.gear-list .gear-cost[data-g]').forEach(function (el) { var k = el.getAttribute('data-g'); if (k && k.indexOf('u_') !== 0) gearKeys.push(k); });
+  set('mp.gear.rmseed', JSON.stringify(gearKeys));
+};
+
+(function () {
+  // A brand-new "blank" profile just switched in: the reload that follows re-seeds the
+  // sample into it like any profile would, so scrub it back to blank once, then reload clean.
+  var pending = false;
+  try { pending = localStorage.getItem('mp.pendingBlank') === '1'; } catch (e) {}
+  if (pending) {
+    try { localStorage.removeItem('mp.pendingBlank'); } catch (e) {}
+    window.mpBlankSlate();
+    location.reload();
+    return;
+  }
+
+  // First-run welcome — shown once per device, on whatever profile is active.
+  var KEY = 'mp.welcome.seen', seen = false;
+  try { seen = localStorage.getItem(KEY) === '1'; } catch (e) {}
+  if (seen || !window.mpAddModal) return;
+  try { localStorage.setItem(KEY, '1'); } catch (e) {}
+  var m = window.mpAddModal({
+    label: 'Welcome',
+    submitLabel: 'Explore the sample →',
+    bodyHtml:
+      '<p style="margin:0 0 16px;color:#cfcbc0;font-size:.92rem;line-height:1.55">Motorpool starts loaded with a <b style="color:#e6e2d8">sample build</b> — a daily driver and a couple of candidates — so you can see how it works. Tap any price, spec, or note to edit it in place; it saves to this device automatically.</p>' +
+      '<button type="button" class="ov-cta ghost" id="welcomeBlankBtn" style="margin-bottom:2px">Start my own build — blank instead</button>',
+    onSubmit: function () { return true; }
+  });
+  m.open();
+  var blankBtn = m.form.querySelector('#welcomeBlankBtn');
+  if (blankBtn) blankBtn.addEventListener('click', function () {
+    window.mpBlankSlate();
+    location.reload();
   });
 })();
 </script>
