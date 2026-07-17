@@ -1093,6 +1093,12 @@
   .soon-badge{display:none;margin-left:2px;font-size:.6rem;letter-spacing:.1em;font-weight:700;
     padding:2px 7px;border-radius:999px;border:1px solid var(--line-steel-strong);color:var(--ink-faint);}
   .acct-oauth-btn.is-soon .soon-badge{display:inline-block;}
+  .acct-sync{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+  .acct-sync-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .acct-sync-status{flex:1;min-width:160px;font-family:"IBM Plex Mono",monospace;font-size:.76rem;color:var(--ink-faint);}
+  .acct-sync-status.ok{color:#7fb98f;} .acct-sync-status.err{color:#f0b7ad;}
+  .acct-toggle{display:inline-flex;align-items:center;gap:9px;cursor:pointer;font-size:.82rem;color:var(--ink-soft);user-select:none;}
+  .acct-toggle input{width:16px;height:16px;accent-color:var(--redline);cursor:pointer;flex:0 0 auto;}
   .acct-me{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
   .acct-avatar{width:44px;height:44px;border-radius:50%;background:var(--redline);color:#fff;display:flex;
     align-items:center;justify-content:center;font-family:"Saira Condensed",sans-serif;font-weight:800;font-size:1.35rem;flex:0 0 auto;}
@@ -2777,7 +2783,14 @@
         <div class="acct-meta"><span class="acct-email" id="acctEmailLabel">&mdash;</span><span class="acct-sub">Signed in</span></div>
         <button type="button" class="data-btn" id="acctSignOut">Sign out</button>
       </div>
-      <div class="callout" id="acctSyncNote">Cloud sync of your profiles arrives in the next update &mdash; for now, sign-in is set up and your session persists.</div>
+      <div class="acct-sync" id="acctSync">
+        <div class="acct-sync-head">
+          <span class="acct-sync-status" id="syncStatus" role="status" aria-live="polite">Not synced yet</span>
+          <button type="button" class="data-btn" id="syncNow">Sync now</button>
+        </div>
+        <label class="acct-toggle"><input type="checkbox" id="syncAuto"><span>Auto-sync my builds to the cloud</span></label>
+      </div>
+      <div class="callout">Sync uploads each profile&rsquo;s build data to your account so it&rsquo;s there on your other devices. Photos and figures travel; your on-device AI key never does.</div>
     </div>
   </section>
 
@@ -4256,12 +4269,40 @@ if ('serviceWorker' in navigator) {
   function rename(id, name) { var p = list(); p.forEach(function (x) { if (x.id === id) x.name = name; }); jset(PKEY, p); }
   function remove(id) {
     var wasActive = (id === active());
+    var gone = null; list().forEach(function (x) { if (x.id === id) gone = x; });
     var p = list().filter(function (x) { return x.id !== id; }); jset(PKEY, p);
     try { localStorage.removeItem(SNAP + id); } catch (e) {}
+    // Best-effort: also delete the cloud row when signed in, so the delete propagates.
+    if (gone && gone.cloud && gone.cloud.id && typeof window.mpSyncDelete === 'function') { try { window.mpSyncDelete(gone.cloud.id); } catch (e) {} }
     if (wasActive && p.length) { loadSnapshot(p[0].id); setActive(p[0].id); reload(); return; }
     if (typeof render === 'function') render();
   }
-  window.mpProfiles = { buildKeys: buildKeys, list: list, active: active };
+
+  // ---- Sync helpers (Phase 3) — used by the cloud-sync module ----
+  function get(id) { var r = null; list().forEach(function (x) { if (x.id === id) r = x; }); return r; }
+  function cleanBlob(blob) { var o = {}; if (blob) Object.keys(blob).forEach(function (k) { if (k.indexOf('mp.') === 0 && !isGlobal(k)) o[k] = String(blob[k]); }); return o; }
+  // A profile's build data: live mp.* keys if it's active, else its saved snapshot.
+  function getData(id) {
+    if (id === active()) { var o = {}; buildKeys().forEach(function (k) { o[k] = localStorage.getItem(k); }); return o; }
+    return cleanBlob(jget(SNAP + id, {}));
+  }
+  function setData(id, blob) {
+    var clean = cleanBlob(blob);
+    if (id === active()) { clearBuild(); Object.keys(clean).forEach(function (k) { try { localStorage.setItem(k, clean[k]); } catch (e) {} }); }
+    else { jset(SNAP + id, clean); }
+  }
+  function setCloud(id, cloud) { var p = list(); p.forEach(function (x) { if (x.id === id) x.cloud = cloud; }); jset(PKEY, p); }
+  // Import a cloud profile as a new local (inactive) profile.
+  function importProfile(name, blob, cloud) {
+    var id = uid(), p = list();
+    p.push({ id: id, name: name || ('Build ' + (p.length + 1)), createdAt: Date.now(), cloud: cloud || undefined });
+    jset(PKEY, p); jset(SNAP + id, cleanBlob(blob)); return id;
+  }
+  window.mpProfiles = {
+    buildKeys: buildKeys, list: list, active: active, get: get, rename: rename,
+    getData: getData, setData: setData, setCloud: setCloud, importProfile: importProfile,
+    reloadApp: reload, refreshUI: function () { if (typeof render === 'function') render(); }
+  };
 
   // ---- Settings UI ----
   var listEl = document.getElementById('profileList'), addBtn = document.getElementById('profileAdd');
@@ -5086,15 +5127,20 @@ if ('serviceWorker' in navigator) {
     });
     return loading;
   }
+  window.MP_SUPA = { getClient: getClient };  // shared with the cloud-sync module
   var redirect = location.href.split('#')[0];
 
   function render(session) {
-    if (session && session.user) {
+    var live = (session && session.user) ? session : null;
+    if (live) {
       out.hidden = true; inn.hidden = false;
-      var email = session.user.email || (session.user.user_metadata && session.user.user_metadata.email) || 'Signed in';
+      var email = live.user.email || (live.user.user_metadata && live.user.user_metadata.email) || 'Signed in';
       document.getElementById('acctEmailLabel').textContent = email;
       document.getElementById('acctAvatar').textContent = (email[0] || '?').toUpperCase();
     } else { out.hidden = false; inn.hidden = true; }
+    // Broadcast auth state so the sync module can start/stop.
+    window.__mpSession = live;
+    try { document.dispatchEvent(new CustomEvent('mp:auth', { detail: live })); } catch (e) {}
   }
 
   var mailBtn = document.getElementById('acctMagic');
@@ -5127,6 +5173,159 @@ if ('serviceWorker' in navigator) {
     c.auth.getSession().then(function (r) { render(r.data && r.data.session); });
     c.auth.onAuthStateChange(function (_e, session) { render(session); });
   }).catch(function () { status('Sign-in is unavailable right now (offline?).', 'err'); });
+})();
+</script>
+
+<script>
+// Cloud sync (Phase 3) — pushes each local profile's build data to the Supabase `profiles`
+// table and pulls it back on other devices. Local-first: the UI always reads/writes local
+// storage; sync only mirrors it. Conflicts (both sides changed) prompt keep-local/keep-cloud;
+// everything else is last-write-wins. Runs only when Supabase is configured AND signed in.
+(function () {
+  var cfg = window.MP_SUPABASE || {};
+  if (!cfg.url || !cfg.anonKey) return;
+  var P = window.mpProfiles;
+  if (!P || !window.MP_SUPA || !P.getData) return;
+
+  var AUTOKEY = 'mp.prefs.autosync', LSKEY = 'mp.prefs.lastSynced';
+  var statusEl = document.getElementById('syncStatus');
+  var nowBtn = document.getElementById('syncNow');
+  var autoBox = document.getElementById('syncAuto');
+
+  function autoOn() { try { return localStorage.getItem(AUTOKEY) !== '0'; } catch (e) { return true; } }
+  function setAuto(v) { try { localStorage.setItem(AUTOKEY, v ? '1' : '0'); } catch (e) {} }
+  function session() { return window.__mpSession; }
+  function userId() { var s = session(); return s && s.user && s.user.id; }
+  function client() { return window.MP_SUPA.getClient(); }
+
+  // Stable hash of a build blob, so we can tell whether a profile changed since last sync.
+  function hash(blob) {
+    var ks = Object.keys(blob || {}).sort(), s = '';
+    for (var i = 0; i < ks.length; i++) s += ks[i] + ' ' + blob[ks[i]] + '';
+    var h = 5381, j = s.length;
+    while (j) h = (h * 33) ^ s.charCodeAt(--j);
+    return (h >>> 0).toString(36);
+  }
+
+  // ---- status line ----
+  function relTime(iso) {
+    var t = Date.parse(iso); if (isNaN(t)) return '';
+    var s = Math.floor((Date.now() - t) / 1000);
+    if (s < 60) return 'just now';
+    if (s < 3600) return Math.floor(s / 60) + ' min ago';
+    if (s < 86400) return Math.floor(s / 3600) + ' hr ago';
+    return Math.floor(s / 86400) + ' days ago';
+  }
+  function say(msg, kind) { if (statusEl) { statusEl.textContent = msg; statusEl.className = 'acct-sync-status' + (kind ? ' ' + kind : ''); } }
+  function renderStatus() {
+    var iso = null; try { iso = localStorage.getItem(LSKEY); } catch (e) {}
+    if (iso) say('Last synced ' + relTime(iso), 'ok'); else say('Not synced yet');
+  }
+  function stampSynced() { try { localStorage.setItem(LSKEY, new Date().toISOString()); } catch (e) {} }
+
+  // ---- one profile → cloud (insert or update) ----
+  function pushOne(c, id) {
+    var p = P.get(id); if (!p) return Promise.resolve();
+    var blob = P.getData(id), now = new Date().toISOString();
+    var cloud = p.cloud || {};
+    var q = cloud.id
+      ? c.from('profiles').update({ name: p.name, data: blob, updated_at: now }).eq('id', cloud.id).select('id,updated_at').single()
+      : c.from('profiles').insert({ user_id: userId(), name: p.name, data: blob }).select('id,updated_at').single();
+    return q.then(function (r) {
+      if (r.error) throw r.error;
+      P.setCloud(id, { id: r.data.id, updatedAt: r.data.updated_at, lastSynced: Date.now(), hash: hash(blob) });
+    });
+  }
+
+  // ---- cloud row → local (overwrite) ----
+  function applyCloud(id, row) {
+    P.setData(id, row.data || {});
+    P.rename(id, row.name);
+    P.setCloud(id, { id: row.id, updatedAt: row.updated_at, lastSynced: Date.now(), hash: hash(P.getData(id)) });
+  }
+
+  var running = false;
+  // Full two-way reconcile: pull all rows, import new ones, resolve each local↔cloud pair.
+  function syncNow() {
+    if (running || !session()) return Promise.resolve();
+    running = true; if (nowBtn) nowBtn.disabled = true; say('Syncing…');
+    var activeTouched = false;
+    return client().then(function (c) {
+      return c.from('profiles').select('id,name,data,updated_at').then(function (r) {
+        if (r.error) throw r.error;
+        var rows = r.data || [], locals = P.list();
+        var byCloud = {}; locals.forEach(function (x) { if (x.cloud && x.cloud.id) byCloud[x.cloud.id] = x; });
+        var toPush = [], conflicts = [];
+
+        rows.forEach(function (row) {
+          var lp = byCloud[row.id];
+          if (!lp) { P.importProfile(row.name, row.data, { id: row.id, updatedAt: row.updated_at, lastSynced: Date.now(), hash: hash(row.data || {}) }); return; }
+          var localHash = hash(P.getData(lp.id));
+          var localChanged = localHash !== (lp.cloud && lp.cloud.hash);
+          var cloudChanged = row.updated_at !== (lp.cloud && lp.cloud.updatedAt);
+          if (cloudChanged && !localChanged) { applyCloud(lp.id, row); if (lp.id === P.active()) activeTouched = true; }
+          else if (localChanged && !cloudChanged) { toPush.push(lp.id); }
+          else if (localChanged && cloudChanged) { conflicts.push({ id: lp.id, name: lp.name, row: row }); }
+        });
+        // profiles that only exist locally (never pushed) → upload
+        locals.forEach(function (x) { if (!(x.cloud && x.cloud.id)) toPush.push(x.id); });
+
+        // resolve conflicts (blocking prompt, one at a time)
+        conflicts.forEach(function (cf) {
+          var keepLocal = window.confirm('"' + cf.name + '" changed both on this device and in the cloud.\n\nOK = keep THIS DEVICE’s version (upload it).\nCancel = keep the CLOUD version (download it).');
+          if (keepLocal) toPush.push(cf.id);
+          else { applyCloud(cf.id, cf.row); if (cf.id === P.active()) activeTouched = true; }
+        });
+
+        // push everything queued, sequentially
+        var chain = Promise.resolve();
+        toPush.forEach(function (id) { chain = chain.then(function () { return pushOne(c, id); }); });
+        return chain;
+      });
+    }).then(function () {
+      stampSynced(); baseHash = activeHash();
+      if (activeTouched) { say('Synced — reloading…', 'ok'); setTimeout(function () { P.reloadApp(); }, 700); }
+      else { renderStatus(); P.refreshUI(); }
+    }).catch(function (e) {
+      say('Sync failed — ' + ((e && e.message) || 'try again'), 'err');
+    }).then(function () { running = false; if (nowBtn) nowBtn.disabled = false; });
+  }
+
+  // ---- auto-push on local edits (active profile only; debounced) ----
+  var baseHash = null, pushT = null;
+  function activeHash() { try { return hash(P.getData(P.active())); } catch (e) { return baseHash; } }
+  function schedulePush() {
+    if (pushT) clearTimeout(pushT);
+    pushT = setTimeout(function () {
+      if (!session() || !autoOn() || running) return;
+      client().then(function (c) { return pushOne(c, P.active()); })
+        .then(function () { stampSynced(); baseHash = activeHash(); renderStatus(); })
+        .catch(function () {});
+    }, 2500);
+  }
+  setInterval(function () {
+    if (!session() || !autoOn() || running) return;
+    var h = activeHash();
+    if (baseHash === null) { baseHash = h; return; }
+    if (h !== baseHash) { baseHash = h; schedulePush(); }
+  }, 3000);
+
+  // flush a pending push when leaving the page
+  window.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden' && pushT) { clearTimeout(pushT); if (session() && autoOn()) client().then(function (c) { return pushOne(c, P.active()); }).catch(function () {}); } });
+
+  // ---- delete propagation (called by the profiles module on local delete) ----
+  window.mpSyncDelete = function (cloudId) {
+    if (!session() || !cloudId) return;
+    client().then(function (c) { return c.from('profiles').delete().eq('id', cloudId); }).catch(function () {});
+  };
+
+  // ---- wire UI ----
+  if (autoBox) { autoBox.checked = autoOn(); autoBox.addEventListener('change', function () { setAuto(autoBox.checked); if (autoBox.checked) syncNow(); }); }
+  if (nowBtn) nowBtn.addEventListener('click', function () { syncNow(); });
+
+  function onSignIn() { baseHash = activeHash(); renderStatus(); if (autoOn()) syncNow(); }
+  document.addEventListener('mp:auth', function (ev) { if (ev.detail) onSignIn(); else renderStatus(); });
+  if (session()) onSignIn(); else renderStatus();
 })();
 </script>
 

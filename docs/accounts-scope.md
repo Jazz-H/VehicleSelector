@@ -3,7 +3,7 @@
 **Direction:** local-first **profiles** (no login required) **+ optional Supabase sign-in for cloud sync**.
 The app keeps working fully offline as a template; signing in is purely additive (syncs a profile across devices).
 
-Status: **Phase 1 shipped** (local profiles). **Phase 2 scaffolded** (auth UI + Supabase client, gated on `config.js` — see §10). Phase 3 (sync) is next; needs the project + the SQL below.
+Status: **Phase 1 shipped** (local profiles). **Phase 2 shipped** (email magic-link auth, verified live). **Phase 3 shipped** (per-profile two-way cloud sync — see §11); it activates once the `profiles` table + RLS below are run in Supabase. Phase 4 (more OAuth, avatars, delete-account) is next.
 
 ---
 
@@ -127,9 +127,11 @@ Once keys are in, the **Account** section appears in Settings (sign in / sign ou
 
 ---
 
-## 11. Phase 3 — cloud sync (next; SQL ready)
+## 11. Phase 3 — cloud sync (shipped; run the SQL once to activate)
 
-Table + row-level security (run in Supabase → **SQL editor**):
+**Client is built.** Each local profile syncs to a `profiles` row (`data` jsonb = that profile's build blob, the export format). Auto-sync pushes the active profile on edit (debounced); **Sync now** and sign-in run a full two-way reconcile. Resolution: last-write-wins, with a keep-local / keep-cloud prompt only when both sides changed since the last sync. The AI key and device-local UI prefs never sync. Known v1 limits: a fresh device's default sample profile also uploads (all-profiles sync); remote deletes propagate only from the device that deletes.
+
+Table + row-level security (run in Supabase → **SQL editor** — this is the one manual step to turn sync on):
 ```sql
 create table if not exists public.profiles (
   id uuid primary key default gen_random_uuid(),
