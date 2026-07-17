@@ -6,7 +6,9 @@ Working list, roughly in priority order. Knock 'em down top to bottom.
 - [x] _(All five queued features shipped — see Done below.)_
 
 ## Reframe as a shareable, portfolio-worthy tool
-- [ ] **Accounts Phase 2–3** — real login + cloud sync via Supabase. Scoped in `docs/accounts-scope.md`; needs a Supabase project + the 4 open decisions. (Phase 1 — local profiles — is shipped.)
+- [x] **Accounts Phase 2 — auth** — Supabase email magic-link sign-in, session persists. Verified live.
+- [x] **Accounts Phase 3 — cloud sync** — per-profile two-way sync (Sync now + auto-sync), last-write-wins with a keep-local/keep-cloud prompt on true conflicts. Requires the `profiles` table + RLS from `docs/accounts-scope.md` §11 to be run once in Supabase.
+- [ ] **Accounts Phase 4 — polish** — more OAuth providers (Google/GitHub currently "coming soon"), avatars, preferences, delete-account, onboarding states.
 - [ ] **Portfolio story** — write the positioning + case study: what it is, the problem it solves, the build story, and how to feature it on the portfolio site, **LinkedIn**, and **jazzharrisstudio.com**.
 
 ## Content (needs Jazz's real inputs)
