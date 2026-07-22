@@ -1135,6 +1135,14 @@
   .ov-modal .ov-add-opts .ov-seg-btn:hover{color:var(--paper);}
   .ov-modal .ov-add-opts .ov-seg-btn.on{color:#fff;background:linear-gradient(180deg,#e0432f,var(--redline-deep));box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 4px 12px -4px rgba(216,58,41,.45);}
   .ov-modal .ov-add-opts .ov-seg-btn.on .sg-i{opacity:1;}
+  .ov-modal .ov-fin-fields{margin-top:14px;}
+  .ov-modal .ov-frow[hidden]{display:none;}
+  .ov-modal .ov-fin-eq{margin-top:11px;display:flex;justify-content:space-between;align-items:center;gap:12px;
+    padding:9px 12px;background:var(--steel-900);border:1px solid var(--line-steel-strong);border-radius:7px;}
+  .ov-modal .ov-fin-eq[hidden]{display:none;}
+  .ov-modal .ov-fin-eq span{font-family:"IBM Plex Mono",monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:#9aa0a7;}
+  .ov-modal .ov-fin-eq span small{opacity:.6;text-transform:none;letter-spacing:.02em;}
+  .ov-modal .ov-fin-eq b{font-family:"Saira Condensed",sans-serif;font-weight:700;font-size:1.05rem;font-variant-numeric:tabular-nums;color:#4f9e6a;}
   .ov-modal .ov-foot{margin-top:19px;display:flex;flex-direction:column;gap:11px;}
   .ov-modal .ov-foot .hint{font-family:"IBM Plex Mono",monospace;font-size:.68rem;letter-spacing:.02em;color:var(--ink-faint);display:flex;align-items:center;gap:7px;}
   .ov-modal .ov-foot .hint .ret{color:var(--redline);}
@@ -1238,9 +1246,9 @@
   .ov-feature .ov-expand:hover{color:var(--paper);}
   .ov-feature .ov-expand:focus-visible{outline:2px solid var(--amber);outline-offset:-2px;}
   .ov-feature .ov-expand .ov-chev{transition:transform .18s;}
-  .ov-feature.open .ov-expand .ov-chev{transform:rotate(180deg);}
+  .ov-feature .ov-expand[aria-expanded="true"] .ov-chev{transform:rotate(180deg);}
   .ov-feature .ov-detail{display:none;padding:15px;border-top:1px solid var(--line-steel);}
-  .ov-feature.open .ov-detail{display:block;}
+  .ov-feature .ov-detail.open{display:block;}
   .ov-feature .feat-block + .feat-block{margin-top:20px;}
   .ov-feature .feat-block-h{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;
     font-family:"Saira Condensed",sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:1.1rem;color:var(--paper);}
@@ -1752,12 +1760,11 @@
           <div class="fs"><span class="k">Mods</span><span class="v"><b data-mirror="hubModCount">&mdash;</b> logged &middot; <b data-mirror="hubModSpent">&mdash;</b> in hand</span></div>
         </div>
       </div>
-      <button type="button" class="ov-expand" aria-expanded="false" aria-controls="dailyDetail">
-        <span class="ov-expand-l">Value, equity &amp; mods</span><span class="ov-chev" aria-hidden="true">&#9662;</span>
+      <button type="button" class="ov-expand" aria-expanded="false" aria-controls="dailyValueDetail">
+        <span class="ov-expand-l">Value &amp; Equity</span><span class="ov-chev" aria-hidden="true">&#9662;</span>
       </button>
-      <div class="ov-detail" id="dailyDetail">
+      <div class="ov-detail" id="dailyValueDetail">
         <div class="feat-block">
-          <div class="feat-block-h"><span>Value &amp; Equity</span></div>
           <div class="panel">
             <div class="ledger">
               <div class="ledger-row"><span class="item">KBB Trade-In <small>rough &mdash; update from KBB</small></span><span class="amt">$<input class="val-in" type="text" data-v="trade" inputmode="numeric" value="15000" aria-label="KBB trade-in value"></span></div>
@@ -1771,8 +1778,13 @@
           </div>
           <div class="callout" data-dk="kbb">KBB has no free data feed, so this can&rsquo;t auto-pull &mdash; these are placeholder figures for a sample daily driver. <b>Punch in your real numbers</b> from <a href="https://www.kbb.com/whats-my-car-worth/" target="_blank" rel="noopener" style="color:var(--amber);text-decoration:underline">KBB&rsquo;s valuation tool &#8599;</a> and the equity updates live. Owed starts at <b>$0</b> &mdash; set your loan balance.</div>
         </div>
+      </div>
+      <button type="button" class="ov-expand" aria-expanded="false" aria-controls="dailyModsDetail">
+        <span class="ov-expand-l">Mod List</span><span class="ov-chev" aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="ov-detail" id="dailyModsDetail">
         <div class="feat-block">
-          <div class="feat-block-h"><span>Mod List</span>
+          <div class="feat-block-h" style="justify-content:flex-end;">
             <button type="button" class="ml-add-btn" id="modAddToggle" aria-haspopup="dialog"><span class="ml-add-ico" aria-hidden="true">+</span> Add a mod</button>
           </div>
           <div class="panel">
@@ -4029,6 +4041,12 @@ window.mpAddModal = function (cfg) {
         '<div class="ov-opt"><span class="ov-opt-l">Type</span>' + seg('type', 'car', [{ v: 'car', label: 'Car', icon: IC.car }, { v: 'moto', label: 'Moto', icon: IC.moto }]) + '</div>' +
         '<div class="ov-opt"><span class="ov-opt-l">Ownership</span>' + seg('fin', 'paid', [{ v: 'paid', label: 'Paid off', icon: IC.check }, { v: 'financed', label: 'Financed', icon: IC.pct }]) + '</div>' +
       '</div>' +
+      '<div class="ov-frow ov-fin-fields" hidden>' +
+        '<div class="ov-fld"><label>Value <i>&middot; estimate</i></label><input class="ov-add-value num" type="text" inputmode="numeric" maxlength="9" placeholder="$18,000" aria-label="Estimated value"></div>' +
+        '<div class="ov-fld"><label>Owed <i>&middot; loan balance</i></label><input class="ov-add-owed num" type="text" inputmode="numeric" maxlength="9" placeholder="$12,500" aria-label="Amount owed"></div>' +
+        '<div class="ov-fld"><label>Payment <i>&middot; per month</i></label><input class="ov-add-payment num" type="text" inputmode="numeric" maxlength="7" placeholder="$350" aria-label="Monthly payment"></div>' +
+      '</div>' +
+      '<div class="ov-fin-eq" hidden><span>Equity <small>value &minus; owed</small></span><b>&mdash;</b></div>' +
       '<div class="ov-foot"><span class="hint"><span class="ret">&#8627;</span> You&rsquo;ll add specs, value &amp; a photo on the card next.</span>' +
         '<button type="submit" class="ov-cta">' + IC.plus + ' Add vehicle</button></div>' +
     '</form>';
@@ -4039,10 +4057,27 @@ window.mpAddModal = function (cfg) {
   overlay.appendChild(card);
   // segmented toggles inside the add form (visual-only until submit)
   function pickSeg(scope, name) { var b = scope.querySelector('.ov-seg-btn.on[data-' + name + ']'); return b ? b.getAttribute('data-' + name) : null; }
+  // Picking "Financed" reveals value / owed / payment right in the form, with a live equity
+  // readout — same figures the daily's Value & Equity ledger asks for.
+  var finFields = card.querySelector('.ov-fin-fields'), finEq = card.querySelector('.ov-fin-eq');
+  function finVal(cls) { var el = card.querySelector(cls); return el ? n(el.value) : 0; }
+  function updateFinEq() {
+    var val = finVal('.ov-add-value'), owed = finVal('.ov-add-owed'), eq = val - owed;
+    var b = finEq.querySelector('b');
+    b.textContent = (val || owed) ? ((eq < 0 ? '−' : '') + money(Math.abs(eq))) : '—';
+    b.style.color = eq >= 0 ? '#4f9e6a' : 'var(--redline-deep)';
+  }
+  function syncFinFields(focus) {
+    var financed = pickSeg(card, 'fin') === 'financed';
+    finFields.hidden = !financed; finEq.hidden = !financed;
+    if (financed) { updateFinEq(); if (focus) { var f = card.querySelector('.ov-add-value'); if (f) f.focus(); } }
+  }
+  finFields.addEventListener('input', updateFinEq);
   card.addEventListener('click', function (e) {
     var btn = e.target.closest('.ov-seg-btn'); if (!btn) return;
     var grp = btn.closest('.ov-seg');
     Array.prototype.forEach.call(grp.querySelectorAll('.ov-seg-btn'), function (b) { var on = b === btn; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+    if (btn.hasAttribute('data-fin')) syncFinFields(true);
   });
   function resetFormSegs() {
     Array.prototype.forEach.call(card.querySelectorAll('.ov-seg'), function (grp) {
@@ -4095,10 +4130,14 @@ window.mpAddModal = function (cfg) {
     var name = [yr, mk, md].filter(Boolean).join(' ');
     var nick = card.querySelector('.ov-add-nick').value.trim();
     var type = pickSeg(card, 'type') || 'car', fin = pickSeg(card, 'fin') || 'paid';
+    function digits(cls) { var el = card.querySelector(cls); return el ? el.value.replace(/[^0-9.]/g, '') : ''; }
+    var financed = fin === 'financed';
     var arr = load();
-    arr.push({ name: name, year: yr, make: mk, model: md, nick: nick, trim: '', type: type, finance: fin, value: '', owed: '', payment: '', engine: '', output: '', drive: '', miles: '', mods: [] });
+    arr.push({ name: name, year: yr, make: mk, model: md, nick: nick, trim: '', type: type, finance: fin,
+      value: financed ? digits('.ov-add-value') : '', owed: financed ? digits('.ov-add-owed') : '', payment: financed ? digits('.ov-add-payment') : '',
+      engine: '', output: '', drive: '', miles: '', mods: [] });
     save(arr); render();
-    form.reset(); resetFormSegs(); closeForm();
+    form.reset(); resetFormSegs(); syncFinFields(); closeForm();
   });
 
   fileIn.addEventListener('change', function () {
@@ -5841,14 +5880,16 @@ window.mpAddModal = function (cfg) {
 </script>
 
 <script>
-// Daily featured card — expand/collapse the folded Value & Equity + Mod List.
+// Daily featured card — Value & Equity and Mod List each fold open on their own.
 (function () {
   var card = document.getElementById('dailyCard'); if (!card) return;
-  var exp = card.querySelector('.ov-expand'); if (!exp) return;
-  exp.addEventListener('click', function () {
-    var open = !card.classList.contains('open');
-    card.classList.toggle('open', open);
-    exp.setAttribute('aria-expanded', open ? 'true' : 'false');
+  Array.prototype.forEach.call(card.querySelectorAll('.ov-expand'), function (exp) {
+    var detail = document.getElementById(exp.getAttribute('aria-controls')); if (!detail) return;
+    exp.addEventListener('click', function () {
+      var open = !detail.classList.contains('open');
+      detail.classList.toggle('open', open);
+      exp.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
   });
 })();
 </script>
